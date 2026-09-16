@@ -1,0 +1,404 @@
+{
+  "font": {
+    "foundations": {
+      "body-fontFamily": {
+        "$type": "string",
+        "$value": "Public Sans"
+      },
+      "body-fontWeight": {
+        "$type": "string",
+        "$value": "Light"
+      },
+      "body-bold-fontWeight": {
+        "$type": "string",
+        "$value": "SemiBold"
+      },
+      "body-link-fontWeight": {
+        "$type": "string",
+        "$value": "SemiBold"
+      },
+      "heading-fontFamily": {
+        "$type": "string",
+        "$value": "Safiro"
+      },
+      "heading-fontWeight": {
+        "$type": "string",
+        "$value": "Bold"
+      },
+      "heading-mark-fontFamily": {
+        "$type": "string",
+        "$value": "Safiro"
+      },
+      "heading-mark-fontWeight": {
+        "$type": "string",
+        "$value": "Bold"
+      },
+      "label-fontFamily": {
+        "$type": "string",
+        "$value": "Safiro"
+      },
+      "label-fontWeight": {
+        "$type": "string",
+        "$value": "Bold"
+      }
+    },
+    "paragraph": {
+      "XL": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontWeight}"
+        },
+        "boldFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "boldFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-bold-fontWeight}"
+        },
+        "linkFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "linkFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-link-fontWeight}"
+        }
+      },
+      "LG": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontWeight}"
+        },
+        "boldFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "boldFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-bold-fontWeight}"
+        },
+        "linkFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "linkFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-link-fontWeight}"
+        }
+      },
+      "MD": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontWeight}"
+        },
+        "boldFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "boldFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-bold-fontWeight}"
+        },
+        "linkFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "linkFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-link-fontWeight}"
+        }
+      },
+      "SM": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontWeight}"
+        },
+        "boldFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "boldFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-bold-fontWeight}"
+        },
+        "linkFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "linkFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-link-fontWeight}"
+        }
+      }
+    },
+    "heading": {
+      "2XL": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-fontWeight}"
+        },
+        "markFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-mark-fontFamily}"
+        },
+        "markFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-mark-fontWeight}"
+        }
+      },
+      "XL": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-fontWeight}"
+        },
+        "markFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-mark-fontFamily}"
+        },
+        "markFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-mark-fontWeight}"
+        }
+      },
+      "LG": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-fontWeight}"
+        },
+        "markFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-mark-fontFamily}"
+        },
+        "markFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-mark-fontWeight}"
+        }
+      },
+      "MD": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-fontWeight}"
+        },
+        "markFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-mark-fontFamily}"
+        },
+        "markFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-mark-fontWeight}"
+        }
+      },
+      "SM": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-fontWeight}"
+        },
+        "markFontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-mark-fontFamily}"
+        },
+        "markFontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-mark-fontWeight}"
+        }
+      }
+    },
+    "keyNumbers": {
+      "number": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.heading-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "Regular"
+        }
+      },
+      "prefix": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontWeight}"
+        }
+      },
+      "suffix": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontWeight}"
+        }
+      }
+    },
+    "badge": {
+      "normal": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontWeight}"
+        }
+      },
+      "decorative": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontWeight}"
+        }
+      },
+      "surface": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontWeight}"
+        }
+      },
+      "surfaceActive": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.badge.surface.fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.badge.surface.fontWeight}"
+        }
+      }
+    },
+    "button": {
+      "fontFamily": {
+        "$type": "string",
+        "$value": "{font.foundations.label-fontFamily}"
+      },
+      "fontWeight": {
+        "$type": "string",
+        "$value": "{font.foundations.label-fontWeight}"
+      }
+    },
+    "accordeon": {
+      "title": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontWeight}"
+        }
+      }
+    },
+    "quote": {
+      "content": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "Public Sans"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "Light Italic"
+        }
+      },
+      "primaryLabel": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.label-fontFamily}"
+        }
+      },
+      "secondaryLabel": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontWeight}"
+        }
+      }
+    },
+    "form": {
+      "label": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontWeight}"
+        }
+      },
+      "block": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontWeight}"
+        }
+      },
+      "inline": {
+        "fontFamily": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontFamily}"
+        },
+        "fontWeight": {
+          "$type": "string",
+          "$value": "{font.foundations.body-fontWeight}"
+        }
+      }
+    }
+  }
+}

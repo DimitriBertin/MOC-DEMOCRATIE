@@ -1,0 +1,500 @@
+// Purposely including only the utilities, since the "base" and the "components"
+// are already included in the AD UI design system, and we don't need to include them again.
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Using AD-UI color tokens; no local color variables are defined here. */
+
+
+/* Keep any component-specific utilities light; rely on Tailwind classes in markup. */
+
+ul,ol {
+  @apply text-[0px];
+}
+
+.label {
+  @apply font-safiro font-semibold uppercase @sm:text-[13px]/[18px] @sm:tracking-[2.6px] @md/lg:text-[13px]/[18px] @md/lg:tracking-[2.6px];
+}
+
+.menu {
+    @apply font-safiro uppercase font-semibold @sm:text-[13px]/[24px] @sm:tracking-[1.82px] @md/lg:text-[13px]/[24px] @md/lg:tracking-[1.82px];
+}
+
+/* Pagination Component Styles */
+.pagination {
+  @apply @sm:mt-16 @md/lg:mt-16 flex justify-center;
+}
+
+.pagination-list {
+  @apply flex items-center @sm:gap-2 @md/lg:gap-2 list-none m-0 p-0;
+}
+
+.pagination-item {
+  @apply m-0;
+}
+
+.pagination-link {
+  @apply inline-flex items-center justify-center @sm:w-[26px] @md/lg:w-[26px] @sm:h-[26px] @md/lg:h-[26px]  text-green-semi-light  @sm:text-[14px]/[26px] @md/lg:text-[14px]/[26px]  transition-colors;
+  &:hover {
+    @apply text-yellow;
+  }
+}
+
+.pagination-current {
+  @apply inline-flex items-center justify-center @sm:w-[26px] @md/lg:w-[26px] @sm:h-[26px] @md/lg:h-[26px] rounded-full bg-yellow text-dark-green font-safiro @sm:text-[14px]/[26px] @md/lg:text-[14px]/[26px];
+}
+
+.theme-yellow .badge-surface {
+  @apply bg-white text-dark-green;
+}
+
+
+.numbers-images-color-block {
+    @apply bg-orange;
+    @apply text-dark-green;
+}
+.theme-yellow .numbers-images-color-block {
+    @apply bg-dark-green;
+    @apply text-white;
+}
+.numbers-images-color-block-alt {
+    @apply bg-light-green-70;
+    @apply text-dark-green;
+}
+.theme-yellow .numbers-images-color-block-alt,
+.theme-light-green-70 .numbers-images-color-block-alt {
+    @apply bg-white;
+    @apply text-dark-green;
+}
+
+.theme-orange {
+    @apply bg-orange;
+}
+.theme-orange .button-flat.button-primary {
+    @apply bg-white text-dark-green border-white;
+}
+.theme-orange .button-flat.button-primary:hover {
+    @apply bg-dark-green text-white border-dark-green;
+}
+
+
+/* Custom scrollbar styles - cannot be achieved with Tailwind */
+.filter-dropdown-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.filter-dropdown-menu::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.filter-dropdown-menu::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.filter-dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+        
+ /* Custom animations - Tailwind doesn't have these specific animations */
+ @keyframes fadeIn {
+     from {
+         opacity: 0;
+         transform: scale(0.9);
+     }
+     to {
+         opacity: 1;
+         transform: scale(1);
+     }
+ }
+ 
+ @keyframes fadeOut {
+     from {
+         opacity: 1;
+         transform: scale(1);
+     }
+     to {
+         opacity: 0;
+         transform: scale(0.9);
+     }
+ }
+ 
+ .filter-tag {
+     animation: fadeIn 0.3s ease-in-out;
+ }
+ 
+ .filter-tag.removing {
+     animation: fadeOut 0.3s ease-in-out forwards;
+ }
+
+
+
+
+/**
+  FORM 
+**/
+.wysiwyg pre {
+  white-space: normal;
+}
+
+.frm {
+  &_form_field {
+    @apply flex flex-col @@:gap-[10px] relative;
+  }
+
+  &_primary_label {
+    color: var(--color-foundations-text);
+    font-family: var(--font-paragraph-m-font-family);
+    display: flex;
+    align-items: center;
+    font-size: calc(
+      var(--typography-paragraph-md-font-size) / var(--tw-screen-sm) *
+        var(--tw-screen-max) * var(--tw-scale)
+    );
+    font-variation-settings: "wght" var(--font-paragraph-m-font-weight);
+    font-weight: 300;
+    letter-spacing: calc(
+      var(--text-paragraph-m-letter-spacing) / var(--tw-screen-sm) *
+        var(--tw-screen-max) * var(--tw-scale)
+    );
+    line-height: calc(
+      var(--text-paragraph-m-line-height) / var(--tw-screen-sm) *
+        var(--tw-screen-max) * var(--tw-scale)
+    );
+    text-transform: none;
+    text-decoration: none;
+    font-style: var(--font-paragraph-m-font-style);
+
+    @screen md {
+      font-size: calc(
+        var(--typography-paragraph-md-font-size) / var(--tw-screen-lg) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+      letter-spacing: calc(
+        var(--text-paragraph-m-letter-spacing) / var(--tw-screen-lg) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+      line-height: calc(
+        var(--text-paragraph-m-line-height) / var(--tw-screen-lg) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+    }
+  }
+
+  &_form_fields .frm_fields_container {
+    @apply @sm:gap-y-xl;
+  }
+
+  &_forms {
+    input[type="email"],
+    input[type="text"], 
+    input[type="number"],
+    input[type="tel"],
+    textarea,
+    select,
+    .vertical_radio label,
+    .frm_upload_text,
+    .frm_upload_icon:before,
+    .dz-details {
+      color:  var(--color-foundations-text);
+      font-family: var(--font-paragraph-m-font-family);
+      font-size: calc(
+        var(--typography-paragraph-md-font-size) / var(--tw-screen-sm) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+      font-variation-settings: "wght" var(--font-paragraph-m-font-weight);
+      font-weight: var(--font-paragraph-m-font-weight);
+      letter-spacing: calc(
+        var(--text-paragraph-m-letter-spacing) / var(--tw-screen-sm) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+      line-height: calc(
+        var(--text-paragraph-m-line-height) / var(--tw-screen-sm) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+      text-transform: none;
+      text-decoration: none;
+      font-style: var(--font-paragraph-m-font-style);
+
+      @screen md {
+        font-size: calc(
+          var(--typography-paragraph-md-font-size) / var(--tw-screen-lg) *
+            var(--tw-screen-max) * var(--tw-scale)
+        );
+        letter-spacing: calc(
+          var(--text-paragraph-m-letter-spacing) / var(--tw-screen-lg) *
+            var(--tw-screen-max) * var(--tw-scale)
+        );
+        line-height: calc(
+          var(--text-paragraph-m-line-height) / var(--tw-screen-lg) *
+            var(--tw-screen-max) * var(--tw-scale)
+        );
+      }
+    }
+
+    .frm-svg-icon {
+      @apply @@:size-6 fill-white;
+    }
+
+    .frm_message {
+      color: var(--color-foundations-text);
+      font-family: var(--font-paragraph-xl-font-family);
+      font-size: calc(
+        var(--typography-paragraph-xl-font-size) / var(--tw-screen-sm) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+      font-variation-settings: "wght" var(--font-paragraph-xl-font-weight);
+      font-weight: var(--font-paragraph-xl-font-weight);
+      letter-spacing: calc(
+        var(--text-paragraph-xl-letter-spacing) / var(--tw-screen-sm) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+      line-height: calc(
+        var(--text-paragraph-xl-line-height) / var(--tw-screen-sm) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+      text-transform: none;
+      text-decoration: none;
+      font-style: var(--font-paragraph-xl-font-style);
+
+      @screen md {
+        font-size: calc(
+          var(--typography-paragraph-xl-font-size) / var(--tw-screen-lg) *
+            var(--tw-screen-max) * var(--tw-scale)
+        );
+        letter-spacing: calc(
+          var(--text-paragraph-xl-letter-spacing) / var(--tw-screen-lg) *
+            var(--tw-screen-max) * var(--tw-scale)
+        );
+        line-height: calc(
+          var(--text-paragraph-xl-line-height) / var(--tw-screen-lg) *
+            var(--tw-screen-max) * var(--tw-scale)
+        );
+      }
+    }
+
+    .frm_error,
+    .frm_error_style {
+      color: var(--color-typography-heading-primary);
+      font-family: var(--font-paragraph-s-font-family);
+      font-size: calc(
+        var(--text-paragraph-s-font-size) / var(--tw-screen-sm) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+      font-variation-settings: "wght" var(--font-paragraph-s-font-weight);
+      font-weight: var(--font-paragraph-s-font-weight);
+      letter-spacing: calc(
+        var(--text-paragraph-s-letter-spacing) / var(--tw-screen-sm) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+      line-height: calc(
+        var(--text-paragraph-s-line-height) / var(--tw-screen-sm) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+      text-transform: none;
+      text-decoration: none;
+      font-style: var(--font-paragraph-m-font-style);
+
+      @screen md {
+        font-size: calc(
+          var(--text-paragraph-s-font-size) / var(--tw-screen-lg) *
+            var(--tw-screen-max) * var(--tw-scale)
+        );
+        letter-spacing: calc(
+          var(--text-paragraph-s-letter-spacing) / var(--tw-screen-lg) *
+            var(--tw-screen-max) * var(--tw-scale)
+        );
+        line-height: calc(
+          var(--text-paragraph-s-line-height) / var(--tw-screen-lg) *
+            var(--tw-screen-max) * var(--tw-scale)
+        );
+      }
+    }
+
+    .frm_error {
+      @apply absolute @@:-bottom-1 left-0 translate-y-[100%] ;
+      font-family: var(--font-paragraph-m-font-family);
+      font-size: calc(
+        var(--typography-paragraph-sm-font-size) / var(--tw-screen-sm) *
+          var(--tw-screen-max) * var(--tw-scale)
+      );
+
+      @screen md {
+        font-size: calc(
+          var(--typography-paragraph-sm-font-size) / var(--tw-screen-lg) *
+            var(--tw-screen-max) * var(--tw-scale)
+        );
+      }
+    }
+    
+    .frm_error_style[role="alert"] {
+      @apply hidden;
+    }
+
+    select,
+    input[type="email"],
+    input[type="text"], 
+    input[type="number"],
+    input[type="tel"],
+    textarea,
+    .frm_dropzone.frm_single_upload {
+      @apply border border-[--color-separator-primary] @@:rounded-sm bg-transparent @@:px-[20px] @@:py-[12px];
+    }
+
+    textarea {
+      @apply @md/lg:h-[185px];
+    }
+
+    select {
+       appearance: none;         /* supprime la flèche native */
+      -moz-appearance: none;    /* Firefox */
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml;utf8,%3Csvg viewBox='0 0 33 33' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23ffffff' opacity='0.5' d='M32.5 32.5H0V31.5H30.8877L0.649414 1.26172L1.35645 0.554688L31.5 30.6982V0H32.5V32.5Z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center; /* ajuste selon ton design */
+      background-size: 1rem auto;
+      color: var(--color-white-50);
+
+      // background: url('chevron.svg') no-repeat right 0.75rem center;
+    }
+
+    .frm_form_field.vertical_radio {
+
+      &.frm12 .frm_primary_label,
+      input {
+        @apply hidden;
+      }
+
+      
+      .frm_checkbox,
+      .frm_radio {
+        span {
+          @apply relative @@:pl-[34px] block;
+
+          &:before {
+            @apply @@:size-5 border border-[--color-separator-primary] absolute @@:top-1 left-0 ; 
+            content: "";
+          }
+
+          &:after {
+            @apply @@:w-2 @@:h-2  bg-[--color-foundations-text] absolute @@:top-[10px] @@:left-[6px] opacity-0 scale-0 transition-all duration-300
+            ; 
+            content: "";
+          }
+        }
+
+        input:checked + span {
+          &:after {
+            @apply scale-100 opacity-100;
+          }
+
+          &:before {
+            @apply border-[--color-foundations-text];
+          }
+        }
+      }
+
+      .frm_radio {
+        span {
+          &:before,
+          &:after {
+            border-radius: 50%;
+          }
+        } 
+      }
+
+      .frm_error {
+        @apply @@:pl-[34px]
+      }
+    }
+
+    .frm_dropzone.frm_single_upload {
+      @apply max-w-none min-h-0 m-0 relative text-left;
+
+      .dz-message {
+        @apply m-0 p-0 border-0 bg-transparent text-left relative;
+      }
+
+      .frm_upload_icon,
+      .frm-svg-icon {
+        @apply absolute top-[50%] right-0 -translate-y-[50%] opacity-70;
+      }
+
+      .frm_small_text {
+        @apply hidden;
+      }
+
+      .frm_upload_text {
+        @apply opacity-70;
+
+        button {
+          font-weight: 200!important;
+        }
+      }
+      .dz-preview  {
+        @apply flex flex-wrap items-center gap-lg;
+      }
+      .dz-details {
+        @apply m-0;
+      }
+      .dz-column {
+        @apply float-none flex-auto;
+      }
+      .dz-image {
+        @apply @@:size-[60px] m-0 float-none flex-none;
+
+        img {
+          @apply w-full h-full object-cover;
+        }
+      }
+
+      .dz-progress {
+        @apply hidden;
+      }
+    }
+
+    .frm_submit {
+      .button {
+        @apply mm-sm:w-full;
+      }
+    }
+  }
+
+  
+}
+
+
+.frm_forms {
+  scroll-behavior: unset !important;
+}
+
+.newsletter {
+  @apply @@:mt-8;
+
+  .frm_forms {
+    .frm_fields_container {
+      @apply gap-y-sm;
+    }
+
+    input {
+      @apply px-0;
+    }
+
+    .button {
+      @apply w-full @@:mt-6;
+
+    }
+  } 
+}
+
+#event_inscription {
+  scroll-margin-top: 180px;
+}
+
+ .grecaptcha-badge {
+  right: -1000px;
+  opacity: 0;
+ }
+ 

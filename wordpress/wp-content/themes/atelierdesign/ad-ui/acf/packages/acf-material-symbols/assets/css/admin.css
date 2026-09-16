@@ -1,0 +1,9 @@
+.acf-field-setting-families .acf-checkbox-list {
+	max-height: 160px;
+	overflow-y: auto;
+}
+
+.acf-field-setting-return_format .acf-radio-list {
+	display: flex;
+	gap: 12px;
+}

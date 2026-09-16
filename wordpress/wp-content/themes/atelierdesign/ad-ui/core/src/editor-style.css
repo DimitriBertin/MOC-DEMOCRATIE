@@ -1,0 +1,132 @@
+@tailwind base;
+
+/* Overriding the vw plugin values */
+
+body {
+  --tw-screen-max: 384px;
+}
+@screen md {
+  body {
+    --tw-screen-max: 1260px;
+  }
+}
+
+/* Body Margin */
+body {
+  margin: 12px;
+}
+
+/* Wysiwyg styles */
+body > * {
+  margin-block: var(--typography-block-margin-y, 24px);
+}
+
+body > *:first-child {
+  margin-top: 0;
+}
+
+body > *:last-child {
+  margin-bottom: 0;
+}
+
+body > *:is(h1, h2, h3, h4, h5, h6) {
+  margin-top: 1.2ch;
+  margin-bottom: 0.9ch;
+}
+body > *:is(p, ul, ol) {
+  margin-block: 1.7ch;
+}
+
+hr {
+  margin-block: calc(var(--typography-block-margin-y, 24px) + var(--separator-margin-y, 12px));
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply text-typography-heading-primary;
+}
+
+p {
+  @apply text-paragraph-md text-typography-paragraph-primary;
+}
+
+a {
+  @apply link;
+}
+
+.heading-2xl {
+  @apply text-heading-2xl;
+}
+
+.heading-xl {
+  @apply text-heading-xl;
+}
+
+.heading-lg {
+  @apply text-heading-lg;
+}
+
+.heading-md {
+  @apply text-heading-md;
+}
+
+.heading-sm {
+  @apply text-heading-sm;
+}
+
+.paragraph-xl {
+  @apply text-paragraph-xl;
+}
+
+.paragraph-lg {
+  @apply text-paragraph-lg;
+}
+
+.paragraph-md {
+  @apply text-paragraph-md;
+}
+
+.paragraph-sm {
+  @apply text-paragraph-sm;
+}
+
+ul,
+ol {
+  @apply text-paragraph-md text-typography-paragraph-primary;
+  list-style-type: none;
+}
+
+ul li,
+ol li {
+  @apply relative @sm:pl-[1.5ch] @md/lg:pl-[2ch];
+}
+
+ul li::before {
+  @apply content-['•'] absolute top-0 left-0 h-[1lh];
+}
+
+ul[style*='text-align:center'],
+ul[style*='text-align: center'],
+ol[style*='text-align:center'],
+ol[style*='text-align: center'] {
+  text-align: left !important;
+  margin-left: auto;
+  margin-right: auto;
+  width: auto;
+  max-width: fit-content;
+  position: relative;
+}
+
+ol {
+  counter-reset: list;
+}
+
+ol li::before {
+  @apply absolute top-0 left-0 h-[1lh];
+  counter-increment: list;
+  content: counter(list) '.';
+}

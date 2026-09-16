@@ -1,0 +1,77 @@
+{
+  "name": "Design Tokens",
+  "collections": {
+    "colorPrimitives": {
+      "modes": {
+        "value": [
+          "colorPrimitives.value.tokens.json"
+        ]
+      }
+    },
+    "responsiveSizing": {
+      "modes": {
+        "lg": [
+          "responsiveSizing.lg.tokens.json"
+        ],
+        "sm": [
+          "responsiveSizing.sm.tokens.json"
+        ]
+      }
+    },
+    "colorSystem": {
+      "modes": {
+        "white": [
+          "colorSystem.white.tokens.json"
+        ],
+        "light-green-70": [
+          "colorSystem.light-green-70.tokens.json"
+        ],
+        "yellow": [
+          "colorSystem.yellow.tokens.json"
+        ],
+        "dark-green": [
+          "colorSystem.dark-green.tokens.json"
+        ]
+      }
+    },
+    "fonts": {
+      "modes": {
+        "Value": [
+          "fonts.Value.tokens.json"
+        ]
+      }
+    },
+    "tailwindcss": {
+      "modes": {
+        "value": [
+          "tailwindcss.value.tokens.json"
+        ]
+      }
+    },
+    "config": {
+      "modes": {
+        "_config": [
+          "config._config.tokens.json"
+        ]
+      }
+    },
+    "calc": {
+      "modes": {
+        "_calc": [
+          "calc._calc.tokens.json"
+        ]
+      }
+    }
+  },
+  "styles": {
+    "text": [
+      "text.styles.tokens.json"
+    ],
+    "effect": [
+      "effect.styles.tokens.json"
+    ],
+    "grid": [
+      "grid.styles.tokens.json"
+    ]
+  }
+}

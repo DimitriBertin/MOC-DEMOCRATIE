@@ -1,0 +1,36 @@
+{
+  "primitives": {
+    "dark-green": {
+      "$type": "color",
+      "$value": "#012e31"
+    },
+    "green-semi-dark": {
+      "$type": "color",
+      "$value": "#234b51"
+    },
+    "green-semi-light": {
+      "$type": "color",
+      "$value": "#286169"
+    },
+    "yellow": {
+      "$type": "color",
+      "$value": "#d7db31"
+    },
+    "orange": {
+      "$type": "color",
+      "$value": "#e7b84c"
+    },
+    "white": {
+      "$type": "color",
+      "$value": "#ffffff"
+    },
+    "light-green": {
+      "$type": "color",
+      "$value": "#e0e8de"
+    },
+    "light-green-70": {
+      "$type": "color",
+      "$value": "#e9efe8"
+    }
+  }
+}

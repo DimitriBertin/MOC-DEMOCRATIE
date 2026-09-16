@@ -1,0 +1,73 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build & Deploy to production
+    runs-on: ubuntu-latest
+
+    env:
+      THEME_DIR: wordpress/wp-content/themes/atelierdesign
+
+    steps:
+      # ──────────────────────────────────────────
+      # 1. Checkout du dépôt
+      # ──────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ──────────────────────────────────────────
+      # 2. Setup Node.js + Yarn
+      # ──────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Setup Yarn
+        run: npm install -g yarn
+
+      # ──────────────────────────────────────────
+      # 3. Configurer la clé SSH (deploy rsync)
+      # ──────────────────────────────────────────
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ssh026.webhosting.be >> ~/.ssh/known_hosts
+
+      # ──────────────────────────────────────────
+      # 4. Build du design system ad-ui
+      #    (génère ad-ui/core/dist, enqueué par le thème)
+      # ──────────────────────────────────────────
+      - name: Build ad-ui
+        working-directory: ${{ env.THEME_DIR }}/ad-ui/core
+        run: |
+          yarn install
+          yarn build
+
+      # ──────────────────────────────────────────
+      # 5. Build des assets du thème (webpack → dist/)
+      # ──────────────────────────────────────────
+      - name: Build theme assets
+        working-directory: ${{ env.THEME_DIR }}
+        run: |
+          yarn install
+          yarn build
+
+      # ──────────────────────────────────────────
+      # 6. Deploy via rsync
+      #    Tout le thème est envoyé, sauf node_modules/
+      # ──────────────────────────────────────────
+      - name: Deploy theme via rsync
+        run: |
+          rsync -avz --delete \
+            --exclude='node_modules/' \
+            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
+            "$THEME_DIR/" \
+            devatelierdesignbe@ssh026.webhosting.be:${{ secrets.SSH_PATH }}

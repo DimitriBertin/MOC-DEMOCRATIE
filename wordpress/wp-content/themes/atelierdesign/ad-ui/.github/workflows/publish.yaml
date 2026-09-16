@@ -1,0 +1,38 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Bundle and Release Package
+    runs-on: ubuntu-latest
+    env:
+      TAG_NAME: ${{ github.ref_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Remove .git and .github directories
+        run: |
+          find . -type d -name ".git" -exec rm -rf {} +
+          find . -type d -name ".github" -exec rm -rf {} +
+
+      - name: Create release archive
+        run: zip -r "adui-${TAG_NAME}.zip" .
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: ${{ env.TAG_NAME }}
+          draft: false
+          prerelease: false
+          files: adui-${{ env.TAG_NAME }}.zip
