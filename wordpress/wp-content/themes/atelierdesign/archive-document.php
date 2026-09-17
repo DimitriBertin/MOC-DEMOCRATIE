@@ -22,7 +22,7 @@ global $adwp;
   ?>
 
   <!-- Posts Grid -->
-  <section class="archive-posts py-section theme-white bg-layout-main">
+  <section class="archive-posts py-section pt-0 theme-white bg-layout-main">
     <div class="container">
       
       <?php if (have_posts()): ?>

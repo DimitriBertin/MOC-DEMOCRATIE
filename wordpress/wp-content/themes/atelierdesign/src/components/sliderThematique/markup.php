@@ -66,9 +66,14 @@ $thematiques = get_posts($query_args);
 // Identifiant unique de cette instance de slider
 $slider_id = 'slider-thematique-' . uniqid();
 
-// Swiper en mode `loop` a besoin d'assez de slides : on duplique si necessaire
+// Depuis Swiper 9, `loop` reordonne les vraies slides au lieu de cloner : il lui
+// faut donc assez de slides reelles, sinon il insere des blancs (d'ou les sauts).
+// On repete la liste jusqu'a 3x le plus grand slidesPerView.
 $slides_count = count($thematiques);
-$repeat = ($slides_count > 0 && $slides_count < 8) ? (int) ceil(8 / $slides_count) : 1;
+$max_per_view = 5; // valeur du plus grand breakpoint ci-dessous
+$repeat = $slides_count > 0
+  ? max(1, (int) ceil(($max_per_view * 3) / $slides_count))
+  : 1;
 ?>
 
 <section class="slider-section slider-thematique py-section overflow-hidden <?= $themeClass; ?> <?= $layoutClass; ?>">
@@ -89,7 +94,7 @@ $repeat = ($slides_count > 0 && $slides_count < 8) ? (int) ceil(8 / $slides_coun
       <div class="swiper !overflow-visible <?= $slider_id; ?>">
         <div class="swiper-wrapper">
           <?php for ($i = 0; $i < $repeat; $i++): ?>
-            <?php foreach ($thematiques as $thematique):
+          <?php foreach ($thematiques as $thematique):
               $data = ad_get_thematique_card_data($thematique->ID);
             ?>
               <div class="swiper-slide">
@@ -98,6 +103,7 @@ $repeat = ($slides_count > 0 && $slides_count < 8) ? (int) ceil(8 / $slides_coun
                     <?php echo wp_get_attachment_image($data['image_id'], 'medium_large', false, [
                       'class' => 'w-full h-full object-cover group-hover:scale-105 duration-300 group-hover:duration-1000 transition-transform',
                       'loading' => 'lazy',
+                      'draggable' => 'false',
                       'alt' => esc_attr($data['title']),
                     ]); ?>
                   </div>
@@ -117,7 +123,7 @@ $repeat = ($slides_count > 0 && $slides_count < 8) ? (int) ceil(8 / $slides_coun
                   </div>
                 </a>
               </div>
-            <?php endforeach; ?>
+          <?php endforeach; ?>
           <?php endfor; ?>
         </div>
       </div>
@@ -140,37 +146,41 @@ $repeat = ($slides_count > 0 && $slides_count < 8) ? (int) ceil(8 / $slides_coun
     </div>
 
     <script type="module">
-      document.addEventListener('DOMContentLoaded', function () {
-        if (typeof window.Swiper !== 'undefined' && typeof window.SwiperNavigation !== 'undefined') {
-          new window.Swiper('.<?= $slider_id; ?>', {
+      // En dev (Vite), build.js peut arriver apres DOMContentLoaded : on patiente.
+      (function initSlider(attempt) {
+        attempt = attempt || 0;
+        if (typeof window.Swiper === 'undefined' || typeof window.SwiperNavigation === 'undefined') {
+          if (attempt < 40) { return setTimeout(function () { initSlider(attempt + 1); }, 50); }
+          return console.error('Swiper is not available. Make sure it\'s loaded in build.js');
+        }
+        new window.Swiper('.<?= $slider_id; ?>', {
             modules: [window.SwiperNavigation],
             slidesPerView: 1,
             slidesPerGroup: 1,
             spaceBetween: 16,
             loop: true,
+            loopAddBlankSlides: false,
             grabCursor: true,
-            centeredSlides: true,
-            centerInsufficientSlides: true,
-            loopAdditionalSlides: 3,
+            watchOverflow: true,
+            threshold: 5,
+            preventClicks: true,
+            preventClicksPropagation: true,
             navigation: {
               nextEl: '.<?= $slider_id; ?>-next',
               prevEl: '.<?= $slider_id; ?>-prev',
             },
             breakpoints: {
               600: {
-                slidesPerView: 3,
-                spaceBetween: 16,
-              },
-              1025: {
                 slidesPerView: 4,
                 spaceBetween: 16,
               },
+              1025: {
+                slidesPerView: 5,
+                spaceBetween: 16,
+              },
             },
-          });
-        } else {
-          console.error('Swiper is not available. Make sure it\'s loaded in build.js');
-        }
-      });
+        });
+      })();
     </script>
   <?php else: ?>
     <div class="text-center py-8">

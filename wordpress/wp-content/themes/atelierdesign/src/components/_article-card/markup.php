@@ -5,6 +5,9 @@
  * Carte d'un Article (post) basee sur le nouveau modele de donnees :
  * relations Thematique / Auteur-rice / Numero (voir src/fieldGroups/post-relations.php)
  *
+ * Sans image mise en avant, on affiche le visuel de repli du theme
+ * (motif "moc moc" + icone ronde jaune) : voir src/functions/card-placeholder.php
+ *
  * Usage: get_template_part('src/components/_article-card/markup', null, ['post_id' => $id]);
  */
 $card = is_array($args) ? $args : [];
@@ -26,11 +29,15 @@ $numero = get_field('numero', $post_id);
   <a href="<?php echo esc_url($post_permalink); ?>" class="flex flex-col @sm:gap-4 @md/lg:gap-4 group">
     <!-- Image -->
     <div class="post-image relative @sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green aspect-[370/308]">
-      <?php echo get_the_post_thumbnail($post_id, 'medium_large', [
-        'class' => 'w-full h-full object-cover group-hover:scale-105 duration-300 group-hover:duration-1000 transition-transform',
-        'loading' => 'lazy',
-        'alt' => esc_attr($post_title),
-      ]); ?>
+      <?php if (has_post_thumbnail($post_id)): ?>
+        <?php echo get_the_post_thumbnail($post_id, 'medium_large', [
+          'class' => 'w-full h-full object-cover group-hover:scale-105 duration-300 group-hover:duration-1000 transition-transform',
+          'loading' => 'lazy',
+          'alt' => esc_attr($post_title),
+        ]); ?>
+      <?php else: ?>
+        <?php ad_render_card_placeholder($post_id, $post_title); ?>
+      <?php endif; ?>
     </div>
 
     <!-- Meta -->

@@ -33,7 +33,12 @@ acf_add_local_field_group([
             'min' => '',
             'max' => '',
             'return_format' => 'object',
-            'bidirectional' => 0,
+            // Relation bidirectionnelle vers Thematique.articles
+            // Voir : src/fieldGroups/thematique-relations.php (field_thematique_rel_articles)
+            'bidirectional' => 1,
+            'bidirectional_target' => [
+                0 => 'field_thematique_rel_articles',
+            ],
         ],
         [
             'key' => 'field_post_rel_auteurs',
@@ -53,14 +58,19 @@ acf_add_local_field_group([
             'min' => '',
             'max' => '',
             'return_format' => 'object',
-            'bidirectional' => 0,
+            // Relation bidirectionnelle vers Auteur.articles
+            // Voir : src/fieldGroups/auteur-relations.php (field_auteur_rel_articles)
+            'bidirectional' => 1,
+            'bidirectional_target' => [
+                0 => 'field_auteur_rel_articles',
+            ],
         ],
         [
             'key' => 'field_post_rel_numero',
             'label' => 'Numero',
             'name' => 'numero',
             'type' => 'post_object',
-            'instructions' => 'Numero dans lequel cet article est publie.',
+            'instructions' => 'Numero dans lequel cet article est publie. Renseigne automatiquement le sommaire du numero.',
             'required' => 0,
             'post_type' => [
                 0 => 'numero',
@@ -70,7 +80,12 @@ acf_add_local_field_group([
             'multiple' => 0,
             'ui' => 1,
             'return_format' => 'object',
-            'bidirectional' => 0,
+            // Relation bidirectionnelle vers Numero.articles
+            // Voir : src/fieldGroups/numero-relations.php (field_numero_rel_articles)
+            'bidirectional' => 1,
+            'bidirectional_target' => [
+                0 => 'field_numero_rel_articles',
+            ],
         ],
     ],
     'location' => [

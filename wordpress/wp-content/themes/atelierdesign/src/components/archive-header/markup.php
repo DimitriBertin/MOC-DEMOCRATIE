@@ -47,7 +47,7 @@ $filter_data = get_filter_terms_with_counts($current_post_type, $current_filters
   <div class="container">
     
     <!-- Header with Title and Filters -->
-    <div class="header-top flex @sm:flex-col @md/lg:flex-row justify-between items-start @md/lg:items-center @sm:gap-6 @md/lg:gap-8 @sm:mb-5 @md/lg:mb-12">
+    <div class="header-top flex flex-col items-start @sm:gap-6 @md/lg:gap-8 @sm:mb-5 @md/lg:mb-12">
       
       <!-- Title -->
       <h1 class="archive-title text-yellow text-display autoscale">

@@ -511,16 +511,21 @@ ul,ol {
  }
 
 .home-featured-numero {
+
   .numero-card ,
   .numero-card  a {
     @apply md:h-full
   }
 
+  .numero-card  {
+    @apply @sm:rounded-xl @md/lg:rounded-xl
+  }
+
   .numero-card  .post-image {
-    @apply md:flex-none;
+    @apply md:flex-none @sm:h-[180px] @md/lg:h-[434px] rounded-b-none;
   }
   .numero-card  .post-content {
-    @apply md:flex-auto md:h-full md:justify-center;
+    @apply md:flex-auto md:h-full md:justify-center bg-white @@:px-[30px] @@:py-[20px];
   }
 
 }
