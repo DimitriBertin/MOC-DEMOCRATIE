@@ -59,7 +59,7 @@ $news_query_args = [
 if (!empty($section['news_category'])) {
   $news_query_args['tax_query'] = [
     [
-      'taxonomy' => 'category_enjeu',
+      'taxonomy' => 'category',
       'field' => 'slug',
       'terms' => $section['news_category'],
     ],

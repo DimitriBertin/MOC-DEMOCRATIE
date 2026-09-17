@@ -8,9 +8,23 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Register Custom Post Types
+ * LEGACY POST TYPES
+ *
+ * Le backoffice ne gere plus que : Articles, Thematiques, Auteur-rices, Numeros.
+ * Les types Evenement / Document / Campagne / Emploi ne sont plus enregistres,
+ * mais leurs definitions sont conservees ci-dessous pour reference.
+ * Passer la constante a true pour les reactiver.
  */
-function register_custom_post_types() {
+if (!defined('AD_ENABLE_LEGACY_POST_TYPES')) {
+    define('AD_ENABLE_LEGACY_POST_TYPES', false);
+}
+
+function register_legacy_post_types() {
+
+    if (!AD_ENABLE_LEGACY_POST_TYPES) {
+        return;
+    }
+
     
     // Evenement CPT
     register_post_type('evenement', array(
@@ -145,37 +159,116 @@ function register_custom_post_types() {
     ));
 }
 
-add_action('init', 'register_custom_post_types');
+add_action('init', 'register_legacy_post_types');
+
 
 /**
- * Rename default 'post' post type to 'enjeu'
+ * Register Custom Post Types (actifs)
  */
-function rename_post_type_to_enjeu() {
-    global $wp_post_types;
-    
-    $labels = &$wp_post_types['post']->labels;
-    $labels->name = __('Enjeux', 'textdomain');
-    $labels->singular_name = __('Enjeu', 'textdomain');
-    $labels->menu_name = __('Enjeux', 'textdomain');
-    $labels->name_admin_bar = __('Enjeu', 'textdomain');
-    $labels->add_new = __('Ajouter nouveau', 'textdomain');
-    $labels->add_new_item = __('Ajouter un nouvel enjeu', 'textdomain');
-    $labels->new_item = __('Nouvel enjeu', 'textdomain');
-    $labels->edit_item = __('Modifier l\'enjeu', 'textdomain');
-    $labels->view_item = __('Voir l\'enjeu', 'textdomain');
-    $labels->all_items = __('Tous les enjeux', 'textdomain');
-    $labels->search_items = __('Rechercher des enjeux', 'textdomain');
-    $labels->not_found = __('Aucun enjeu trouvé.', 'textdomain');
-    $labels->not_found_in_trash = __('Aucun enjeu trouvé dans la corbeille.', 'textdomain');
-    
-    // Change the menu icon
-    $wp_post_types['post']->menu_icon = 'dashicons-lightbulb';
-    
-    // Update rewrite rules to use 'enjeux' slug
-    $wp_post_types['post']->rewrite = array('slug' => 'enjeux');
+function register_custom_post_types() {
+
+    // Thematique CPT (hierarchique : permet des sous-thematiques)
+    register_post_type('thematique', array(
+        'labels' => array(
+            'name' => __('Thematiques', 'textdomain'),
+            'singular_name' => __('Thematique', 'textdomain'),
+            'menu_name' => __('Thematiques', 'textdomain'),
+            'name_admin_bar' => __('Thematique', 'textdomain'),
+            'add_new' => __('Ajouter nouveau', 'textdomain'),
+            'add_new_item' => __('Ajouter une nouvelle thematique', 'textdomain'),
+            'new_item' => __('Nouvelle thematique', 'textdomain'),
+            'edit_item' => __('Modifier la thematique', 'textdomain'),
+            'view_item' => __('Voir la thematique', 'textdomain'),
+            'all_items' => __('Toutes les thematiques', 'textdomain'),
+            'search_items' => __('Rechercher des thematiques', 'textdomain'),
+            'parent_item' => __('Thematique parente', 'textdomain'),
+            'parent_item_colon' => __('Thematique parente :', 'textdomain'),
+            'not_found' => __('Aucune thematique trouvee.', 'textdomain'),
+            'not_found_in_trash' => __('Aucune thematique trouvee dans la corbeille.', 'textdomain'),
+        ),
+        'public' => true,
+        'publicly_queryable' => true,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'query_var' => true,
+        'rewrite' => array('slug' => 'thematiques', 'with_front' => false),
+        'capability_type' => 'post',
+        'has_archive' => true,
+        'hierarchical' => true,
+        'menu_position' => 6,
+        'menu_icon' => 'dashicons-category',
+        'supports' => array('title', 'editor', 'excerpt', 'thumbnail', 'custom-fields', 'page-attributes'),
+        'show_in_rest' => true,
+    ));
+
+    // Auteur / Autrice CPT
+    register_post_type('auteur', array(
+        'labels' => array(
+            'name' => __('Auteur-rices', 'textdomain'),
+            'singular_name' => __('Auteur-rice', 'textdomain'),
+            'menu_name' => __('Auteur-rices', 'textdomain'),
+            'name_admin_bar' => __('Auteur-rice', 'textdomain'),
+            'add_new' => __('Ajouter nouveau', 'textdomain'),
+            'add_new_item' => __('Ajouter un-e nouvel-le auteur-rice', 'textdomain'),
+            'new_item' => __('Nouvel-le auteur-rice', 'textdomain'),
+            'edit_item' => __('Modifier l\'auteur-rice', 'textdomain'),
+            'view_item' => __('Voir l\'auteur-rice', 'textdomain'),
+            'all_items' => __('Tous les auteur-rices', 'textdomain'),
+            'search_items' => __('Rechercher des auteur-rices', 'textdomain'),
+            'parent_item_colon' => __('Auteur-rices parents :', 'textdomain'),
+            'not_found' => __('Aucun-e auteur-rice trouve-e.', 'textdomain'),
+            'not_found_in_trash' => __('Aucun-e auteur-rice trouve-e dans la corbeille.', 'textdomain'),
+        ),
+        'public' => true,
+        'publicly_queryable' => true,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'query_var' => true,
+        'rewrite' => array('slug' => 'auteurs', 'with_front' => false),
+        'capability_type' => 'post',
+        'has_archive' => true,
+        'hierarchical' => false,
+        'menu_position' => 7,
+        'menu_icon' => 'dashicons-admin-users',
+        'supports' => array('title', 'editor', 'excerpt', 'thumbnail', 'custom-fields'),
+        'show_in_rest' => true,
+    ));
+
+    // Numero CPT
+    register_post_type('numero', array(
+        'labels' => array(
+            'name' => __('Numeros', 'textdomain'),
+            'singular_name' => __('Numero', 'textdomain'),
+            'menu_name' => __('Numeros', 'textdomain'),
+            'name_admin_bar' => __('Numero', 'textdomain'),
+            'add_new' => __('Ajouter nouveau', 'textdomain'),
+            'add_new_item' => __('Ajouter un nouveau numero', 'textdomain'),
+            'new_item' => __('Nouveau numero', 'textdomain'),
+            'edit_item' => __('Modifier le numero', 'textdomain'),
+            'view_item' => __('Voir le numero', 'textdomain'),
+            'all_items' => __('Tous les numeros', 'textdomain'),
+            'search_items' => __('Rechercher des numeros', 'textdomain'),
+            'parent_item_colon' => __('Numeros parents :', 'textdomain'),
+            'not_found' => __('Aucun numero trouve.', 'textdomain'),
+            'not_found_in_trash' => __('Aucun numero trouve dans la corbeille.', 'textdomain'),
+        ),
+        'public' => true,
+        'publicly_queryable' => true,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'query_var' => true,
+        'rewrite' => array('slug' => 'numeros', 'with_front' => false),
+        'capability_type' => 'post',
+        'has_archive' => true,
+        'hierarchical' => false,
+        'menu_position' => 8,
+        'menu_icon' => 'dashicons-book-alt',
+        'supports' => array('title', 'editor', 'excerpt', 'thumbnail', 'custom-fields'),
+        'show_in_rest' => true,
+    ));
 }
 
-add_action('init', 'rename_post_type_to_enjeu');
+add_action('init', 'register_custom_post_types');
 
 /**
  * Flush rewrite rules on theme activation

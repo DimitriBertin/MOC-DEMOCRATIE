@@ -9,6 +9,10 @@
 
 
 /* Keep any component-specific utilities light; rely on Tailwind classes in markup. */
+:root {
+  --color-mid-green: #234B51;
+}
+
 
 ul,ol {
   @apply text-[0px];
@@ -498,3 +502,35 @@ ul,ol {
   opacity: 0;
  }
  
+
+ .newsletter {
+  &-title {
+    @apply @md/lg:text-[38px] font-light;
+    font-family: Public Sans;
+  }
+ }
+
+.home-featured-numero {
+  .numero-card ,
+  .numero-card  a {
+    @apply md:h-full
+  }
+
+  .numero-card  .post-image {
+    @apply md:flex-none;
+  }
+  .numero-card  .post-content {
+    @apply md:flex-auto md:h-full md:justify-center;
+  }
+
+}
+
+
+.theme-card {
+  &:after {
+    @apply absolute inset-0;
+    background: linear-gradient(rgba(1, 46, 49, 0) 50%, rgba(1, 46, 49, 0.75));
+    content: "";
+
+  }
+}

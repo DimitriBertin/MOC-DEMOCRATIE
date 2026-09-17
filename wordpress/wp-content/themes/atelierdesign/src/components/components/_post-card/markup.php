@@ -34,25 +34,26 @@ if ($post_type == 'evenement' || $post_type == 'campagne') {
 
 // Get categories based on post type
 if ($post_type == 'document') {
-  $post_categories = get_the_terms(get_the_ID(), 'category_document');
+  $post_categories = ad_get_the_terms(get_the_ID(), 'category_document');
 } elseif ($post_type == 'post') {
-  $post_categories = get_the_terms(get_the_ID(), 'category_enjeu');
+  $post_categories = ad_get_the_terms(get_the_ID(), 'category');
 } elseif ($post_type == 'evenement') {
-  $post_categories = get_the_terms(get_the_ID(), 'category_evenement');
+  $post_categories = ad_get_the_terms(get_the_ID(), 'category_evenement');
 } elseif ($post_type == 'campagne') {
-  $post_categories = get_the_terms(get_the_ID(), 'category_campagne');
+  $post_categories = ad_get_the_terms(get_the_ID(), 'category_campagne');
 } elseif ($post_type == 'job') {
-  $post_categories = get_the_terms(get_the_ID(), 'category_job');
+  $post_categories = ad_get_the_terms(get_the_ID(), 'category_job');
 } else {
   $post_categories = false;
 }
 
+$post_tax_type = null;
+
 if ($post_type == 'post') {
-  $post_tax_type = get_the_terms(get_the_ID(), 'type_enjeu');
+  $post_tax_type = ad_get_the_term(get_the_ID(), 'type_enjeu');
 } elseif ($post_type == 'document') {
-  $post_tax_type = get_the_terms(get_the_ID(), 'type_document');
+  $post_tax_type = ad_get_the_term(get_the_ID(), 'type_document');
 }
-$post_tax_type = !empty($post_tax_type) ? $post_tax_type[0] : null;
 ?>
 
 <article class="post-card">
@@ -78,7 +79,9 @@ $post_tax_type = !empty($post_tax_type) ? $post_tax_type[0] : null;
           'loading' => 'lazy',
           'alt' => esc_attr($post_title)
         ]); ?>
-        <img src="<?php echo get_template_directory_uri(); ?>/src/assets/svg/<?php echo esc_attr($post_tax_type->slug); ?>.svg" class="@sm:w-[164px] @sm:h-[164px] @md/lg:w-[164px] @md/lg:h-[164px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" alt="<?php echo esc_attr($post_tax_type->name); ?>">
+        <?php if ($post_tax_type): ?>
+          <img src="<?php echo get_template_directory_uri(); ?>/src/assets/svg/<?php echo esc_attr($post_tax_type->slug); ?>.svg" class="@sm:w-[164px] @sm:h-[164px] @md/lg:w-[164px] @md/lg:h-[164px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" alt="<?php echo esc_attr($post_tax_type->name); ?>">
+        <?php endif; ?>
       <?php endif; ?>
     </div>
 

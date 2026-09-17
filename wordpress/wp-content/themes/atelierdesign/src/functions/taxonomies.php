@@ -8,9 +8,25 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Register Custom Taxonomies
+ * LEGACY TAXONOMIES
+ *
+ * Les taxonomies liees aux anciens types (enjeu / document / evenement /
+ * campagne / emploi) ainsi que la taxonomie "theme" ne sont plus enregistrees :
+ * les Thematiques sont desormais un CPT hierarchique et les Articles utilisent
+ * les taxonomies natives de WordPress.
+ * Les definitions sont conservees ci-dessous pour reference.
+ * Passer la constante a true pour les reactiver.
  */
+if (!defined('AD_ENABLE_LEGACY_TAXONOMIES')) {
+    define('AD_ENABLE_LEGACY_TAXONOMIES', false);
+}
+
 function register_custom_taxonomies() {
+
+    if (!AD_ENABLE_LEGACY_TAXONOMIES) {
+        return;
+    }
+
     
     // Type taxonomy for enjeu (post)
     register_taxonomy('type_enjeu', array('post'), array(
@@ -349,26 +365,28 @@ function register_custom_taxonomies() {
 add_action('init', 'register_custom_taxonomies');
 
 /**
- * Remove default category taxonomy from custom post types
- * Each post type now has its own category taxonomy
+ * Les Articles (ex. Enjeux) conservent les taxonomies natives de WordPress
+ * (Categories + Etiquettes). Les fonctions de nettoyage ci-dessous ne sont
+ * executees que si les taxonomies legacy sont reactivees.
  */
 function remove_default_category_from_custom_post_types() {
-    // Unregister default category from all CPTs - they now use their own category taxonomies
-    unregister_taxonomy_for_object_type('category', 'post'); // Uses category_enjeu
-    unregister_taxonomy_for_object_type('category', 'evenement'); // Uses category_evenement
-    unregister_taxonomy_for_object_type('category', 'campagne'); // Uses category_campagne
-    // document already uses category_document
-    // job uses category_job
+    if (!AD_ENABLE_LEGACY_TAXONOMIES) {
+        return;
+    }
+
+    unregister_taxonomy_for_object_type('category', 'post');
+    unregister_taxonomy_for_object_type('category', 'evenement');
+    unregister_taxonomy_for_object_type('category', 'campagne');
 }
 
 add_action('init', 'remove_default_category_from_custom_post_types', 20);
 
-/**
- * Remove tags taxonomy from custom post types and renamed post type
- */
 function remove_tags_from_custom_post_types() {
-    // Unregister post_tag from custom post types and the renamed 'post' type
-    unregister_taxonomy_for_object_type('post_tag', 'post'); // This is our renamed 'enjeu'
+    if (!AD_ENABLE_LEGACY_TAXONOMIES) {
+        return;
+    }
+
+    unregister_taxonomy_for_object_type('post_tag', 'post');
     unregister_taxonomy_for_object_type('post_tag', 'evenement');
     unregister_taxonomy_for_object_type('post_tag', 'document');
     unregister_taxonomy_for_object_type('post_tag', 'campagne');

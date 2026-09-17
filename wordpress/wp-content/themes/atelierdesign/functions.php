@@ -5,6 +5,22 @@
  */
 
 // Core functions & styles
+function display_errors($flag = false) {
+  if ($flag) {
+    @ini_set('display_errors', 1);
+    @ini_set('display_startup_errors', 1);
+    @error_reporting(E_ALL);
+
+    add_action('init', function() {
+      ini_set('display_errors', 1);
+      error_reporting(E_ALL);
+    });
+  }
+}
+
+// display_errors(true);
+
+
 require_once 'ad-ui/wp/init.php';
 
 $adwp = new ADWP([
@@ -80,6 +96,8 @@ add_action('wp_enqueue_scripts', 'enqueue_theme_assets');
 foreach (glob(__DIR__ . '/src/functions/*.php') as $file) {
   require_once $file;
 }
+
+
 
 // Require hero helpers
 require_once get_template_directory() . '/src/components/hero/helpers.php';
@@ -256,3 +274,4 @@ add_shortcode( 'ancre', function ( $atts ) {
       $class ? ' ' . $class : ''
   );
 } );
+

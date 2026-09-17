@@ -8,7 +8,7 @@
 $title = $args['title'] ?? 'Offres d\'emplois';
 
 // Get all federations for filtering
-$federations = get_terms([
+$federations = ad_get_terms([
     'taxonomy' => 'federation',
     'hide_empty' => false,
 ]);
@@ -81,7 +81,7 @@ $jobs_query = new WP_Query([
                         <?php 
                         while ($jobs_query->have_posts()) : $jobs_query->the_post(); 
                             // Get job federations
-                            $job_federations = get_the_terms(get_the_ID(), 'federation');
+                            $job_federations = ad_get_the_terms(get_the_ID(), 'federation');
                             $federation_classes = '';
                             if ($job_federations && !is_wp_error($job_federations)) {
                                 $federation_slugs = array_map(function($term) {

@@ -10,69 +10,94 @@ acf_add_local_field_group([
   'key' => 'field-group-template-home',
   'title' => 'Home Template',
   'fields' => [
-    // Hero section
+
+  
+
+    // Thematiques a la une
     [
-      'key' => 'field-home-hero-tab',
-      'label' => 'Hero',
+      'key' => 'field-home-thematique-tab',
+      'label' => 'Thematique',
       'type' => 'tab',
       'no_preference' => 0,
     ],
     [
-      'key' => 'field-home-group-hero',
-      'label' => '',
-      'name' => 'hero',
-      'type' => 'group',
-      'sub_fields' => [
-        [
-          'key' => 'field-home-clone-fieldgroup-hero',
-          'label' => 'Hero',
-          'name' => 'hero',
-          'type' => 'clone',
-          'clone' => [
-            0 => 'field-group-hero',
-          ],
-        ],
+      'key' => 'field-home-thematiques-featured',
+      'label' => 'Thematiques a la une',
+      'name' => 'thematiques_featured',
+      'type' => 'relationship',
+      'instructions' => 'Selectionner 4 thematiques a mettre en avant. L\'ordre de selection est conserve (glisser-deposer pour reordonner).',
+      'required' => 0,
+      'post_type' => ['thematique',],
+      'taxonomy' => [],
+      'filters' => [
+        0 => 'search',
       ],
+      'elements' => [],
+      'min' => 4,
+      'max' => 4,
+      'return_format' => 'object',
+      'bidirectional' => 0,
     ],
 
-    // Services Cards section
     [
-      'key' => 'field-home-services-cards-tab',
-      'label' => 'Services Cards',
+      'key' => 'field-home-inscription-tab',
+      'label' => 'Inscription',
       'type' => 'tab',
       'no_preference' => 0,
     ],
+
     [
-      'key' => 'field-home-group-services-cards',
-      'label' => '',
-      'name' => 'services_cards',
+      'key' => 'field-home-press-review-group',
+      'label' => 'Inscription',
       'type' => 'group',
+      'name' => 'press-review',
       'sub_fields' => [
         [
-          'key' => 'field-home-clone-services-cards',
-          'label' => 'Services Cards',
-          'name' => 'cards_group',
-          'type' => 'clone',
-          'clone' => [
-            0 => 'field-group-services-cards',
+          'key' => 'field-home-thematiques-other',
+          'label' => 'Autres Thematiques',
+          'name' => 'thematiques_other',
+          'type' => 'relationship',
+          'instructions' => 'Selectionner 2 thematiques a mettre en avant. L\'ordre de selection est conserve (glisser-deposer pour reordonner).',
+          'required' => 0,
+          'post_type' => ['post'],
+          'taxonomy' => [],
+          'filters' => [
+            0 => 'search',
           ],
-          'display' => 'seamless',
-          'layout' => 'block',
+          'elements' => [],
+          'min' => 2,
+          'max' => 2,
+          'return_format' => 'object',
+          'bidirectional' => 0,
         ],
-      ],
+        [
+          'key' => 'field-home-press-review-label-bloc',
+          'label' => 'Label',
+          'type' => 'text',
+          'name' => 'text'
+        ],
+        [
+          'key' => 'field-home-press-review-link-bloc',
+          'label' => 'CTA lien',
+          'type' => 'link',
+          'name' => 'link',
+        ],
+      ]
     ],
+
+    
 
     // Flexible Content 1 Section (after Services Cards)
     [
-      'key' => 'field-home-flexible-1-tab',
-      'label' => 'Flexible Content 1',
+      'key' => 'field-home-flexible-tab',
+      'label' => 'Flexible Content',
       'type' => 'tab',
       'no_preference' => 0,
     ],
     [
-      'key' => 'field-home-flexible-layout-1',
-      'label' => 'Flexible Layout 1',
-      'name' => 'flexible-layout-1',
+      'key' => 'field-home-flexible-layout',
+      'label' => 'Flexible Layout',
+      'name' => 'flexible-layout',
       'type' => 'flexible_content',
       'acfe_flexible_async' => [
         0 => 'layout',
@@ -88,58 +113,7 @@ acf_add_local_field_group([
       'acfe_flexible_layouts_settings' => 1,
     ],
 
-    // News & Events Section
-    [
-      'key' => 'field-home-news-events-tab',
-      'label' => 'News & Events',
-      'type' => 'tab',
-      'no_preference' => 0,
-    ],
-    [
-      'key' => 'field-home-group-news-events',
-      'label' => '',
-      'name' => 'news_events',
-      'type' => 'group',
-      'sub_fields' => [
-        [
-          'key' => 'field-home-clone-news-events',
-          'label' => 'News & Events',
-          'name' => 'news_events_group',
-          'type' => 'clone',
-          'clone' => [
-            0 => 'field-group-news-events',
-          ],
-          'display' => 'seamless',
-          'layout' => 'block',
-        ],
-      ],
-    ],
-
-    // Flexible Content 2 Section (after News & Events)
-    [
-      'key' => 'field-home-flexible-2-tab',
-      'label' => 'Flexible Content 2',
-      'type' => 'tab',
-      'no_preference' => 0,
-    ],
-    [
-      'key' => 'field-home-flexible-layout-2',
-      'label' => 'Flexible Layout 2',
-      'name' => 'flexible-layout-2',
-      'type' => 'flexible_content',
-      'acfe_flexible_async' => [
-        0 => 'layout',
-      ],
-      'acfe_flexible_add_actions' => [
-        0 => 'toggle',
-        1 => 'copy',
-      ],
-      'min' => 0,
-      'max' => '',
-      'layouts' => $adwp->get_block_layouts(),
-      'button_label' => 'Add section',
-      'acfe_flexible_layouts_settings' => 1,
-    ],
+   
   ],
   'location' => [
     [

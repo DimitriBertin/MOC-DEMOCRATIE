@@ -67,7 +67,7 @@ if ($post_type === 'post' && !empty($type_enjeu)) {
 // Add category filter based on post type
 if ($post_type === 'post' && !empty($category_filter_enjeu)) {
   $tax_query[] = [
-    'taxonomy' => 'category_enjeu',
+    'taxonomy' => 'category',
     'field'    => 'term_id',
     'terms'    => $category_filter_enjeu,
   ];
@@ -139,15 +139,15 @@ $related_posts = get_posts($query_args);
             // Get categories based on post type
             $current_post_type = get_post_type($post_id);
             if ($current_post_type === 'document') {
-              $post_categories = get_the_terms($post_id, 'category_document');
+              $post_categories = ad_get_the_terms($post_id, 'category_document');
             } elseif ($current_post_type === 'post') {
-              $post_categories = get_the_terms($post_id, 'category_enjeu');
+              $post_categories = ad_get_the_terms($post_id, 'category');
             } elseif ($current_post_type === 'evenement') {
-              $post_categories = get_the_terms($post_id, 'category_evenement');
+              $post_categories = ad_get_the_terms($post_id, 'category_evenement');
             } elseif ($current_post_type === 'campagne') {
-              $post_categories = get_the_terms($post_id, 'category_campagne');
+              $post_categories = ad_get_the_terms($post_id, 'category_campagne');
             } elseif ($current_post_type === 'job') {
-              $post_categories = get_the_terms($post_id, 'category_job');
+              $post_categories = ad_get_the_terms($post_id, 'category_job');
             } else {
               $post_categories = false;
             }

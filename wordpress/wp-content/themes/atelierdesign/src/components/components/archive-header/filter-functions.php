@@ -22,7 +22,7 @@ function get_archive_filter_taxonomies($post_type) {
     $taxonomy_map = [
         'post' => [
             'types' => 'type_enjeu',
-            'categories' => 'category_enjeu',
+            'categories' => 'category',
             'themes' => 'theme'
         ],
         'document' => [
@@ -56,7 +56,7 @@ function get_filter_terms_with_counts($post_type, $current_filters = []) {
     $filter_data = [];
     
     foreach ($available_taxonomies as $filter_type => $taxonomy) {
-        $terms = get_terms([
+        $terms = ad_get_terms([
             'taxonomy' => $taxonomy,
             'hide_empty' => false,
             'orderby' => 'name',

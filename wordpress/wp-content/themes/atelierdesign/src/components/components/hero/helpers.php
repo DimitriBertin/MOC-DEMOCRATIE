@@ -120,7 +120,7 @@ function get_hero_taxonomy_badges($template_type = null, $post_id = null) {
     switch ($template_type) {
         case 'single-campagne':
             // Get categories for campaigns
-            $categories = get_the_terms($post_id, 'category_campagne');
+            $categories = ad_get_the_terms($post_id, 'category_campagne');
             if ($categories && !is_wp_error($categories)) {
                 foreach ($categories as $category) {
                     $badges[] = [
@@ -132,7 +132,7 @@ function get_hero_taxonomy_badges($template_type = null, $post_id = null) {
             break;
         case 'single-evenement':
             // Get categories for campaigns
-            $categories = get_the_terms($post_id, 'category_evenement');
+            $categories = ad_get_the_terms($post_id, 'category_evenement');
             if ($categories && !is_wp_error($categories)) {
                 foreach ($categories as $category) {
                     $badges[] = [
@@ -143,7 +143,7 @@ function get_hero_taxonomy_badges($template_type = null, $post_id = null) {
             }
             break;
         case 'single-job':
-            $federation_terms = get_the_terms($post_id, 'federation');
+            $federation_terms = ad_get_the_terms($post_id, 'federation');
             if ($federation_terms && !is_wp_error($federation_terms)) {
                 foreach ($federation_terms as $federation) {
                     $badges[] = [
@@ -164,7 +164,7 @@ function get_hero_taxonomy_badges($template_type = null, $post_id = null) {
             }
             
             if ($type_taxonomy) {
-                $types = get_the_terms($post_id, $type_taxonomy);
+                $types = ad_get_the_terms($post_id, $type_taxonomy);
                 if ($types && !is_wp_error($types)) {
                     foreach ($types as $type) {
                         $badges[] = [
@@ -176,7 +176,7 @@ function get_hero_taxonomy_badges($template_type = null, $post_id = null) {
             }
 
             // Get categories
-            $categories = get_the_terms($post_id, 'category');
+            $categories = ad_get_the_terms($post_id, 'category');
             if ($categories && !is_wp_error($categories)) {
                 foreach ($categories as $category) {
                     $badges[] = [
@@ -188,7 +188,7 @@ function get_hero_taxonomy_badges($template_type = null, $post_id = null) {
 
             // Get themes (only for post and document)
             if (in_array($template_type, ['single-post', 'single-document'])) {
-                $themes = get_the_terms($post_id, 'theme');
+                $themes = ad_get_the_terms($post_id, 'theme');
                 if ($themes && !is_wp_error($themes)) {
                     foreach ($themes as $theme) {
                         $badges[] = [
