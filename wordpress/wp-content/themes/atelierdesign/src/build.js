@@ -19,6 +19,7 @@ window.SwiperNavigation = Navigation;
 
 import "./scripts/lenis.js";
 import './components/header/header.js';
+import './components/search/search.js';
 import './components/contact-others/contact-others.js';
 
 

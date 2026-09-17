@@ -539,3 +539,105 @@ ul,ol {
 
   }
 }
+
+/**
+  SEARCH — modale + page de résultats
+**/
+
+.search-header-btn {
+  svg {
+    @apply flex-shrink-0;
+  }
+}
+
+.search-modal {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+
+  &.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  &-close {
+    @apply absolute @sm:top-6 @md/lg:top-10 @sm:right-5 @md/lg:right-10 @sm:w-10 @sm:h-10 @md/lg:w-12 @md/lg:h-12 flex items-center justify-center rounded-full border border-white/40 text-white transition-opacity duration-200;
+    background: transparent;
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    svg {
+      @apply @sm:w-4 @sm:h-4 @md/lg:w-4 @md/lg:h-4;
+    }
+  }
+
+  &-form {
+    @apply w-full flex items-center @sm:gap-3 @md/lg:gap-4 relative @sm:pb-3 @md/lg:pb-4;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+
+    textarea {
+      @apply flex-1 bg-transparent border-0 text-white;
+      outline: none;
+      resize: none;
+      overflow: hidden;
+      line-height: 1.15;
+
+      &::placeholder {
+        @apply text-white;
+        opacity: 0.5;
+      }
+    }
+
+    button svg {
+      @apply @sm:w-6 @sm:h-6 @md/lg:w-8 @md/lg:h-8 flex-shrink-0 text-yellow transition-opacity duration-300;
+    }
+
+    button:hover svg {
+      opacity: 0.7;
+    }
+  }
+}
+
+.search-results-page-form {
+  @apply w-full flex items-center @sm:gap-3 @md/lg:gap-4 border-b border-dark-green @sm:pb-3 @md/lg:pb-5;
+
+  textarea {
+    @apply flex-1 bg-transparent border-0 text-dark-green;
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    line-height: 1.15;
+
+    &::placeholder {
+      @apply text-dark-green;
+      opacity: 0.4;
+    }
+  }
+
+  button svg {
+    @apply @sm:w-6 @sm:h-6 @md/lg:w-8 @md/lg:h-8 flex-shrink-0 text-dark-green transition-opacity duration-300;
+  }
+
+  button:hover svg {
+    opacity: 0.6;
+  }
+}
+
+.search-result-item {
+  @apply h-full;
+
+  &-link {
+    @apply flex flex-col justify-between h-full @sm:gap-6 @md/lg:gap-8 @sm:p-5 @md/lg:p-6 @sm:rounded-xl @md/lg:rounded-xl bg-light-green-70 transition-colors duration-300;
+
+    &:hover {
+      @apply bg-yellow;
+    }
+  }
+
+  &-title {
+    @apply transition-opacity duration-200;
+  }
+}

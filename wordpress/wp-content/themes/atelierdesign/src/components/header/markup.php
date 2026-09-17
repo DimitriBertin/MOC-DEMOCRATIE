@@ -2,7 +2,7 @@
 $logo = get_field('logo', 'acf-options-global-fields');
 $logo_contrasted = get_field('logo_contrasted', 'acf-options-global-fields');
 
-$header_alt = (is_archive() || is_home()) ? 'header-alt' : '';
+$header_alt = (is_archive() || is_home() || is_search()) ? 'header-alt' : '';
 ?>
 
 <header class="site-header autoscale group fixed w-full z-50 transition-all [.scroll-hide&]:-translate-y-full [.scrolling&]:bg-white <?php echo $header_alt; ?>">
@@ -23,7 +23,20 @@ $header_alt = (is_archive() || is_home()) ? 'header-alt' : '';
       </a>
     <?php endif; ?>
     
-    <button 
+    <div class="flex items-stretch">
+      <button
+        type="button"
+        class="search-mobile-btn flex items-center justify-center text-white @sm:px-4 group-[&.scrolling:not(.menu-open)]:text-dark-green group-[&.header-alt:not(.menu-open)]:text-dark-green group-[&.menu-open]:!text-white transition-colors"
+        js-search-open
+        aria-label="Ouvrir la recherche"
+      >
+        <svg class="@sm:w-5 @sm:h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10.5" cy="10.5" r="7.5"/>
+          <path d="M16 16L21 21"/>
+        </svg>
+      </button>
+
+      <button 
       class="mobile-menu-toggle bg-light-green flex items-center @sm:gap-2 @sm:px-5"
       aria-label="Toggle menu"
       aria-expanded="false"
@@ -35,6 +48,7 @@ $header_alt = (is_archive() || is_home()) ? 'header-alt' : '';
         <span class="@sm:w-5 @sm:h-[1px] bg-dark-green block transition-transform group-[&.menu-open]:rotate-45 @sm:group-[&.menu-open]:-translate-y-[7px]"></span>
       </div>
     </button>
+    </div>
   </div>
 
   <!-- Mobile Menu Overlay (hidden by default, shown with JS) -->
@@ -154,31 +168,6 @@ $header_alt = (is_archive() || is_home()) ? 'header-alt' : '';
         ]);
         ?>
       </div>
-      <!-- Separator -->
-      <div class="separator border-t border-[#fff]/20 w-full"></div>
-      <!-- Mobile Secondary Menu -->
-      <div class="mobile-secondary">
-        <?php
-        wp_nav_menu([
-          'theme_location' => 'secondary-menu',
-          'menu_class' => 'mobile-secondary-menu flex flex-col gap-4 list-none m-0 p-0',
-          'container' => false,
-          'fallback_cb' => false,
-          'walker' => new class extends Walker_Nav_Menu {
-            function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
-              $classes = empty($item->classes) ? [] : (array) $item->classes;
-              $li_class = $classes ? implode(' ', $classes) : 'menu-item';
-              $output .= '<li class="' . $li_class . ' group/item">';
-              $output .= '<a href="' . esc_url($item->url) . '" class="text-white menu hover:text-yellow group-[.current-menu-item]/item:text-yellow  transition-colors">';
-              $output .= esc_html($item->title);
-              $output .= '</a>';
-              $output .= '</li>';
-            }
-          }
-        ]);
-        ?>
-      </div>
-
       <!-- Mobile CTA Menu -->
       <div class="mobile-cta absolute w-full bottom-0 left-0">
         <?php
@@ -233,65 +222,22 @@ $header_alt = (is_archive() || is_home()) ? 'header-alt' : '';
       </a>
     <?php endif; ?>
     <div class="flex-1 flex flex-col">
-    <!-- Top Bar: Primary Menu + CTA -->
+    <!-- Top Bar: Search + CTA -->
     <div class="top-bar bg-light-green flex justify-end items-center @md/lg:gap-8 w-full">
-        <?php
-        wp_nav_menu([
-          'theme_location' => 'primary-menu',
-          'menu_id' => 'primary-menu',
-          'menu_class' => 'primary-menu flex items-center @md/lg:gap-9 list-none m-0 p-0',
-          'container' => false,
-          'fallback_cb' => false,
-          'walker' => new class extends Walker_Nav_Menu {
-            function start_lvl(&$output, $depth = 0, $args = null) {
-              $output .= '<ul class="sub-menu z-10 absolute flex flex-col @md/lg:gap-2 top-full @md/lg:-left-6 bg-white @sm:rounded-xl @md/lg:rounded-xl hidden @md/lg:p-2 @md/lg:min-w-[250px]" style="box-shadow: 0 0 20px 0 rgba(13, 53, 88, 0.15);">';
-            }
-            
-            function end_lvl(&$output, $depth = 0, $args = null) {
-              $output .= '</ul>';
-            }
-            
-            function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
-              $classes = empty($item->classes) ? [] : (array) $item->classes;
-              $has_children = in_array('menu-item-has-children', $classes);
-              
-              $li_class = $classes ? implode(' ', $classes) : 'menu-item';
-              if ($depth === 0) {
-                $li_class .= ' flex items-center gap-2';
-                if ($has_children) {
-                  $li_class .= ' relative submenu-parent group/item @md/lg:py-3';
-                }
-              } else {
-                $li_class .= ' @md/lg:p-2 hover:bg-yellow [.current-menu-item:not(:hover)&]:bg-light-green transition-colors @md/lg:rounded-[10px]';
-              }
-              
-              $output .= '<li class="' . $li_class . '">';
-              
-              if ($depth === 0) {
-                $output .= '<a href="' . esc_url($item->url) . '" class="menu-link menu inline-flex !leading-tight text-dark-green hover:opacity-80 group-[.current-menu-ancestor]/item:opacity-80 transition-opacity">';
-                $output .= esc_html($item->title);
-                $output .= '</a>';
-                
-                if ($has_children) {
-                  $output .= '<button class="submenu-toggle" aria-label="Toggle submenu for ' . esc_attr($item->title) . '">';
-                  $output .= '<svg class="@md/lg:w-[9.216px] @md/lg:h-[9.633px] transition-transform" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.590475 3.29129C0.931048 2.90639 1.53845 2.85438 1.94713 3.17513L5.18351 5.71513L8.41988 3.17513C8.82857 2.85438 9.43596 2.90639 9.77654 3.29129C10.1171 3.67619 10.0619 4.24823 9.6532 4.56898L5.80017 7.59295C5.44295 7.8733 4.92406 7.8733 4.56684 7.59295L0.713807 4.56898C0.305119 4.24823 0.249901 3.67619 0.590475 3.29129Z" fill="#012E31"/>
-                  </svg>';
-                  $output .= '</button>';
-                }
-              } else {
-                $output .= '<a href="' . esc_url($item->url) . '" class="menu inline-flex !leading-tight">';
-                $output .= esc_html($item->title);
-                $output .= '</a>';
-              }
-            }
-            
-            function end_el(&$output, $item, $depth = 0, $args = null) {
-              $output .= '</li>';
-            }
-          }
-        ]);
-        ?>
+
+      <!-- Search trigger -->
+      <button
+        type="button"
+        class="search-header-btn flex items-center @md/lg:gap-2 text-dark-green hover:opacity-80 transition-opacity"
+        js-search-open
+        aria-label="Ouvrir la recherche"
+      >
+        <svg class="@md/lg:w-[15px] @md/lg:h-[15px] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10.5" cy="10.5" r="7.5"/>
+          <path d="M16 16L21 21"/>
+        </svg>
+        <span class="menu inline-flex !leading-tight">Recherche</span>
+      </button>
 
       <!-- CTA Menu -->
         <?php
@@ -316,7 +262,7 @@ $header_alt = (is_archive() || is_home()) ? 'header-alt' : '';
         ?>
     </div>
 
-    <!-- Bottom Bar: Services + Secondary Menu -->
+    <!-- Bottom Bar: Services + Primary Menu -->
     <div class="bottom-bar flex justify-between flex-1">
       <!-- Services Menu with separators -->
           <?php
@@ -377,28 +323,68 @@ $header_alt = (is_archive() || is_home()) ? 'header-alt' : '';
           ]);
           ?>
 
-      <!-- Secondary Menu -->
+      <!-- Primary Menu -->
         <?php
         wp_nav_menu([
-          'theme_location' => 'secondary-menu',
-          'menu_id' => 'secondary-menu',
-          'menu_class' => 'secondary-menu flex items-center @md/lg:gap-6 list-none @md/lg:px-6',
+          'theme_location' => 'primary-menu',
+          'menu_id' => 'primary-menu',
+          'menu_class' => 'primary-menu flex items-center @md/lg:gap-9 list-none m-0 @md/lg:px-6',
           'container' => false,
           'fallback_cb' => false,
           'walker' => new class extends Walker_Nav_Menu {
+            function start_lvl(&$output, $depth = 0, $args = null) {
+              $output .= '<ul class="sub-menu z-10 absolute flex flex-col @md/lg:gap-2 top-full @md/lg:-left-6 bg-white @sm:rounded-xl @md/lg:rounded-xl hidden @md/lg:p-2 @md/lg:min-w-[250px]" style="box-shadow: 0 0 20px 0 rgba(13, 53, 88, 0.15);">';
+            }
+            
+            function end_lvl(&$output, $depth = 0, $args = null) {
+              $output .= '</ul>';
+            }
+            
             function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
               $classes = empty($item->classes) ? [] : (array) $item->classes;
+              $has_children = in_array('menu-item-has-children', $classes);
+              
               $li_class = $classes ? implode(' ', $classes) : 'menu-item';
-              $output .= '<li class="group ' . $li_class . '">';
-              $output .= '<a href="' . esc_url($item->url) . '" class="menu-link menu inline-flex !leading-loose text-white hover:opacity-80 transition-all group-[&.header-alt]:text-dark-green group-[&.scrolling]:text-dark-green group-[.current-menu-item]:border-b-4 border-yellow">';
-              $output .= esc_html($item->title);
-              $output .= '</a>';
+              if ($depth === 0) {
+                $li_class .= ' flex items-center gap-2';
+                if ($has_children) {
+                  $li_class .= ' relative submenu-parent group/item @md/lg:py-3';
+                }
+              } else {
+                $li_class .= ' @md/lg:p-2 hover:bg-yellow [.current-menu-item:not(:hover)&]:bg-light-green transition-colors @md/lg:rounded-[10px]';
+              }
+              
+              $output .= '<li class="' . $li_class . '">';
+              
+              if ($depth === 0) {
+                $output .= '<a href="' . esc_url($item->url) . '" class="menu-link menu inline-flex !leading-tight text-dark-green hover:opacity-80 group-[.current-menu-ancestor]/item:opacity-80 transition-opacity">';
+                $output .= esc_html($item->title);
+                $output .= '</a>';
+                
+                if ($has_children) {
+                  $output .= '<button class="submenu-toggle" aria-label="Toggle submenu for ' . esc_attr($item->title) . '">';
+                  $output .= '<svg class="@md/lg:w-[9.216px] @md/lg:h-[9.633px] transition-transform" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.590475 3.29129C0.931048 2.90639 1.53845 2.85438 1.94713 3.17513L5.18351 5.71513L8.41988 3.17513C8.82857 2.85438 9.43596 2.90639 9.77654 3.29129C10.1171 3.67619 10.0619 4.24823 9.6532 4.56898L5.80017 7.59295C5.44295 7.8733 4.92406 7.8733 4.56684 7.59295L0.713807 4.56898C0.305119 4.24823 0.249901 3.67619 0.590475 3.29129Z" fill="#012E31"/>
+                  </svg>';
+                  $output .= '</button>';
+                }
+              } else {
+                $output .= '<a href="' . esc_url($item->url) . '" class="menu inline-flex !leading-tight">';
+                $output .= esc_html($item->title);
+                $output .= '</a>';
+              }
+            }
+            
+            function end_el(&$output, $item, $depth = 0, $args = null) {
               $output .= '</li>';
             }
           }
         ]);
         ?>
+
       </div>
     </div>
   </div>
 </header>
+
+<?php get_template_part('src/components/search/markup', 'search'); ?>
