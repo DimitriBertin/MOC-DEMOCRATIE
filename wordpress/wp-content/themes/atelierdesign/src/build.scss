@@ -641,3 +641,17 @@ ul,ol {
     @apply transition-opacity duration-200;
   }
 }
+
+// Loupe mobile : dark-green par défaut, blanche quand le menu est ouvert
+.search-mobile-btn {
+  @apply text-dark-green;
+
+  svg {
+    stroke: currentColor;
+    color: currentColor;
+  }
+}
+
+.site-header.menu-open .search-mobile-btn {
+  @apply text-white;
+}

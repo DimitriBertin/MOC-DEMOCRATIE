@@ -26,7 +26,7 @@ $header_alt = (is_archive() || is_home() || is_search()) ? 'header-alt' : '';
     <div class="flex items-stretch">
       <button
         type="button"
-        class="search-mobile-btn flex items-center justify-center text-white @sm:px-4 group-[&.scrolling:not(.menu-open)]:text-dark-green group-[&.header-alt:not(.menu-open)]:text-dark-green group-[&.menu-open]:!text-white transition-colors"
+        class="search-mobile-btn flex items-center justify-center text-dark-green @sm:px-4 group-[&.menu-open]:!text-white transition-colors"
         js-search-open
         aria-label="Ouvrir la recherche"
       >
@@ -56,63 +56,6 @@ $header_alt = (is_archive() || is_home() || is_search()) ? 'header-alt' : '';
 
     <nav class="mobile-menus flex flex-col @sm:gap-6 h-full overflow-y-auto  @sm:px-5 @sm:pt-[130px] @sm:pb-[115px]">
 
-      <!-- Mobile Services Menu -->
-      <div class="mobile-services">
-        <?php
-        wp_nav_menu([
-          'theme_location' => 'services-menu',
-          'menu_class' => 'mobile-services-menu flex flex-col gap-4 list-none m-0 p-0',
-          'container' => false,
-          'fallback_cb' => false,
-          'walker' => new class extends Walker_Nav_Menu {
-            function start_lvl(&$output, $depth = 0, $args = null) {
-              $output .= '<ul class="mobile-sub-menu @sm:mt-3 @sm:p-5 flex flex-col @sm:gap-4 @sm:rounded-xl @md/lg:rounded-xl hidden bg-[#D4E8F8]/10">';
-            }
-            
-            function end_lvl(&$output, $depth = 0, $args = null) {
-              $output .= '</ul>';
-            }
-            
-            function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
-              $classes = empty($item->classes) ? [] : (array) $item->classes;
-              $has_children = in_array('menu-item-has-children', $classes);
-              
-              $li_class = $classes ? implode(' ', $classes) : 'menu-item';
-              if ($depth === 0 && $has_children) {
-                $li_class .= ' mobile-submenu-parent';
-              }
-              
-              $output .= '<li class="' . $li_class . ' group/item">';
-              
-              if ($depth === 0) {
-                if ($has_children) {
-                  $output .= '<button class="mobile-submenu-toggle w-full text-left flex items-center justify-between text-white menu hover:text-yellow transition-colors">';
-                  $output .= esc_html($item->title);
-                  $output .= '<svg class="@sm:w-4 @sm:h-4 transition-transform" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.590475 3.29129C0.931048 2.90639 1.53845 2.85438 1.94713 3.17513L5.18351 5.71513L8.41988 3.17513C8.82857 2.85438 9.43596 2.90639 9.77654 3.29129C10.1171 3.67619 10.0619 4.24823 9.6532 4.56898L5.80017 7.59295C5.44295 7.8733 4.92406 7.8733 4.56684 7.59295L0.713807 4.56898C0.305119 4.24823 0.249901 3.67619 0.590475 3.29129Z" fill="white"/>
-                  </svg>';
-                  $output .= '</button>';
-                } else {
-                  $output .= '<a href="' . esc_url($item->url) . '" class="menu-link menu text-white hover:text-yellow group-[.current-menu-item]/item:text-yellow transition-colors">';
-                  $output .= esc_html($item->title);
-                  $output .= '</a>';
-                }
-              } else {
-                $output .= '<a href="' . esc_url($item->url) . '" class="block font-safiro font-medium @sm:text-[16px]/normal @sm:tracking-[0.8px] text-white hover:text-yellow group-[.current-menu-item]/item:text-yellow  transition-colors">';
-                $output .= esc_html($item->title);
-                $output .= '</a>';
-              }
-            }
-            
-            function end_el(&$output, $item, $depth = 0, $args = null) {
-              $output .= '</li>';
-            }
-          }
-        ]);
-        ?>
-      </div>
-      <!-- Separator -->
-      <div class="separator border-t border-[#fff]/20 w-full"></div>
       <!-- Mobile Primary Menu -->
       <div class="mobile-primary">
         <?php
@@ -151,6 +94,63 @@ $header_alt = (is_archive() || is_home() || is_search()) ? 'header-alt' : '';
                   $output .= '</button>';
                 } else {
                   $output .= '<a href="' . esc_url($item->url) . '" class="menu-link menu text-white hover:text-yellow group-[.current-menu-item]/item:text-yellow  transition-colors">';
+                  $output .= esc_html($item->title);
+                  $output .= '</a>';
+                }
+              } else {
+                $output .= '<a href="' . esc_url($item->url) . '" class="block font-safiro font-medium @sm:text-[16px]/normal @sm:tracking-[0.8px] text-white hover:text-yellow group-[.current-menu-item]/item:text-yellow  transition-colors">';
+                $output .= esc_html($item->title);
+                $output .= '</a>';
+              }
+            }
+            
+            function end_el(&$output, $item, $depth = 0, $args = null) {
+              $output .= '</li>';
+            }
+          }
+        ]);
+        ?>
+      </div>
+      <!-- Separator -->
+      <div class="separator border-t border-[#fff]/20 w-full"></div>
+      <!-- Mobile Services Menu -->
+      <div class="mobile-services">
+        <?php
+        wp_nav_menu([
+          'theme_location' => 'services-menu',
+          'menu_class' => 'mobile-services-menu flex flex-col gap-4 list-none m-0 p-0',
+          'container' => false,
+          'fallback_cb' => false,
+          'walker' => new class extends Walker_Nav_Menu {
+            function start_lvl(&$output, $depth = 0, $args = null) {
+              $output .= '<ul class="mobile-sub-menu @sm:mt-3 @sm:p-5 flex flex-col @sm:gap-4 @sm:rounded-xl @md/lg:rounded-xl hidden bg-[#D4E8F8]/10">';
+            }
+            
+            function end_lvl(&$output, $depth = 0, $args = null) {
+              $output .= '</ul>';
+            }
+            
+            function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
+              $classes = empty($item->classes) ? [] : (array) $item->classes;
+              $has_children = in_array('menu-item-has-children', $classes);
+              
+              $li_class = $classes ? implode(' ', $classes) : 'menu-item';
+              if ($depth === 0 && $has_children) {
+                $li_class .= ' mobile-submenu-parent';
+              }
+              
+              $output .= '<li class="' . $li_class . ' group/item">';
+              
+              if ($depth === 0) {
+                if ($has_children) {
+                  $output .= '<button class="mobile-submenu-toggle w-full text-left flex items-center justify-between text-white menu hover:text-yellow transition-colors">';
+                  $output .= esc_html($item->title);
+                  $output .= '<svg class="@sm:w-4 @sm:h-4 transition-transform" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.590475 3.29129C0.931048 2.90639 1.53845 2.85438 1.94713 3.17513L5.18351 5.71513L8.41988 3.17513C8.82857 2.85438 9.43596 2.90639 9.77654 3.29129C10.1171 3.67619 10.0619 4.24823 9.6532 4.56898L5.80017 7.59295C5.44295 7.8733 4.92406 7.8733 4.56684 7.59295L0.713807 4.56898C0.305119 4.24823 0.249901 3.67619 0.590475 3.29129Z" fill="white"/>
+                  </svg>';
+                  $output .= '</button>';
+                } else {
+                  $output .= '<a href="' . esc_url($item->url) . '" class="menu-link menu text-white hover:text-yellow group-[.current-menu-item]/item:text-yellow transition-colors">';
                   $output .= esc_html($item->title);
                   $output .= '</a>';
                 }
