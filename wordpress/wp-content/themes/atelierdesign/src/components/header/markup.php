@@ -13,12 +13,12 @@ $header_alt = (is_archive() || is_home() || is_search()) ? 'header-alt' : '';
         <img 
           src="<?php echo esc_url($logo['url']); ?>" 
           alt="<?php echo esc_attr($logo['alt'] ?: get_bloginfo('name')); ?>"
-          class="@sm:h-10 w-auto group-[&.scrolling]:opacity-0 group-[&.header-alt]:opacity-0 group-[&.menu-open]:!opacity-100 transition-opacity"
+          class="@sm:max-w-[180px] md:max-w-none @sm:h-10 w-auto group-[&.scrolling]:opacity-0 group-[&.header-alt]:opacity-0 group-[&.menu-open]:!opacity-100 transition-opacity"
         />
         <img 
           src="<?php echo esc_url($logo_contrasted['url']); ?>" 
           alt="<?php echo esc_attr($logo_contrasted['alt'] ?: get_bloginfo('name')); ?>"
-          class="@sm:h-10 w-auto absolute @sm:top-3 @sm:left-5 opacity-0 group-[&.scrolling:not(.menu-open)]:opacity-100 group-[&.header-alt:not(.menu-open)]:opacity-100 transition-opacity"
+          class="@sm:max-w-[180px] md:max-w-none @sm:h-10 w-auto absolute @sm:top-3 @sm:left-5 opacity-0 group-[&.scrolling:not(.menu-open)]:opacity-100 group-[&.header-alt:not(.menu-open)]:opacity-100 transition-opacity"
         />
       </a>
     <?php endif; ?>
