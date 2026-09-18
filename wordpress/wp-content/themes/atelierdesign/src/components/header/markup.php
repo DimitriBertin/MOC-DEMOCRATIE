@@ -328,7 +328,7 @@ $header_alt = (is_archive() || is_home() || is_search()) ? 'header-alt' : '';
         wp_nav_menu([
           'theme_location' => 'primary-menu',
           'menu_id' => 'primary-menu',
-          'menu_class' => 'primary-menu flex items-center @md/lg:gap-9 list-none m-0 @md/lg:px-6',
+          'menu_class' => 'primary-menu flex items-center justify-end ml-auto @md/lg:gap-9 list-none m-0 @md/lg:px-6',
           'container' => false,
           'fallback_cb' => false,
           'walker' => new class extends Walker_Nav_Menu {
