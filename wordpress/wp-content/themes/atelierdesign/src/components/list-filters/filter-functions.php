@@ -4,8 +4,10 @@
  *
  * Systeme de filtres generique (AJAX) pour les pages de liste :
  *  - Page Thematique  : articles d'une thematique (+ sous-thematiques)
- *      filtres : sous-thematique, annee (+ mois), auteur-rice, tag
+ *      filtres : sous-thematique, annee (+ mois), auteur·rice, tag
  *  - Page Revues      : archive du CPT numero
+ *      filtres : annee (+ mois)
+ *  - Page Revue       : sommaire d'un numero (ses articles)
  *      filtres : annee (+ mois)
  *
  * Principe : tout est rendu cote serveur (barre de filtres + resultats).
@@ -13,7 +15,7 @@
  * la logique d'affichage en JS.
  *
  * Contexte attendu partout :
- *   ['type' => 'thematique'|'numero', 'id' => int, 'per_page' => int]
+ *   ['type' => 'thematique'|'numero'|'numero_articles', 'id' => int, 'per_page' => int]
  */
 
 if (!defined('ABSPATH')) {
@@ -57,7 +59,7 @@ function ad_list_months() {
  * Parametres de filtre reconnus pour un type de liste.
  */
 function ad_list_filter_params($type) {
-    if ($type === 'numero') {
+    if ($type === 'numero' || $type === 'numero_articles') {
         return ['annee', 'mois'];
     }
 
@@ -181,6 +183,35 @@ function ad_list_query_args($context, $active = [], $paged = 1) {
             $ids = ad_numero_ids_for_period($active['annee'], $active['mois'] ?? '');
             $args['post__in'] = !empty($ids) ? $ids : [0];
             $args['orderby']  = 'post__in';
+        }
+
+        return $args;
+    }
+
+    if ($context['type'] === 'numero_articles') {
+        $article_ids = ad_numero_article_ids($context['id']);
+
+        $args = [
+            'post_type'      => 'post',
+            'post_status'    => 'publish',
+            'posts_per_page' => $context['per_page'] > 0 ? $context['per_page'] : -1,
+            'post__in'       => !empty($article_ids) ? $article_ids : [0],
+            'orderby'        => 'post__in',
+        ];
+
+        // Pas de pagination quand on affiche le sommaire complet.
+        if ($context['per_page'] > 0) {
+            $args['paged'] = $paged;
+        }
+
+        if (!empty($active['annee'])) {
+            $date_query = ['year' => (int) $active['annee']];
+
+            if (!empty($active['mois'])) {
+                $date_query['month'] = (int) $active['mois'];
+            }
+
+            $args['date_query'] = [$date_query];
         }
 
         return $args;
@@ -404,6 +435,60 @@ function ad_numero_months($year) {
 }
 
 /**
+ * Ids des articles composant le sommaire d'une revue.
+ *
+ * Source de verite : le champ ACF relationship `articles` du Numero
+ * (voir src/fieldGroups/numero-relations.php). En complement, on ramasse les
+ * articles qui pointent vers ce numero via leur champ `numero`, au cas ou la
+ * relation bidirectionnelle n'aurait pas ete synchronisee des deux cotes.
+ *
+ * L'ordre du champ `articles` du numero fait foi (ordre du sommaire) ; les
+ * articles trouves uniquement par le champ miroir sont ajoutes a la suite,
+ * du plus recent au plus ancien.
+ */
+function ad_numero_article_ids($numero_id) {
+    $numero_id = (int) $numero_id;
+
+    if (!$numero_id) {
+        return [];
+    }
+
+    $ids = [];
+
+    $related = get_post_meta($numero_id, 'articles', true);
+
+    foreach ((array) $related as $item) {
+        $id = is_object($item) ? (int) $item->ID : (int) $item;
+
+        if ($id && get_post_status($id) === 'publish') {
+            $ids[$id] = true;
+        }
+    }
+
+    $mirrored = get_posts([
+        'post_type'      => 'post',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        'orderby'        => 'date',
+        'order'          => 'DESC',
+        'meta_query'     => [
+            [
+                'key'     => 'numero',
+                'value'   => '"' . $numero_id . '"',
+                'compare' => 'LIKE',
+            ],
+        ],
+    ]);
+
+    foreach ((array) $mirrored as $id) {
+        $ids[(int) $id] = true;
+    }
+
+    return array_keys($ids);
+}
+
+/**
  * Ids des revues d'une annee (et eventuellement d'un mois).
  */
 function ad_numero_ids_for_period($year, $month = '') {
@@ -425,7 +510,7 @@ function ad_numero_ids_for_period($year, $month = '') {
 }
 
 /**
- * Auteur-rices (ids) presents dans un ensemble d'articles.
+ * Auteur·rices (ids) presents dans un ensemble d'articles.
  */
 function ad_auteurs_from_post_ids($post_ids) {
     global $wpdb;
@@ -495,6 +580,42 @@ function ad_list_filter_groups($context, $active = []) {
     $context = ad_list_context($context);
     $groups  = [];
     $months  = ad_list_months();
+
+    if ($context['type'] === 'numero_articles') {
+        $article_ids = ad_numero_article_ids($context['id']);
+        $years       = ad_years_from_post_ids($article_ids);
+
+        // Sur un sommaire, un filtre a une seule option n'apporte rien.
+        if (count($years) > 1) {
+            $groups[] = [
+                'key'     => 'annee',
+                'label'   => 'Années',
+                'param'   => 'annee',
+                'color'   => 'bg-yellow',
+                'options' => array_map(function ($year) {
+                    return ['value' => $year, 'label' => $year];
+                }, $years),
+            ];
+
+            if (!empty($active['annee'])) {
+                $available = ad_months_from_post_ids($article_ids, $active['annee']);
+
+                if (count($available) > 1) {
+                    $groups[] = [
+                        'key'     => 'mois',
+                        'label'   => 'Mois',
+                        'param'   => 'mois',
+                        'color'   => 'bg-light-green-70',
+                        'options' => array_map(function ($month) use ($months) {
+                            return ['value' => $month, 'label' => $months[$month] ?? $month];
+                        }, $available),
+                    ];
+                }
+            }
+        }
+
+        return $groups;
+    }
 
     if ($context['type'] === 'numero') {
         $years = ad_numero_years();
@@ -582,13 +703,13 @@ function ad_list_filter_groups($context, $active = []) {
         }
     }
 
-    // Auteur-rices presents dans le perimetre
+    // Auteur·rices presents dans le perimetre
     $auteurs = ad_auteurs_from_post_ids($scope_ids);
 
     if (!empty($auteurs)) {
         $groups[] = [
             'key'     => 'auteur',
-            'label'   => 'Auteur',
+            'label'   => 'Auteur·rice',
             'param'   => 'auteur',
             'color'   => 'bg-light-green-70',
             'options' => array_map(function ($id) {
@@ -662,6 +783,10 @@ function ad_list_base_url($context) {
         return get_post_type_archive_link('numero') ?: home_url('/revues/');
     }
 
+    if ($context['type'] === 'numero_articles') {
+        return get_permalink($context['id']);
+    }
+
     return get_permalink($context['id']);
 }
 
@@ -673,6 +798,18 @@ function ad_list_default_title($context) {
 
     if ($context['type'] === 'numero') {
         return 'Nos Revues';
+    }
+
+    if ($context['type'] === 'numero_articles') {
+        if (!$context['id']) {
+            return '';
+        }
+
+        // Meme source que la carte revue : le champ hero `title`, repli sur
+        // le titre du post. Garantit que l'AJAX re-rende le meme titre.
+        $numero_title = get_field('title', $context['id']);
+
+        return !empty($numero_title) ? $numero_title : get_the_title($context['id']);
     }
 
     if (!$context['id']) {

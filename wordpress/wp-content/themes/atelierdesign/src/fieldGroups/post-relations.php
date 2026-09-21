@@ -5,7 +5,7 @@
  *
  * Champs de liaison entre un Article et :
  *  - une ou plusieurs Thematiques (CPT hierarchique)
- *  - un ou plusieurs Auteur-rices
+ *  - un ou plusieurs Auteur·rices
  *  - un Numero
  *
  * Volontairement separe de post.php pour garder les relations isolees
@@ -42,10 +42,10 @@ acf_add_local_field_group([
         ],
         [
             'key' => 'field_post_rel_auteurs',
-            'label' => 'Auteur-rice(s)',
+            'label' => 'Auteur·rice(s)',
             'name' => 'auteurs',
             'type' => 'relationship',
-            'instructions' => 'Associer un ou plusieurs auteur-rices a cet article.',
+            'instructions' => 'Associer un ou plusieurs auteur·rices a cet article.',
             'required' => 0,
             'post_type' => [
                 0 => 'auteur',

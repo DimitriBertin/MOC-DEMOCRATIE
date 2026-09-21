@@ -2,10 +2,18 @@
 $logo = get_field('logo', 'acf-options-global-fields');
 $logo_contrasted = get_field('logo_contrasted', 'acf-options-global-fields');
 
-$header_alt = (is_archive() || is_home() || is_search()) ? 'header-alt' : '';
+/**
+ * Header toujours sur fond blanc.
+ *
+ * `header-alt` est la variante "sur fond clair" : logo contraste, liens et
+ * bordures en dark-green. Elle etait auparavant limitee aux archives / home /
+ * recherche, et le fond blanc n'apparaissait qu'au scroll (`.scrolling`).
+ * Les deux sont desormais permanents sur tout le site.
+ */
+$header_alt = 'header-alt';
 ?>
 
-<header class="site-header autoscale group fixed w-full z-50 transition-all [.scroll-hide&]:-translate-y-full [.scrolling&]:bg-white <?php echo $header_alt; ?>">
+<header class="site-header autoscale group fixed w-full z-50 transition-all bg-white [.scroll-hide&]:-translate-y-full <?php echo $header_alt; ?>">
   <!-- Mobile Header (sm only) -->
   <div class="mobile-header md:hidden flex items-stretch justify-between border-b border-b-light-green z-50 relative group-[&.menu-open]:bg-dark-green transition-colors">
     <?php if ($logo): ?>
@@ -232,11 +240,11 @@ $header_alt = (is_archive() || is_home() || is_search()) ? 'header-alt' : '';
         js-search-open
         aria-label="Ouvrir la recherche"
       >
-        <svg class="@md/lg:w-[15px] @md/lg:h-[15px] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+        <svg class="@md/lg:w-[24px] @md/lg:h-[24px] flex-shrink-0 scale-x-[-1]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
           <circle cx="10.5" cy="10.5" r="7.5"/>
           <path d="M16 16L21 21"/>
         </svg>
-        <span class="menu inline-flex !leading-tight">Recherche</span>
+        <!-- <span class="menu inline-flex !leading-tight">Recherche</span> -->
       </button>
 
       <!-- CTA Menu -->

@@ -3,7 +3,7 @@
  * Article Card Component
  *
  * Carte d'un Article (post) basee sur le nouveau modele de donnees :
- * relations Thematique / Auteur-rice / Numero (voir src/fieldGroups/post-relations.php)
+ * relations Thematique / Auteur·rice / Numero (voir src/fieldGroups/post-relations.php)
  *
  * Sans image mise en avant, on affiche le visuel de repli du theme
  * (motif "moc moc" + icone ronde jaune) : voir src/functions/card-placeholder.php
@@ -44,9 +44,6 @@ $numero = get_field('numero', $post_id);
     <div class="post-meta autoscale flex flex-wrap justify-between items-start @sm:gap-2 @md/lg:gap-2">
       <time datetime="<?php echo esc_attr(get_the_date('c', $post_id)); ?>" class="block label paragraph-primary">
         <?php echo esc_html($post_date); ?>
-        <?php if ($numero instanceof WP_Post): ?>
-          &middot; <?php echo esc_html(get_the_title($numero->ID)); ?>
-        <?php endif; ?>
       </time>
 
       <?php if ($primary_thematique instanceof WP_Post): ?>

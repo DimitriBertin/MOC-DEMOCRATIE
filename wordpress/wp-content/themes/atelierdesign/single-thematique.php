@@ -6,7 +6,7 @@
  *
  * 1. THEMATIQUE PARENTE (pas de post_parent) -> page de liste
  *    - Titre de la thematique
- *    - Filtres : Les sous thematiques / Annees (+ Mois) / Auteur / Tags
+ *    - Filtres : Les sous thematiques / Annees (+ Mois) / Auteur·rice / Tags
  *    - Liste de TOUS les articles de la thematique ET de ses sous-thematiques
  *    - Pagination
  *

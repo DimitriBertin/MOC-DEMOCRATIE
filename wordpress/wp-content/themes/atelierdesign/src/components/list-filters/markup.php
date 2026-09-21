@@ -2,6 +2,12 @@
 /**
  * List Filters - Composant complet (titre + filtres + liste + pagination)
  *
+ * Arguments optionnels :
+ *   'title' : titre affiche (sinon ad_list_default_title())
+ *   'intro' : HTML de chapeau, affiche sous le titre/les filtres.
+ *             Rendu HORS du fragment `.list-filters__bar`, il n'est donc pas
+ *             re-rendu par l'AJAX et reste en place pendant le filtrage.
+ *
  * Usage :
  *   get_template_part('src/components/list-filters/markup', null, [
  *     'title'   => 'Nos Revues',
@@ -16,6 +22,7 @@
 $data    = is_array($args) ? $args : [];
 $context = ad_list_context($data['context'] ?? []);
 $title   = $data['title'] ?? ad_list_default_title($context);
+$intro   = $data['intro'] ?? '';
 $active  = ad_list_active_filters($context);
 $paged   = max(1, (int) (get_query_var('paged') ?: get_query_var('page') ?: ($_GET['paged'] ?? 1)));
 ?>
@@ -30,6 +37,12 @@ $paged   = max(1, (int) (get_query_var('paged') ?: get_query_var('page') ?: ($_G
   <section class="archive-header @sm:mt-[70px] @md/lg:mt-[130px] py-section theme-white bg-layout-main">
     <div class="container">
       <?php ad_list_render_bar($context, $active, $title); ?>
+
+      <?php if (!empty($intro)): ?>
+        <div class="list-filters__intro wysiwyg paragraph-primary autoscale @sm:mt-6 @md/lg:mt-10 @md/lg:max-w-[760px]">
+          <?php echo wp_kses_post($intro); ?>
+        </div>
+      <?php endif; ?>
     </div>
   </section>
 

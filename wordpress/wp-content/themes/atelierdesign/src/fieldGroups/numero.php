@@ -88,30 +88,30 @@ acf_add_local_field_group([
             'instructions' => 'Choose how the background image should be displayed.',
         ],
         // Flexible Content Section
-        [
-            'key' => 'field_numero_flexible_tab',
-            'label' => 'Flexible Content',
-            'type' => 'tab',
-            'no_preference' => 0,
-        ],
-        [
-            'key' => 'field-numero-flexible-layout',
-            'label' => 'Flexible Layout',
-            'name' => 'flexible-layout',
-            'type' => 'flexible_content',
-            'acfe_flexible_async' => [
-                0 => 'layout',
-            ],
-            'acfe_flexible_add_actions' => [
-                0 => 'toggle',
-                1 => 'copy',
-            ],
-            'min' => 0,
-            'max' => '',
-            'layouts' => $adwp->get_block_layouts(),
-            'button_label' => 'Add section',
-            'acfe_flexible_layouts_settings' => 1,
-        ],
+        // [
+        //     'key' => 'field_numero_flexible_tab',
+        //     'label' => 'Flexible Content',
+        //     'type' => 'tab',
+        //     'no_preference' => 0,
+        // ],
+        // [
+        //     'key' => 'field-numero-flexible-layout',
+        //     'label' => 'Flexible Layout',
+        //     'name' => 'flexible-layout',
+        //     'type' => 'flexible_content',
+        //     'acfe_flexible_async' => [
+        //         0 => 'layout',
+        //     ],
+        //     'acfe_flexible_add_actions' => [
+        //         0 => 'toggle',
+        //         1 => 'copy',
+        //     ],
+        //     'min' => 0,
+        //     'max' => '',
+        //     'layouts' => $adwp->get_block_layouts(),
+        //     'button_label' => 'Add section',
+        //     'acfe_flexible_layouts_settings' => 1,
+        // ],
         // CTA Footer Section
         [
             'key' => 'field_numero_cta_footer_tab',

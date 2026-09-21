@@ -561,7 +561,7 @@ ul,ol {
   }
 
   &-close {
-    @apply absolute @sm:top-6 @md/lg:top-10 @sm:right-5 @md/lg:right-10 @sm:w-10 @sm:h-10 @md/lg:w-12 @md/lg:h-12 flex items-center justify-center rounded-full border border-white/40 text-white transition-opacity duration-200;
+    @apply absolute @sm:top-6 @md/lg:top-10 @sm:right-0 @md/lg:right-0 @sm:w-10 @sm:h-10 @md/lg:w-12 @md/lg:h-12 flex items-center justify-center rounded-full border border-white/40 text-white transition-opacity duration-200;
     background: transparent;
     opacity: 0.6;
 

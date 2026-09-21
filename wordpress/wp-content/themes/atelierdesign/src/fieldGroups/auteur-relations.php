@@ -16,7 +16,7 @@ acf_add_local_field_group([
             'label' => 'Articles',
             'name' => 'articles',
             'type' => 'relationship',
-            'instructions' => 'Articles signes par cette personne. Ajouter un article ici renseigne automatiquement le champ "Auteur-rice(s)" de cet article.',
+            'instructions' => 'Articles signes par cette personne. Ajouter un article ici renseigne automatiquement le champ "Auteur·rice(s)" de cet article.',
             'required' => 0,
             'post_type' => [
                 0 => 'post',

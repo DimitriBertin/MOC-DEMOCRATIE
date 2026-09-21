@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 /**
  * LEGACY POST TYPES
  *
- * Le backoffice ne gere plus que : Articles, Thematiques, Auteur-rices, Numeros.
+ * Le backoffice ne gere plus que : Articles, Thematiques, Auteur·rices, Numeros.
  * Les types Evenement / Document / Campagne / Emploi ne sont plus enregistres,
  * mais leurs definitions sont conservees ci-dessous pour reference.
  * Passer la constante a true pour les reactiver.
@@ -204,20 +204,20 @@ function register_custom_post_types() {
     // Auteur / Autrice CPT
     register_post_type('auteur', array(
         'labels' => array(
-            'name' => __('Auteur-rices', 'textdomain'),
-            'singular_name' => __('Auteur-rice', 'textdomain'),
-            'menu_name' => __('Auteur-rices', 'textdomain'),
-            'name_admin_bar' => __('Auteur-rice', 'textdomain'),
+            'name' => __('Auteur·rices', 'textdomain'),
+            'singular_name' => __('Auteur·rice', 'textdomain'),
+            'menu_name' => __('Auteur·rices', 'textdomain'),
+            'name_admin_bar' => __('Auteur·rice', 'textdomain'),
             'add_new' => __('Ajouter nouveau', 'textdomain'),
-            'add_new_item' => __('Ajouter un-e nouvel-le auteur-rice', 'textdomain'),
-            'new_item' => __('Nouvel-le auteur-rice', 'textdomain'),
-            'edit_item' => __('Modifier l\'auteur-rice', 'textdomain'),
-            'view_item' => __('Voir l\'auteur-rice', 'textdomain'),
-            'all_items' => __('Tous les auteur-rices', 'textdomain'),
-            'search_items' => __('Rechercher des auteur-rices', 'textdomain'),
-            'parent_item_colon' => __('Auteur-rices parents :', 'textdomain'),
-            'not_found' => __('Aucun-e auteur-rice trouve-e.', 'textdomain'),
-            'not_found_in_trash' => __('Aucun-e auteur-rice trouve-e dans la corbeille.', 'textdomain'),
+            'add_new_item' => __('Ajouter un·e nouvel·le auteur·rice', 'textdomain'),
+            'new_item' => __('Nouvel·le auteur·rice', 'textdomain'),
+            'edit_item' => __('Modifier l\'auteur·rice', 'textdomain'),
+            'view_item' => __('Voir l\'auteur·rice', 'textdomain'),
+            'all_items' => __('Tou·tes les auteur·rices', 'textdomain'),
+            'search_items' => __('Rechercher des auteur·rices', 'textdomain'),
+            'parent_item_colon' => __('Auteur·rices parents :', 'textdomain'),
+            'not_found' => __('Aucun·e auteur·rice trouvé·e.', 'textdomain'),
+            'not_found_in_trash' => __('Aucun·e auteur·rice trouvé·e dans la corbeille.', 'textdomain'),
         ),
         'public' => true,
         'publicly_queryable' => true,
