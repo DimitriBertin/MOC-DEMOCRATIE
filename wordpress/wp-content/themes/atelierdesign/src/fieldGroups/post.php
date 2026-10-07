@@ -70,6 +70,48 @@ acf_add_local_field_group([
             'button_label' => 'Add section',
             'acfe_flexible_layouts_settings' => 1,
         ],
+        // Articles lies
+        [
+            'key' => 'field_post_related_tab',
+            'label' => 'Articles liés',
+            'type' => 'tab',
+            'no_preference' => 0,
+        ],
+        [
+            'key' => 'field_post_related_mode',
+            'label' => 'Articles liés',
+            'name' => 'related_mode',
+            'type' => 'button_group',
+            'instructions' => 'Par défaut : les 3 derniers articles des mêmes thématiques. Personnalisé : choisir les articles. Désactivé : le bloc n\'est pas affiché.',
+            'choices' => [
+                'default'  => 'Par défaut',
+                'custom'   => 'Personnalisé',
+                'disabled' => 'Désactivé',
+            ],
+            'default_value' => 'default',
+            'return_format' => 'value',
+            'layout' => 'horizontal',
+        ],
+        [
+            'key' => 'field_post_related_title',
+            'label' => 'Titre du bloc',
+            'name' => 'related_title',
+            'type' => 'text',
+            'placeholder' => 'À lire aussi',
+            'conditional_logic' => [[['field' => 'field_post_related_mode', 'operator' => '!=', 'value' => 'disabled']]],
+        ],
+        [
+            'key' => 'field_post_related_articles',
+            'label' => 'Articles',
+            'name' => 'related_articles',
+            'type' => 'relationship',
+            'instructions' => 'Ordre conservé.',
+            'post_type' => [0 => 'post'],
+            'taxonomy' => [],
+            'filters' => [0 => 'search', 1 => 'taxonomy'],
+            'return_format' => 'id',
+            'conditional_logic' => [[['field' => 'field_post_related_mode', 'operator' => '==', 'value' => 'custom']]],
+        ],
         // CTA Footer Section
         [
             'key' => 'field_post_cta_footer_tab',

@@ -55,7 +55,19 @@ switch ($orderby) {
     $query_args['order']   = 'DESC';
 }
 
-$related_posts = get_posts($query_args);
+// Liste imposee (ex : articles lies d'un article, voir ad_get_related_article_ids())
+if (isset($section['posts']) && is_array($section['posts'])) {
+  $ids = array_values(array_filter(array_map('intval', $section['posts'])));
+  $related_posts = !empty($ids) ? get_posts([
+    'post_type'      => 'post',
+    'post_status'    => 'publish',
+    'post__in'       => $ids,
+    'orderby'        => 'post__in',
+    'posts_per_page' => count($ids),
+  ]) : [];
+} else {
+  $related_posts = get_posts($query_args);
+}
 ?>
 
 <section class="related-content related-article py-section <?= $themeClass; ?> <?= $layoutClass; ?>">

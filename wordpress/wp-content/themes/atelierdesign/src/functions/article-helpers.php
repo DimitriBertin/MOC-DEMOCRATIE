@@ -378,6 +378,66 @@ if (!function_exists('ad_render_article_numero')) {
 }
 
 /* ─────────────────────────────────────────────
+ * Articles lies (single article)
+ * ───────────────────────────────────────────── */
+
+if (!function_exists('ad_get_related_article_ids')) {
+    /**
+     * Articles lies d'un article, selon le champ `related_mode` :
+     *  - default  : les $count derniers articles des memes thematiques
+     *               (thematiques principales + leurs sous-thematiques)
+     *  - custom   : les articles choisis dans `related_articles` (ordre conserve)
+     *  - disabled : aucun
+     *
+     * @return int[]
+     */
+    function ad_get_related_article_ids($post_id, $count = 3) {
+        $mode = function_exists('get_field') ? (get_field('related_mode', $post_id) ?: 'default') : 'default';
+
+        if ($mode === 'disabled') {
+            return [];
+        }
+
+        if ($mode === 'custom') {
+            $ids = (array) get_field('related_articles', $post_id);
+            return array_values(array_filter(array_map('intval', $ids), function ($id) use ($post_id) {
+                return $id && $id !== (int) $post_id && get_post_status($id) === 'publish';
+            }));
+        }
+
+        // default : memes thematiques
+        $scope = [];
+        foreach (ad_get_main_thematiques($post_id) as $thematique) {
+            $scope = array_merge($scope, function_exists('ad_thematique_scope_ids')
+                ? ad_thematique_scope_ids($thematique->ID)
+                : [$thematique->ID]);
+        }
+        $scope = array_values(array_unique(array_map('intval', $scope)));
+
+        if (empty($scope)) {
+            return [];
+        }
+
+        $meta_query = ['relation' => 'OR'];
+        foreach ($scope as $id) {
+            $meta_query[] = ['key' => 'thematiques', 'value' => '"' . $id . '"', 'compare' => 'LIKE'];
+        }
+
+        return get_posts([
+            'post_type'      => 'post',
+            'post_status'    => 'publish',
+            'posts_per_page' => $count,
+            'post__not_in'   => [(int) $post_id],
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+            'fields'         => 'ids',
+            'no_found_rows'  => true,
+            'meta_query'     => $meta_query,
+        ]);
+    }
+}
+
+/* ─────────────────────────────────────────────
  * Formats (podcast / debat)
  * ───────────────────────────────────────────── */
 

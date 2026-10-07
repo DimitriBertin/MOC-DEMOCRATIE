@@ -6,6 +6,20 @@
   <article class="article">
     <?php get_template_part('src/components/hero/include'); ?>
     <?php $adwp->render_flexible_layout($fields['flexible-layout']); ?>
+
+    <?php
+    // Articles lies (onglet "Articles lies" de l'article)
+    if (is_singular('post') && function_exists('ad_get_related_article_ids')) {
+      $related_ids = ad_get_related_article_ids(get_the_ID(), 3);
+
+      if (!empty($related_ids)) {
+        get_template_part('src/components/relatedArticle/markup', null, [
+          'title' => get_field('related_title') ?: 'À lire aussi',
+          'posts' => $related_ids,
+        ]);
+      }
+    }
+    ?>
     
     <?php
     // CTA Footer - get data from ACF fields of current post
