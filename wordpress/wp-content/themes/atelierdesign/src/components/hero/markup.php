@@ -164,18 +164,14 @@ switch ($template_type) {
           </div>
         <?php endif; ?>
 
-        <?php // Icone(s) Podcast / Debat (articles), a la suite des thematiques
-        if ($template_type === 'single-post' && function_exists('ad_render_article_formats')) {
-            ad_render_article_formats(get_the_ID(), 'hero');
-        } ?>
       </div>
       <h1 class="<?php echo implode(' ', $title_classes); ?>">
         <?php echo nl2br(esc_html($title)); ?>
       </h1>
 
-      <?php // Revue de l'article (cliquable), au-dessus des auteur·rices
+      <?php // Revue de l'article (cliquable) : "Revue n°105", sans le titre
       if ($template_type === 'single-post' && function_exists('ad_render_article_numero')) {
-          ad_render_article_numero(get_the_ID(), 'autoscale @sm:mt-4 @md/lg:mt-6');
+          ad_render_article_numero(get_the_ID(), 'autoscale @sm:mt-4 @md/lg:mt-6', false);
       } ?>
 
       <?php // Auteur·rices de l'article, chaque nom renvoie vers sa fiche
@@ -183,6 +179,13 @@ switch ($template_type) {
           ad_render_article_auteurs(get_the_ID(), [
               'class' => 'paragraph-lg text-white autoscale @sm:mt-2 @md/lg:mt-3',
           ]);
+      } ?>
+
+      <?php // Icone(s) Podcast / Debat, sous les auteur·rices
+      if ($template_type === 'single-post' && function_exists('ad_get_article_formats') && ad_get_article_formats(get_the_ID())) {
+          echo '<div class="@sm:mt-4 @md/lg:mt-5">';
+          ad_render_article_formats(get_the_ID(), 'hero');
+          echo '</div>';
       } ?>
     
       <?php if ($cta_button && !empty($cta_button['title']) && !empty($cta_button['url'])): ?>

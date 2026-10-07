@@ -357,7 +357,7 @@ if (!function_exists('ad_render_article_numero')) {
     /**
      * Lien vers la revue de l'article : [icone] Democratie n°105 · Habiter dignement
      */
-    function ad_render_article_numero($post_id, $class = '') {
+    function ad_render_article_numero($post_id, $class = '', $with_title = true) {
         $numero = ad_get_article_numero($post_id);
 
         if (!$numero) {
@@ -368,11 +368,11 @@ if (!function_exists('ad_render_article_numero')) {
         $label  = $number !== '' && $number !== null ? 'Revue n°' . $number : 'Revue';
 
         printf(
-            '<a href="%s" class="article-numero %s"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span><span class="article-numero__label">%s</span><span class="article-numero__title">%s</span></a>',
+            '<a href="%s" class="article-numero %s"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span><span class="article-numero__label">%s</span>%s</a>',
             esc_url(get_permalink($numero->ID)),
             esc_attr($class),
             esc_html($label),
-            esc_html(get_the_title($numero->ID))
+            $with_title ? '<span class="article-numero__title">' . esc_html(get_the_title($numero->ID)) . '</span>' : ''
         );
     }
 }

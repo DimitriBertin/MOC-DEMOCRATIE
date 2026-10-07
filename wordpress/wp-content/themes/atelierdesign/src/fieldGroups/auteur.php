@@ -44,33 +44,33 @@ acf_add_local_field_group([
             'required' => 0,
         ],
         // Hero Section
-        [
-            'key' => 'field_auteur_hero_tab',
-            'label' => 'Hero',
-            'type' => 'tab',
-            'no_preference' => 0,
-        ],
-        [
-            'key' => 'field_auteur_clone_hero',
-            'label' => 'Hero',
-            'name' => 'hero',
-            'type' => 'clone',
-            'clone' => [
-                0 => 'field-group-hero',
-            ],
-        ],
-        [
-            'key' => 'field_auteur_hero_image_layout',
-            'label' => 'Image Layout',
-            'name' => 'hero_image_layout',
-            'type' => 'select',
-            'choices' => [
-                'full-width' => 'Full Width',
-                'content' => 'Content Width',
-            ],
-            'default_value' => 'full-width',
-            'instructions' => 'Choose how the background image should be displayed.',
-        ],
+        // [
+        //     'key' => 'field_auteur_hero_tab',
+        //     'label' => 'Hero',
+        //     'type' => 'tab',
+        //     'no_preference' => 0,
+        // ],
+        // [
+        //     'key' => 'field_auteur_clone_hero',
+        //     'label' => 'Hero',
+        //     'name' => 'hero',
+        //     'type' => 'clone',
+        //     'clone' => [
+        //         0 => 'field-group-hero',
+        //     ],
+        // ],
+        // [
+        //     'key' => 'field_auteur_hero_image_layout',
+        //     'label' => 'Image Layout',
+        //     'name' => 'hero_image_layout',
+        //     'type' => 'select',
+        //     'choices' => [
+        //         'full-width' => 'Full Width',
+        //         'content' => 'Content Width',
+        //     ],
+        //     'default_value' => 'full-width',
+        //     'instructions' => 'Choose how the background image should be displayed.',
+        // ],
         // Flexible Content Section
         // [
         //     'key' => 'field_auteur_flexible_tab',

@@ -71,20 +71,7 @@ acf_add_local_field_group([
           'media_upload' => 0,
           'delay' => 0,
       ],
-      [
-          'key' => 'field_numero_articles_lies',
-          'label' => 'Articles lies',
-          'name' => 'articles_lies',
-          'type' => 'relationship',
-          'instructions' => 'Optionnel. Articles a mettre en avant sous le sommaire (de ce numero ou d\'ailleurs). Ordre conserve.',
-          'required' => 0,
-          'post_type' => [0 => 'post'],
-          'taxonomy' => [],
-          'filters' => [0 => 'search', 1 => 'taxonomy'],
-          'min' => '',
-          'max' => '',
-          'return_format' => 'id',
-      ],
+
       [
           'key' => 'field_numero_liseuse',
           'label' => 'Lien vers la liseuse en ligne',
@@ -94,34 +81,28 @@ acf_add_local_field_group([
           'required' => 0,
           'return_format' => 'array',
       ],
-        [
-            'key' => 'field_numero_hero_tab',
-            'label' => 'Hero',
-            'type' => 'tab',
-            'no_preference' => 0,
-        ],
-        
-        [
-            'key' => 'field_numero_clone_hero',
-            'label' => 'Hero',
-            'name' => 'hero',
-            'type' => 'clone',
-            'clone' => [
-                0 => 'field-group-hero',
-            ],
-        ],
-        [
-            'key' => 'field_numero_hero_image_layout',
-            'label' => 'Image Layout',
-            'name' => 'hero_image_layout',
-            'type' => 'select',
-            'choices' => [
-                'full-width' => 'Full Width',
-                'content' => 'Content Width',
-            ],
-            'default_value' => 'full-width',
-            'instructions' => 'Choose how the background image should be displayed.',
-        ],
+
+      [
+        'key' => 'field_numero_related-articles',
+        'label' => 'Related Articles',
+        'type' => 'tab',
+        'no_preference' => 0,
+      ],
+      [
+        'key' => 'field_numero_articles_lies',
+        'label' => 'Articles',
+        'name' => 'articles_lies',
+        'type' => 'relationship',
+        'instructions' => 'Optionnel. Articles a mettre en avant sous le sommaire (de ce numero ou d\'ailleurs). Ordre conserve.',
+        'required' => 0,
+        'post_type' => [0 => 'post'],
+        'taxonomy' => [],
+        'filters' => [0 => 'search', 1 => 'taxonomy'],
+        'min' => '',
+        'max' => '',
+        'return_format' => 'id',
+    ],
+   
         // Flexible Content Section
         // [
         //     'key' => 'field_numero_flexible_tab',

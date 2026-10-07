@@ -144,18 +144,16 @@ $repeat = $slides_count > 0
                       <?php ad_render_card_placeholder($article_id, $article_title); ?>
                     <?php endif; ?>
 
-                    <?php // Icone(s) Podcast / Debat
-                    if (function_exists('ad_render_article_formats')) {
-                      ad_render_article_formats($article_id, 'card');
-                    } ?>
-                  </div>
-
-                  <div class="slide-content flex flex-col @sm:gap-2 @md/lg:gap-2 autoscale-children">
-                    <div class="badge-wrapper flex justify-start">
+                    <?php // Intitule de la thematique, pose sur l'image (en haut a gauche)
+                    ?>
+                    <div class="badge-wrapper autoscale absolute z-[2] flex @sm:left-3 @sm:right-3 @sm:top-3 @md/lg:left-4 @md/lg:right-4 @md/lg:top-4">
                       <div class="badge-surface">
                         <?php echo esc_html($thematique_title); ?>
                       </div>
                     </div>
+                  </div>
+
+                  <div class="slide-content flex flex-col @sm:gap-2 @md/lg:gap-2 autoscale-children">
 
                     <h3 class="slide-title heading-sm heading-primary autoscale group-hover:opacity-80 transition-opacity duration-200">
                       <?php echo esc_html($article_title); ?>

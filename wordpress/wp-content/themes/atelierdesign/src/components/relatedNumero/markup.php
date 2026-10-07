@@ -26,30 +26,34 @@ $count   = (int) ($section['count'] ?? 3);
 $count   = $count > 0 ? $count : 3;
 $orderby = $section['orderby'] ?? 'date';
 
-$query_args = [
-  'numberposts' => $count,
-  'post_status' => 'publish',
-  'post_type'   => 'numero',
-];
+// Plus recents / plus anciens : tri sur la date de parution (champ
+// `date_parution`, repli sur la date du post) via ad_numero_dates_map(),
+// comme la page "Nos Revues".
+if (in_array($orderby, ['date', 'date_asc'], true) && function_exists('ad_numero_dates_map')) {
+  $ids = array_keys(ad_numero_dates_map()); // plus recent d'abord
+  if ($orderby === 'date_asc') {
+    $ids = array_reverse($ids);
+  }
+  $ids = array_slice($ids, 0, $count);
 
-switch ($orderby) {
-  case 'date_asc':
-    $query_args['orderby'] = 'date';
-    $query_args['order']   = 'ASC';
-    break;
-  case 'title':
-    $query_args['orderby'] = 'title';
-    $query_args['order']   = 'ASC';
-    break;
-  case 'rand':
-    $query_args['orderby'] = 'rand';
-    break;
-  default:
-    $query_args['orderby'] = 'date';
-    $query_args['order']   = 'DESC';
+  $related_numeros = !empty($ids) ? get_posts([
+    'post_type'      => 'numero',
+    'post_status'    => 'publish',
+    'post__in'       => $ids,
+    'orderby'        => 'post__in',
+    'posts_per_page' => $count,
+  ]) : [];
+} else {
+  $query_args = [
+    'numberposts' => $count,
+    'post_status' => 'publish',
+    'post_type'   => 'numero',
+    'orderby'     => $orderby === 'title' ? 'title' : 'rand',
+    'order'       => 'ASC',
+  ];
+
+  $related_numeros = get_posts($query_args);
 }
-
-$related_numeros = get_posts($query_args);
 ?>
 
 <section class="related-content related-numero py-section <?= $themeClass; ?> <?= $layoutClass; ?>">

@@ -186,9 +186,10 @@ function get_hero_taxonomy_badges($template_type = null, $post_id = null) {
                 }
             }
 
-            // Get categories
-            $categories = ad_get_the_terms($post_id, 'category');
-            if ($categories && !is_wp_error($categories)) {
+            // Categories WordPress : non utilisees sur les articles
+            // (evite le badge "Non classe"). Conservees pour les documents.
+            if ($template_type === 'single-document') {
+                $categories = ad_get_the_terms($post_id, 'category');
                 foreach ($categories as $category) {
                     $badges[] = [
                         'name' => $category->name,
