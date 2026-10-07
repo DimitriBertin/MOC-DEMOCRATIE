@@ -695,6 +695,12 @@ ul,ol {
   }
 }
 
+/* Dans la rangee de badges de la carte : l'icone suit le flux (plus en absolu) */
+.post-image-badges .article-formats--card {
+  position: static;
+  @apply @sm:gap-1 @md/lg:gap-1;
+}
+
 /* En-tete d'article : pastille + libelle */
 .article-formats--hero .article-format {
   @apply font-safiro font-semibold uppercase @sm:gap-1.5 @md/lg:gap-2 @sm:px-3 @md/lg:px-3 @sm:py-1 @md/lg:py-1 @sm:text-[12px]/[18px] @md/lg:text-[12px]/[18px] @sm:tracking-[2px] @md/lg:tracking-[2px];
@@ -723,7 +729,7 @@ ul,ol {
 
 /* Liste des auteur·rices */
 .auteurs-index__letter {
-  @apply inline-flex items-center justify-center @sm:w-9 @sm:h-9 @md/lg:w-10 @md/lg:h-10 rounded-full border border-current text-green-semi-light transition-colors duration-200;
+  @apply inline-flex items-center justify-center @sm:w-7 @sm:h-7 @md/lg:w-8 @md/lg:h-8 rounded-full border border-current text-green-semi-light font-safiro font-semibold uppercase @sm:text-[11px]/[1] @md/lg:text-[12px]/[1] transition-colors duration-200;
 
   &:hover {
     @apply bg-yellow border-yellow text-dark-green;
@@ -734,14 +740,14 @@ ul,ol {
   @apply scroll-mt-[160px];
 
   & + & {
-    @apply @sm:mt-12 @md/lg:mt-16;
+    @apply @sm:mt-10 @md/lg:mt-14;
   }
 }
 
 .auteurs-group__letter {
-  @apply @sm:mb-4 @md/lg:mb-6 @sm:pb-3 @md/lg:pb-4 border-b border-current;
+  @apply @sm:mb-2 @md/lg:mb-3 @sm:pb-2 @md/lg:pb-3 border-b border-current;
 }
 
 .auteur-link {
-  @apply @sm:py-3 @md/lg:py-4 border-b border-black/10;
+  @apply @sm:py-4 @md/lg:py-5 border-b border-black/10;
 }

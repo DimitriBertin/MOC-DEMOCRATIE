@@ -26,9 +26,9 @@ $groups = ad_get_auteurs_grouped();
       <h1 class="archive-title text-yellow text-display autoscale">Auteur·rices</h1>
 
       <?php if (!empty($groups)): ?>
-        <nav class="auteurs-index autoscale flex flex-wrap @sm:gap-2 @md/lg:gap-3 @sm:mt-6 @md/lg:mt-10" aria-label="Index alphabetique">
+        <nav class="auteurs-index autoscale flex flex-wrap @sm:gap-1.5 @md/lg:gap-2 @sm:mt-6 @md/lg:mt-8" aria-label="Index alphabetique">
           <?php foreach (array_keys($groups) as $letter): ?>
-            <a href="#lettre-<?php echo esc_attr($letter === '#' ? 'autres' : strtolower($letter)); ?>" class="auteurs-index__letter menu">
+            <a href="#lettre-<?php echo esc_attr($letter === '#' ? 'autres' : strtolower($letter)); ?>" class="auteurs-index__letter">
               <?php echo esc_html($letter); ?>
             </a>
           <?php endforeach; ?>
@@ -47,9 +47,9 @@ $groups = ad_get_auteurs_grouped();
 
       <?php foreach ($groups as $letter => $rows): ?>
         <div class="auteurs-group autoscale" id="lettre-<?php echo esc_attr($letter === '#' ? 'autres' : strtolower($letter)); ?>">
-          <h2 class="auteurs-group__letter heading-lg heading-primary"><?php echo esc_html($letter); ?></h2>
+          <h2 class="auteurs-group__letter heading-sm heading-primary"><?php echo esc_html($letter); ?></h2>
 
-          <ul class="auteurs-group__list grid @sm:grid-cols-1 @md/lg:grid-cols-2 @lg:grid-cols-3 @sm:gap-x-3 @md/lg:gap-x-3">
+          <ul class="auteurs-group__list grid @sm:grid-cols-1 @md/lg:grid-cols-2 @lg:grid-cols-3 @sm:gap-x-3 @md/lg:gap-x-12 @sm:gap-y-1 @md/lg:gap-y-2">
             <?php foreach ($rows as $row):
               $auteur = $row['post'];
               $count  = (int) $row['count'];
