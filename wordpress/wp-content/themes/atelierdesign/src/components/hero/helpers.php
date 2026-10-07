@@ -155,6 +155,17 @@ function get_hero_taxonomy_badges($template_type = null, $post_id = null) {
             break;
         case 'single-post':
         case 'single-document':
+            // Thematiques principales de l'article (liens vers la thematique)
+            if ($template_type === 'single-post' && function_exists('ad_get_main_thematiques')) {
+                foreach (ad_get_main_thematiques($post_id) as $thematique) {
+                    $badges[] = [
+                        'name' => get_the_title($thematique->ID),
+                        'type' => 'thematique',
+                        'url'  => get_permalink($thematique->ID),
+                    ];
+                }
+            }
+
             // Get type taxonomy
             $type_taxonomy = '';
             if ($template_type === 'single-post') {

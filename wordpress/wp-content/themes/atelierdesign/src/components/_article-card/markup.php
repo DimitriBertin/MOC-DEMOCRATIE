@@ -39,13 +39,9 @@ $numero = get_field('numero', $post_id);
         <?php ad_render_card_placeholder($post_id, $post_title); ?>
       <?php endif; ?>
 
-      <?php // Icone(s) Podcast / Debat + thematiques principales, posees sur l'image (en haut a gauche)
-      $has_formats = function_exists('ad_get_article_formats') && !empty(ad_get_article_formats($post_id));
-      if (!empty($main_thematiques) || $has_formats): ?>
+      <?php // Thematiques principales, posees sur l'image (en haut a gauche, a la place de l'icone podcast / debat)
+      if (!empty($main_thematiques)): ?>
         <div class="post-image-badges badge-wrapper autoscale absolute z-[2] flex flex-wrap items-center @sm:gap-1 @md/lg:gap-1 @sm:left-3 @sm:right-3 @sm:top-3 @md/lg:left-4 @md/lg:right-4 @md/lg:top-4">
-          <?php if ($has_formats) {
-            ad_render_article_formats($post_id, 'card');
-          } ?>
           <?php foreach ($main_thematiques as $main_thematique): ?>
             <div class="badge-surface">
               <?php echo esc_html(get_the_title($main_thematique->ID)); ?>

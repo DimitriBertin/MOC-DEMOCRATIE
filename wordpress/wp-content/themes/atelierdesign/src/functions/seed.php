@@ -513,6 +513,32 @@ function moc_seed_run() {
         wp_set_post_terms($id, $term_ids, 'post_tag');
     }
 
+    // 4b. Sommaire + liseuse des revues (a partir de leurs articles)
+    $by_numero = [];
+    foreach (moc_seed_data_articles() as [$a_title, , $a_themes, $a_numero]) {
+        if ($a_numero !== null) {
+            $by_numero[$a_numero][] = $a_title;
+        }
+    }
+    foreach ($numero_ids as $i => $numero) {
+        $page = 4;
+        $html = '<h3>Actualités</h3><p><strong>4</strong>  Édito</p><p><strong>6</strong>  Trois mois d’actualité sociale</p><h3>Dossier</h3>';
+        foreach ($by_numero[$i] ?? [] as $a_title) {
+            $page += 4;
+            $html .= '<p><strong>' . $page . '</strong>  ' . esc_html($a_title) . '</p>';
+        }
+        $html .= '<h3>Grand format</h3><p><strong>' . ($page + 6) . '</strong>  Le grand entretien</p>';
+        update_field('field_numero_sommaire', $html, $numero['id']);
+        if (!empty($rel_numero[$numero['id']])) {
+            update_field('field_numero_articles_lies', array_slice($rel_numero[$numero['id']], 0, 3), $numero['id']);
+        }
+        update_field('field_numero_liseuse', [
+            'title'  => 'Lire la revue en ligne',
+            'url'    => 'https://www.calameo.com/',
+            'target' => '_blank',
+        ], $numero['id']);
+    }
+
     // 5. Relations miroirs (écrites explicitement, en plus de la synchro bidirectionnelle ACF)
     foreach ($rel_thematique as $t => $ids) {
         update_field('field_thematique_rel_articles', array_values(array_unique($ids)), $t);

@@ -134,10 +134,6 @@ switch ($template_type) {
             <div class="label text-white autoscale"><?php echo esc_html($label); ?></div>
         <?php endif; ?>
 
-        <?php // Icone(s) Podcast / Debat (articles)
-        if ($template_type === 'single-post' && function_exists('ad_render_article_formats')) {
-            ad_render_article_formats(get_the_ID(), 'hero');
-        } ?>
         
         <?php if (!empty($taxonomy_badges)): ?>
           <div class="badge-wrapper flex flex-wrap @sm:gap-2 @md/lg:gap-2">
@@ -155,21 +151,37 @@ switch ($template_type) {
                       break;
               }
               ?>  
-              <span class="badge-surface autoscale <?php echo implode(' ', $badge_color); ?>">
-                <?php echo esc_html($badge['name']); ?>
-              </span>
+              <?php if (!empty($badge['url'])): ?>
+                <a href="<?php echo esc_url($badge['url']); ?>" class="badge-surface autoscale hover:opacity-80 transition-opacity <?php echo implode(' ', $badge_color); ?>">
+                  <?php echo esc_html($badge['name']); ?>
+                </a>
+              <?php else: ?>
+                <span class="badge-surface autoscale <?php echo implode(' ', $badge_color); ?>">
+                  <?php echo esc_html($badge['name']); ?>
+                </span>
+              <?php endif; ?>
             <?php endforeach; ?>
           </div>
         <?php endif; ?>
+
+        <?php // Icone(s) Podcast / Debat (articles), a la suite des thematiques
+        if ($template_type === 'single-post' && function_exists('ad_render_article_formats')) {
+            ad_render_article_formats(get_the_ID(), 'hero');
+        } ?>
       </div>
       <h1 class="<?php echo implode(' ', $title_classes); ?>">
         <?php echo nl2br(esc_html($title)); ?>
       </h1>
 
+      <?php // Revue de l'article (cliquable), au-dessus des auteur·rices
+      if ($template_type === 'single-post' && function_exists('ad_render_article_numero')) {
+          ad_render_article_numero(get_the_ID(), 'autoscale @sm:mt-4 @md/lg:mt-6');
+      } ?>
+
       <?php // Auteur·rices de l'article, chaque nom renvoie vers sa fiche
       if ($template_type === 'single-post' && function_exists('ad_render_article_auteurs')) {
           ad_render_article_auteurs(get_the_ID(), [
-              'class' => 'paragraph-lg text-white autoscale @sm:mt-4 @md/lg:mt-6',
+              'class' => 'paragraph-lg text-white autoscale @sm:mt-2 @md/lg:mt-3',
           ]);
       } ?>
     

@@ -170,22 +170,21 @@ function ad_list_query_args($context, $active = [], $paged = 1) {
     $paged   = max(1, (int) $paged);
 
     if ($context['type'] === 'numero') {
-        $args = [
+        // Ordre : date de parution (champ `date_parution`, repli sur la date
+        // du post), de la plus recente a la plus ancienne. Le filtre annee /
+        // mois s'appuie sur la meme date de reference.
+        $ids = !empty($active['annee'])
+            ? ad_numero_ids_for_period($active['annee'], $active['mois'] ?? '')
+            : array_keys(ad_numero_dates_map());
+
+        return [
             'post_type'      => 'numero',
             'post_status'    => 'publish',
             'posts_per_page' => $context['per_page'],
             'paged'          => $paged,
-            'orderby'        => 'date',
-            'order'          => 'DESC',
+            'post__in'       => !empty($ids) ? array_map('intval', $ids) : [0],
+            'orderby'        => 'post__in',
         ];
-
-        if (!empty($active['annee'])) {
-            $ids = ad_numero_ids_for_period($active['annee'], $active['mois'] ?? '');
-            $args['post__in'] = !empty($ids) ? $ids : [0];
-            $args['orderby']  = 'post__in';
-        }
-
-        return $args;
     }
 
     if ($context['type'] === 'numero_articles') {
@@ -395,7 +394,13 @@ function ad_numero_dates_map() {
         $map[(int) $id] = ad_numero_reference_date($id);
     }
 
-    arsort($map);
+    // Plus recente d'abord ; a date egale, numero de revue le plus eleve d'abord.
+    uksort($map, function ($a, $b) use ($map) {
+        if ($map[$a] !== $map[$b]) {
+            return strcmp($map[$b], $map[$a]);
+        }
+        return (int) get_post_meta($b, 'numero_numero', true) <=> (int) get_post_meta($a, 'numero_numero', true);
+    });
 
     return $map;
 }

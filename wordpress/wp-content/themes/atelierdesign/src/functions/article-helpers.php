@@ -318,6 +318,66 @@ add_action('pre_get_posts', function ($query) {
 });
 
 /* ─────────────────────────────────────────────
+ * Revue (numero) d'un article
+ * ───────────────────────────────────────────── */
+
+if (!function_exists('ad_numero_parution_label')) {
+    /**
+     * "Octobre 2026" : date de parution de la revue (repli : date du post).
+     */
+    function ad_numero_parution_label($numero_id, $format = 'F Y') {
+        $date = function_exists('ad_numero_reference_date')
+            ? ad_numero_reference_date($numero_id)
+            : get_the_date('Y-m-d', $numero_id);
+
+        return $date ? ucfirst(date_i18n($format, strtotime($date))) : '';
+    }
+}
+
+if (!function_exists('ad_get_article_numero')) {
+    /**
+     * Revue publiee a laquelle appartient un article, ou null.
+     */
+    function ad_get_article_numero($post_id) {
+        $numero = function_exists('get_field') ? get_field('numero', $post_id) : null;
+
+        if (is_array($numero)) {
+            $numero = reset($numero);
+        }
+
+        $numero = $numero instanceof WP_Post ? $numero : get_post((int) $numero);
+
+        return ($numero instanceof WP_Post && $numero->post_type === 'numero' && $numero->post_status === 'publish')
+            ? $numero
+            : null;
+    }
+}
+
+if (!function_exists('ad_render_article_numero')) {
+    /**
+     * Lien vers la revue de l'article : [icone] Democratie n°105 · Habiter dignement
+     */
+    function ad_render_article_numero($post_id, $class = '') {
+        $numero = ad_get_article_numero($post_id);
+
+        if (!$numero) {
+            return;
+        }
+
+        $number = function_exists('get_field') ? get_field('numero_numero', $numero->ID) : '';
+        $label  = $number !== '' && $number !== null ? 'Revue n°' . $number : 'Revue';
+
+        printf(
+            '<a href="%s" class="article-numero %s"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span><span class="article-numero__label">%s</span><span class="article-numero__title">%s</span></a>',
+            esc_url(get_permalink($numero->ID)),
+            esc_attr($class),
+            esc_html($label),
+            esc_html(get_the_title($numero->ID))
+        );
+    }
+}
+
+/* ─────────────────────────────────────────────
  * Formats (podcast / debat)
  * ───────────────────────────────────────────── */
 

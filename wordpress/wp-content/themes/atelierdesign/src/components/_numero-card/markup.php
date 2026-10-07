@@ -16,7 +16,7 @@ $card    = is_array($args) ? $args : [];
 $post_id = $card['post_id'] ?? get_the_ID();
 
 $label     = get_field('label', $post_id);
-$post_title     = get_field('title', $post_id);
+$post_title     = get_field('title', $post_id) ?: get_the_title($post_id);
 $post_num     = get_field('numero_numero', $post_id);
 $post_permalink = get_permalink($post_id);
 $post_date      = get_the_date('d.m.Y', $post_id);
@@ -38,10 +38,17 @@ $post_date      = get_the_date('d.m.Y', $post_id);
     </div>
     <!-- @@:py-[20px] @@:px-[30px] bg-white -->
     <div class="@@:pt-[20px] @sm:gap-4 @md/lg:gap-4 flex-col flex post-content autoscale-children">
-      <div class="badge-wrapper flex justify-start">
-        <div class="badge-surface">
-          Revue numéro <?php echo $post_num; ?>
-        </div>
+      <div class="badge-wrapper flex flex-wrap items-center justify-between @sm:gap-2 @md/lg:gap-2">
+        <?php if ($post_num !== '' && $post_num !== null): ?>
+          <div class="badge-surface">
+            Revue numéro <?php echo esc_html($post_num); ?>
+          </div>
+        <?php endif; ?>
+        <?php // Date de parution (meme reference que le tri et le filtre annee)
+        $parution = function_exists('ad_numero_parution_label') ? ad_numero_parution_label($post_id) : ''; ?>
+        <?php if ($parution): ?>
+          <span class="label paragraph-primary"><?php echo esc_html($parution); ?></span>
+        <?php endif; ?>
       </div>
       <!-- Titre (contient le numero) -->
       <h3 class="post-title autoscale heading-md heading-primary @sm:pr-4 @lg/md:pr-4 group-hover:opacity-80 transition-opacity duration-200">

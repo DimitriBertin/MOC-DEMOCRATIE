@@ -751,3 +751,61 @@ ul,ol {
 .auteur-link {
   @apply @sm:py-4 @md/lg:py-5 border-b border-black/10;
 }
+
+
+/* Revue d'un article (en-tete) */
+.article-numero {
+  @apply inline-flex items-center font-safiro font-semibold uppercase text-yellow @sm:gap-2 @md/lg:gap-2 @sm:text-[13px]/[18px] @md/lg:text-[13px]/[18px] @sm:tracking-[2px] @md/lg:tracking-[2px] transition-opacity duration-200;
+
+  .material-symbols-outlined {
+    @apply @sm:text-[20px] @md/lg:text-[20px] leading-none;
+  }
+
+  .article-numero__title {
+    @apply normal-case tracking-normal font-normal text-white;
+
+    &::before {
+      content: '·';
+      @apply @sm:mr-2 @md/lg:mr-2 text-yellow;
+    }
+  }
+
+  &:hover {
+    @apply opacity-80;
+  }
+}
+
+/* Revue : sommaire (wysiwyg) + bouton liseuse */
+.numero-meta__sep {
+  @apply @sm:mx-1 @md/lg:mx-1;
+}
+
+.numero-sommaire__title {
+  @apply @sm:pb-3 @md/lg:pb-4 @sm:mb-5 @md/lg:mb-6 border-b border-dashed border-current;
+}
+
+.numero-sommaire__content {
+  h2, h3, h4, h5, h6 {
+    @apply font-safiro font-semibold uppercase text-green-semi-light @sm:text-[15px]/[22px] @md/lg:text-[17px]/[24px] @sm:tracking-[1.5px] @md/lg:tracking-[1.5px] @sm:mt-8 @md/lg:mt-10 @sm:mb-3 @md/lg:mb-4;
+
+    &:first-child {
+      @apply mt-0;
+    }
+  }
+
+  p, li {
+    @apply @sm:mb-2 @md/lg:mb-2;
+  }
+
+  strong {
+    @apply font-semibold;
+  }
+}
+
+.numero-liseuse {
+  @apply inline-flex items-center @sm:gap-2 @md/lg:gap-2;
+
+  .material-symbols-outlined {
+    @apply @sm:text-[20px] @md/lg:text-[20px] leading-none;
+  }
+}
