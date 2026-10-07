@@ -16,6 +16,12 @@ require_once get_template_directory() . '/src/components/archive-header/filter-f
  * Enqueue archive filter assets
  */
 function enqueue_archive_filter_assets() {
+    // Pages qui utilisent le nouveau systeme list-filters (ex : archive des revues) :
+    // l'ancien script ecoute aussi .filter-dropdown et referme aussitot le menu.
+    if (function_exists('ad_is_list_filters_page') && ad_is_list_filters_page()) {
+        return;
+    }
+
     // Only enqueue on archive pages or home page
     if (is_home() || is_archive()) {
         
