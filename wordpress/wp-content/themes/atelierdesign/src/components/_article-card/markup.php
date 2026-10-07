@@ -17,9 +17,9 @@ $post_title     = get_the_title($post_id);
 $post_permalink = get_permalink($post_id);
 $post_date      = get_the_date('d.m.Y', $post_id);
 
-// Premiere thematique associee -> sert de badge
-$thematiques = get_field('thematiques', $post_id);
-$primary_thematique = (is_array($thematiques) && !empty($thematiques)) ? $thematiques[0] : null;
+// Thematiques principales uniquement (les sous-thematiques sont remontees
+// a leur thematique racine) -> badges
+$main_thematiques = function_exists('ad_get_main_thematiques') ? ad_get_main_thematiques($post_id) : [];
 
 // Numero associe (optionnel, affiche a cote de la date)
 $numero = get_field('numero', $post_id);
@@ -38,6 +38,11 @@ $numero = get_field('numero', $post_id);
       <?php else: ?>
         <?php ad_render_card_placeholder($post_id, $post_title); ?>
       <?php endif; ?>
+
+      <?php // Icone(s) Podcast / Debat
+      if (function_exists('ad_render_article_formats')) {
+        ad_render_article_formats($post_id, 'card');
+      } ?>
     </div>
 
     <!-- Meta -->
@@ -46,11 +51,13 @@ $numero = get_field('numero', $post_id);
         <?php echo esc_html($post_date); ?>
       </time>
 
-      <?php if ($primary_thematique instanceof WP_Post): ?>
-        <div class="badge-wrapper flex justify-end">
-          <div class="badge-surface">
-            <?php echo esc_html(get_the_title($primary_thematique->ID)); ?>
-          </div>
+      <?php if (!empty($main_thematiques)): ?>
+        <div class="badge-wrapper flex flex-wrap justify-end @sm:gap-1 @md/lg:gap-1">
+          <?php foreach ($main_thematiques as $main_thematique): ?>
+            <div class="badge-surface">
+              <?php echo esc_html(get_the_title($main_thematique->ID)); ?>
+            </div>
+          <?php endforeach; ?>
         </div>
       <?php endif; ?>
     </div>

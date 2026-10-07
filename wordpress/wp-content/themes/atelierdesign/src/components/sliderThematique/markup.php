@@ -3,19 +3,20 @@
  * Slider Thematique Component
  *
  * Slider (Swiper) alimente automatiquement par le CPT `thematique`.
- * 4 elements visibles en desktop, 3 en tablette, 1 en mobile.
+ * 5 elements visibles en desktop, 4 en tablette, 1 en mobile.
  *
- * Chaque slide :
- *   image  = featured image
+ * Chaque slide = le DERNIER ARTICLE publie de la thematique
+ * (thematique + ses sous-thematiques) :
+ *   image  = image mise en avant de l'article (visuel de repli sinon)
  *   badge  = titre de la thematique
- *   texte  = hero.title (description) ou excerpt
+ *   texte  = titre de l'article
+ *   lien   = l'article
+ * Les thematiques sans article publie ne sont pas affichees.
  *
  * Usage: get_template_part('src/components/sliderThematique/markup', null, $section_data);
  */
 
 global $adwp;
-
-require_once get_template_directory() . '/src/components/_thematique-card/helpers.php';
 
 $section = is_array($args) ? $args : [];
 
@@ -63,13 +64,43 @@ switch ($orderby) {
 
 $thematiques = get_posts($query_args);
 
+// Dernier article de chaque thematique (perimetre = thematique + descendants)
+$slides = [];
+
+foreach ($thematiques as $thematique) {
+  $scope_ids = function_exists('ad_thematique_scope_ids')
+    ? ad_thematique_scope_ids($thematique->ID)
+    : [$thematique->ID];
+
+  $latest = get_posts([
+    'post_type'      => 'post',
+    'post_status'    => 'publish',
+    'posts_per_page' => 1,
+    'orderby'        => 'date',
+    'order'          => 'DESC',
+    'no_found_rows'  => true,
+    'meta_query'     => function_exists('ad_thematique_meta_query')
+      ? ad_thematique_meta_query($scope_ids)
+      : [['key' => 'thematiques', 'value' => '"' . (int) $thematique->ID . '"', 'compare' => 'LIKE']],
+  ]);
+
+  if (empty($latest)) {
+    continue;
+  }
+
+  $slides[] = [
+    'thematique' => $thematique,
+    'article'    => $latest[0],
+  ];
+}
+
 // Identifiant unique de cette instance de slider
 $slider_id = 'slider-thematique-' . uniqid();
 
 // Depuis Swiper 9, `loop` reordonne les vraies slides au lieu de cloner : il lui
 // faut donc assez de slides reelles, sinon il insere des blancs (d'ou les sauts).
 // On repete la liste jusqu'a 3x le plus grand slidesPerView.
-$slides_count = count($thematiques);
+$slides_count = count($slides);
 $max_per_view = 5; // valeur du plus grand breakpoint ci-dessous
 $repeat = $slides_count > 0
   ? max(1, (int) ceil(($max_per_view * 3) / $slides_count))
@@ -77,7 +108,7 @@ $repeat = $slides_count > 0
 ?>
 
 <section class="slider-section slider-thematique py-section overflow-hidden <?= $themeClass; ?> <?= $layoutClass; ?>">
-  <?php if (!empty($thematiques)): ?>
+  <?php if (!empty($slides)): ?>
     <div class="slider-wrapper container !overflow-visible relative">
 
       <?php if (!empty($label) || !empty($title)): ?>
@@ -94,32 +125,41 @@ $repeat = $slides_count > 0
       <div class="swiper !overflow-visible <?= $slider_id; ?>">
         <div class="swiper-wrapper">
           <?php for ($i = 0; $i < $repeat; $i++): ?>
-          <?php foreach ($thematiques as $thematique):
-              $data = ad_get_thematique_card_data($thematique->ID);
+          <?php foreach ($slides as $slide):
+              $article_id       = $slide['article']->ID;
+              $article_title    = get_the_title($article_id);
+              $thematique_title = get_the_title($slide['thematique']->ID);
             ?>
               <div class="swiper-slide">
-                <a href="<?php echo esc_url($data['permalink']); ?>" class="slide-card thematique-slide flex flex-col gap-4 group">
-                  <div class="slide-image @sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green aspect-[256/187]">
-                    <?php echo wp_get_attachment_image($data['image_id'], 'medium_large', false, [
-                      'class' => 'w-full h-full object-cover group-hover:scale-105 duration-300 group-hover:duration-1000 transition-transform',
-                      'loading' => 'lazy',
-                      'draggable' => 'false',
-                      'alt' => esc_attr($data['title']),
-                    ]); ?>
+                <a href="<?php echo esc_url(get_permalink($article_id)); ?>" class="slide-card thematique-slide flex flex-col gap-4 group">
+                  <div class="slide-image relative @sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green aspect-[256/187]">
+                    <?php if (has_post_thumbnail($article_id)): ?>
+                      <?php echo get_the_post_thumbnail($article_id, 'medium_large', [
+                        'class' => 'w-full h-full object-cover group-hover:scale-105 duration-300 group-hover:duration-1000 transition-transform',
+                        'loading' => 'lazy',
+                        'draggable' => 'false',
+                        'alt' => esc_attr($article_title),
+                      ]); ?>
+                    <?php elseif (function_exists('ad_render_card_placeholder')): ?>
+                      <?php ad_render_card_placeholder($article_id, $article_title); ?>
+                    <?php endif; ?>
+
+                    <?php // Icone(s) Podcast / Debat
+                    if (function_exists('ad_render_article_formats')) {
+                      ad_render_article_formats($article_id, 'card');
+                    } ?>
                   </div>
 
                   <div class="slide-content flex flex-col @sm:gap-2 @md/lg:gap-2 autoscale-children">
                     <div class="badge-wrapper flex justify-start">
                       <div class="badge-surface">
-                        <?php echo esc_html($data['title']); ?>
+                        <?php echo esc_html($thematique_title); ?>
                       </div>
                     </div>
 
-                    <?php if (!empty($data['description'])): ?>
-                      <h3 class="slide-title heading-sm heading-primary autoscale group-hover:opacity-80 transition-opacity duration-200">
-                        <?php echo esc_html($data['description']); ?>
-                      </h3>
-                    <?php endif; ?>
+                    <h3 class="slide-title heading-sm heading-primary autoscale group-hover:opacity-80 transition-opacity duration-200">
+                      <?php echo esc_html($article_title); ?>
+                    </h3>
                   </div>
                 </a>
               </div>
@@ -184,7 +224,7 @@ $repeat = $slides_count > 0
     </script>
   <?php else: ?>
     <div class="text-center py-8">
-      <p class="text-typography-heading-primary">Aucune thematique trouvee.</p>
+      <p class="text-typography-heading-primary">Aucun article trouve.</p>
     </div>
   <?php endif; ?>
 </section>

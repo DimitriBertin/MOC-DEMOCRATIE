@@ -73,6 +73,15 @@ $found_posts  = (int) $wp_query->found_posts;
                   <h2 class="search-result-item-title heading-md heading-primary">
                     <?php echo esc_html(get_the_title()); ?>
                   </h2>
+
+                  <?php if (get_post_type() === 'post' && function_exists('ad_render_article_auteurs')) : ?>
+                    <?php // Pas de liens ici : toute la carte est deja un lien
+                    ad_render_article_auteurs(get_the_ID(), [
+                      'links' => false,
+                      'class' => 'paragraph-md paragraph-primary',
+                    ]); ?>
+                    <?php ad_render_article_formats(get_the_ID(), 'inline'); ?>
+                  <?php endif; ?>
                 </div>
 
                 <span class="menu inline-flex items-center !leading-tight text-dark-green">

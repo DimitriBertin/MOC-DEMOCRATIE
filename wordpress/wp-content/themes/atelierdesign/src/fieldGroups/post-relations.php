@@ -45,7 +45,7 @@ acf_add_local_field_group([
             'label' => 'Auteur·rice(s)',
             'name' => 'auteurs',
             'type' => 'relationship',
-            'instructions' => 'Associer un ou plusieurs auteur·rices a cet article.',
+            'instructions' => 'Associer un ou plusieurs auteur·rices a cet article (aucune distinction principal / secondaire). Leurs noms seront cliquables sur l\'article.',
             'required' => 0,
             'post_type' => [
                 0 => 'auteur',

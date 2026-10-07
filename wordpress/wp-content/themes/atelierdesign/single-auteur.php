@@ -3,7 +3,8 @@
  * Single Auteur·rice
  *
  * Structure de la page :
- *   1. Nom de l'auteur·rice (titre du post)
+ *   1. Nom de l'auteur·rice (titre du post) + courte presentation (champ `presentation`)
+ *      + lien de retour vers la liste des auteur·rices (/auteurs/). Pas de photo.
  *   2. Flexible content (champ `flexible-layout`, voir src/fieldGroups/auteur.php)
  *   3. Tous les articles lies a l'auteur·rice, en grille 3 colonnes (comme
  *      le composant relatedArticle). Pas de pagination : on affiche tout.
@@ -30,9 +31,20 @@ global $adwp;
     <!-- 1. Nom -->
     <section class="archive-header auteur-header @sm:mt-[70px] @md/lg:mt-[130px] py-section theme-white bg-layout-main">
       <div class="container">
+        <a href="<?php echo esc_url(get_post_type_archive_link('auteur')); ?>" class="auteur-back label label-primary autoscale inline-block @sm:mb-4 @md/lg:mb-6">
+          &larr; Tou·tes les auteur·rices
+        </a>
+
         <h1 class="archive-title text-yellow text-display autoscale">
           <?php echo esc_html(get_the_title($auteur_id)); ?>
         </h1>
+
+        <?php $presentation = get_field('presentation', $auteur_id); ?>
+        <?php if (!empty($presentation)): ?>
+          <div class="auteur-presentation wysiwyg paragraph-lg paragraph-primary autoscale @sm:mt-6 @md/lg:mt-10 @md/lg:max-w-[760px]">
+            <?php echo wp_kses_post($presentation); ?>
+          </div>
+        <?php endif; ?>
       </div>
     </section>
 
@@ -65,8 +77,12 @@ global $adwp;
     ?>
 
     <?php if (!empty($auteur_posts)): ?>
-      <section class="auteur-articles py-section theme-white bg-layout-main">
+      <section class="auteur-articles py-section pt-0 theme-white bg-layout-main">
         <div class="container">
+          <h2 class="heading-lg heading-primary autoscale @sm:mb-8 @md/lg:mb-12">
+            <?php echo count($auteur_posts) > 1 ? 'Ses articles' : 'Son article'; ?>
+            <span class="label label-primary align-middle @sm:ml-2 @md/lg:ml-3">(<?php echo count($auteur_posts); ?>)</span>
+          </h2>
           <div class="posts-grid grid @sm:grid-cols-1 @md/lg:grid-cols-2 @lg:grid-cols-3 @sm:gap-y-8 @md/lg:gap-y-12 @sm:gap-x-3 @md/lg:gap-x-3">
             <?php foreach ($auteur_posts as $auteur_post): ?>
               <?php get_template_part('src/components/_article-card/markup', null, [

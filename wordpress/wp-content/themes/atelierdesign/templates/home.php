@@ -79,7 +79,8 @@
       <div class="flex-grid md:flex-grid-cols-3 @sm:flex-grid-gap-[12px] @md/lg:flex-grid-gap-[12px] justify-end">
         <?php foreach($thematic as $article):
           $pid = $article->ID;
-          $thematique = get_field('thematiques', $pid);
+          // Thematiques principales uniquement (pas les sous-thematiques)
+          $thematique = function_exists('ad_get_main_thematiques') ? ad_get_main_thematiques($pid) : get_field('thematiques', $pid);
         ?>
         <a  href="<?= get_permalink($pid) ?>" class="bg-white flex-grid-col-span-1 overflow-hidden @sm:rounded-xl @md/lg:rounded-xl relative flex-col justify-between @sm:px-[26px] @md/lg:px-[26px] @sm:py-[34px] @md/lg:py-[34px] flex autoscale-children @sm:gap-[12px] @md/lg:gap-[12px]">
           <svg class="@@:w-[51px] @@:h-[52px]" viewBox="0 0 51 52" fill="none" xmlns="http://www.w3.org/2000/svg">

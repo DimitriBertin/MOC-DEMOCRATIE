@@ -655,3 +655,93 @@ ul,ol {
 .site-header.menu-open .search-mobile-btn {
   @apply text-white;
 }
+
+
+/**
+  ARTICLES : formats (podcast / debat), auteur·rices
+  (markup genere dans src/functions/article-helpers.php, non scanne par Tailwind :
+   les styles sont donc declares ici)
+**/
+.article-formats {
+  @apply flex items-center @sm:gap-1.5 @md/lg:gap-2;
+}
+
+.article-format {
+  @apply inline-flex items-center justify-center rounded-full bg-yellow text-dark-green;
+
+  .material-symbols-outlined {
+    @apply @sm:text-[20px] @md/lg:text-[22px] leading-none;
+  }
+}
+
+.article-format__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Pastilles sur l'image de la carte */
+.article-formats--card {
+  @apply absolute z-[2] @sm:top-3 @sm:left-3 @md/lg:top-4 @md/lg:left-4;
+
+  .article-format {
+    @apply @sm:w-9 @sm:h-9 @md/lg:w-11 @md/lg:h-11 shadow-[0_4px_16px_rgba(0,0,0,0.15)];
+  }
+}
+
+/* En-tete d'article : pastille + libelle */
+.article-formats--hero .article-format {
+  @apply font-safiro font-semibold uppercase @sm:gap-1.5 @md/lg:gap-2 @sm:px-3 @md/lg:px-3 @sm:py-1 @md/lg:py-1 @sm:text-[12px]/[18px] @md/lg:text-[12px]/[18px] @sm:tracking-[2px] @md/lg:tracking-[2px];
+
+  .material-symbols-outlined {
+    @apply @sm:text-[18px] @md/lg:text-[18px];
+  }
+}
+
+/* Resultats de recherche */
+.article-formats--inline .article-format {
+  @apply @sm:w-8 @sm:h-8 @md/lg:w-8 @md/lg:h-8;
+
+  .material-symbols-outlined {
+    @apply @sm:text-[18px] @md/lg:text-[18px];
+  }
+}
+
+.article-auteurs__link {
+  @apply underline underline-offset-4 decoration-1 transition-colors duration-200;
+
+  &:hover {
+    @apply text-yellow;
+  }
+}
+
+/* Liste des auteur·rices */
+.auteurs-index__letter {
+  @apply inline-flex items-center justify-center @sm:w-9 @sm:h-9 @md/lg:w-10 @md/lg:h-10 rounded-full border border-current text-green-semi-light transition-colors duration-200;
+
+  &:hover {
+    @apply bg-yellow border-yellow text-dark-green;
+  }
+}
+
+.auteurs-group {
+  @apply scroll-mt-[160px];
+
+  & + & {
+    @apply @sm:mt-12 @md/lg:mt-16;
+  }
+}
+
+.auteurs-group__letter {
+  @apply @sm:mb-4 @md/lg:mb-6 @sm:pb-3 @md/lg:pb-4 border-b border-current;
+}
+
+.auteur-link {
+  @apply @sm:py-3 @md/lg:py-4 border-b border-black/10;
+}

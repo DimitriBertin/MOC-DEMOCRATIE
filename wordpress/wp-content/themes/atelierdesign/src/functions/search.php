@@ -5,6 +5,7 @@
  * ─────────────────────────────────────────────────────────────────────────────
  * 1. Étend la recherche WordPress à tous les CPTs du thème
  * 2. Ajoute une tolérance aux fautes de frappe (Levenshtein) sur les titres
+ * 3. Retrouve les articles d'une personne en cherchant son nom
  */
 
 /**
@@ -131,18 +132,84 @@ function moc_fuzzy_post_ids(string $raw_term, array $post_types): array {
   return array_unique($matching);
 }
 
+/**
+ * ── Recherche par auteur·rice ────────────────────────────────────────────────
+ *
+ * Taper le nom d'une personne ("dupont", "Jeanne Dupont", "dupnt") remonte sa
+ * fiche ET tous les articles qu'elle signe (champ ACF `auteurs` de l'article).
+ *
+ * Un·e auteur·rice correspond si CHAQUE mot de la recherche (≥ 2 car.) est
+ * present dans son nom : mot entier, debut de mot, ou avec une faute de frappe
+ * (memes seuils Levenshtein que la recherche floue).
+ *
+ * @return int[] IDs des articles des auteur·rices correspondant·es.
+ */
+function moc_auteur_article_ids(string $raw_term): array {
+  $words = array_values(array_filter(
+    preg_split('/\s+/', moc_normalize(trim($raw_term))),
+    fn($w) => mb_strlen($w) >= 2
+  ));
+  if (empty($words)) return [];
+
+  global $wpdb;
+  $rows = $wpdb->get_results(
+    "SELECT ID, post_title FROM {$wpdb->posts}
+     WHERE post_type = 'auteur' AND post_status = 'publish'"
+  );
+
+  $auteur_ids = [];
+
+  foreach ($rows as $row) {
+    $name_norm  = moc_normalize($row->post_title);
+    $name_words = preg_split('/[\s\-_\/,;:.!?\']+/', $name_norm);
+
+    foreach ($words as $word) {
+      $len      = mb_strlen($word);
+      $max_dist = $len <= 3 ? 0 : ($len <= 7 ? 1 : 2);
+      $found    = false;
+
+      foreach ($name_words as $nw) {
+        if (mb_strlen($nw) < 2) continue;
+
+        // Debut de mot : "dup" -> "Dupont" (mais "les" ne remonte pas "Charles")
+        if (strpos($nw, $word) === 0) {
+          $found = true;
+          break;
+        }
+
+        // Faute de frappe : "dupnt" -> "Dupont"
+        if ($max_dist > 0 && levenshtein($word, $nw) <= $max_dist) {
+          $found = true;
+          break;
+        }
+      }
+
+      if (! $found) continue 2; // ce mot ne correspond pas : auteur·rice suivant·e
+    }
+
+    $auteur_ids[] = (int) $row->ID;
+  }
+
+  if (empty($auteur_ids) || ! function_exists('ad_get_auteur_article_ids')) return [];
+
+  return ad_get_auteur_article_ids($auteur_ids);
+}
+
 add_filter('posts_search', function (string $search, WP_Query $query): string {
   if (! $query->is_search() || ! $query->is_main_query() || is_admin()) return $search;
 
   $term = trim(get_query_var('s'));
   if (mb_strlen($term) < 3) return $search;
 
-  $fuzzy_ids = moc_fuzzy_post_ids($term, moc_search_post_types());
+  $fuzzy_ids = array_values(array_unique(array_merge(
+    moc_fuzzy_post_ids($term, moc_search_post_types()),
+    moc_auteur_article_ids($term)
+  )));
 
-  if (empty($fuzzy_ids)) return $search;
+  if (empty($fuzzy_ids) || trim($search) === '') return $search;
 
   global $wpdb;
-  $ids_sql = implode(',', $fuzzy_ids);
+  $ids_sql = implode(',', array_map('intval', $fuzzy_ids));
 
   // Retire le "AND" initial du $search WP, puis englobe les deux
   // conditions (LIKE exact + IDs fuzzy) dans un seul AND (... OR ...).

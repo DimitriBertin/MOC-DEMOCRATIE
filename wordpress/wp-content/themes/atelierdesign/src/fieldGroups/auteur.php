@@ -18,6 +18,31 @@ acf_add_local_field_group([
             'type' => 'acfe_hidden',
             'default_value' => 'auteur',
         ],
+        // Fiche (presentation)
+        [
+            'key' => 'field_auteur_fiche_tab',
+            'label' => 'Fiche',
+            'type' => 'tab',
+            'no_preference' => 0,
+        ],
+        [
+            'key' => 'field_auteur_presentation',
+            'label' => 'Courte presentation',
+            'name' => 'presentation',
+            'type' => 'textarea',
+            'instructions' => 'Quelques lignes affichees en tete de la fiche de l\'auteur·rice.',
+            'required' => 0,
+            'rows' => 4,
+            'new_lines' => 'wpautop',
+        ],
+        [
+            'key' => 'field_auteur_nom_tri',
+            'label' => 'Nom pour le classement alphabetique',
+            'name' => 'nom_tri',
+            'type' => 'text',
+            'instructions' => 'Optionnel. Par defaut, le classement se fait sur le dernier mot du nom (ex. "Jeanne Dupont" -> D). A renseigner pour les noms composes ou a particule (ex. "de La Fontaine" -> "La Fontaine").',
+            'required' => 0,
+        ],
         // Hero Section
         [
             'key' => 'field_auteur_hero_tab',

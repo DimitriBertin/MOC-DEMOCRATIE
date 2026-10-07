@@ -133,6 +133,11 @@ switch ($template_type) {
         <?php if ($label): ?>
             <div class="label text-white autoscale"><?php echo esc_html($label); ?></div>
         <?php endif; ?>
+
+        <?php // Icone(s) Podcast / Debat (articles)
+        if ($template_type === 'single-post' && function_exists('ad_render_article_formats')) {
+            ad_render_article_formats(get_the_ID(), 'hero');
+        } ?>
         
         <?php if (!empty($taxonomy_badges)): ?>
           <div class="badge-wrapper flex flex-wrap @sm:gap-2 @md/lg:gap-2">
@@ -160,6 +165,13 @@ switch ($template_type) {
       <h1 class="<?php echo implode(' ', $title_classes); ?>">
         <?php echo nl2br(esc_html($title)); ?>
       </h1>
+
+      <?php // Auteur·rices de l'article, chaque nom renvoie vers sa fiche
+      if ($template_type === 'single-post' && function_exists('ad_render_article_auteurs')) {
+          ad_render_article_auteurs(get_the_ID(), [
+              'class' => 'paragraph-lg text-white autoscale @sm:mt-4 @md/lg:mt-6',
+          ]);
+      } ?>
     
       <?php if ($cta_button && !empty($cta_button['title']) && !empty($cta_button['url'])): ?>
         <div class="@sm:mt-6 @md/lg:mt-6 theme-yellow">
