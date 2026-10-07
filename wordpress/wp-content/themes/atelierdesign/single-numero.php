@@ -34,9 +34,14 @@ global $adwp;
     $sommaire     = get_field('sommaire', $numero_id);
     $liseuse      = get_field('liseuse', $numero_id);
     // Articles lies : choisis a la main dans le champ relationship `articles_lies`
-    $article_ids  = array_values(array_filter((array) get_field('articles_lies', $numero_id), function ($id) {
-      return get_post_status((int) $id) === 'publish';
-    }));
+    // (get_post_status(0) renverrait le statut de la revue courante : on exclut les ids vides)
+    $articles_lies = get_field('articles_lies', $numero_id);
+    $article_ids   = array_values(array_filter(
+      array_map('intval', is_array($articles_lies) ? $articles_lies : []),
+      function ($id) use ($numero_id) {
+        return $id > 0 && $id !== (int) $numero_id && get_post_type($id) === 'post' && get_post_status($id) === 'publish';
+      }
+    ));
     ?>
 
     <!-- 1. Couverture + sommaire -->
