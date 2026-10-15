@@ -610,12 +610,12 @@ if (!function_exists('ad_get_article_chapo')) {
 
 if (!function_exists('ad_get_numero_related_ids')) {
     /**
-     * Numeros "Pour aller plus loin" : choix manuel (`numeros_lies`), sinon revues
-     * partageant une thematique avec ce numero (ou ses articles), sinon les plus recentes.
+     * Numeros "Pour aller plus loin" : uniquement ceux choisis dans le champ
+     * `numeros_lies` du backoffice (pas de selection automatique).
      *
      * @return int[]
      */
-    function ad_get_numero_related_ids($numero_id, $limit = 3) {
+    function ad_get_numero_related_ids($numero_id, $limit = 6) {
         $ids = [];
         foreach ((array) get_field('numeros_lies', $numero_id) as $item) {
             $id = $item instanceof WP_Post ? $item->ID : (int) $item;
@@ -623,51 +623,7 @@ if (!function_exists('ad_get_numero_related_ids')) {
                 $ids[] = $id;
             }
         }
-        $ids = array_values(array_unique($ids));
-        if (!empty($ids)) {
-            return $ids;
-        }
 
-        $themes = [];
-        $collect = function ($post_id) use (&$themes) {
-            foreach ((array) get_field('thematiques', $post_id) as $t) {
-                $themes[] = $t instanceof WP_Post ? $t->ID : (int) $t;
-            }
-        };
-        $collect($numero_id);
-        foreach (ad_get_numero_article_ids($numero_id) as $article_id) {
-            $collect($article_id);
-        }
-        // Remonte aux thematiques racines
-        $roots = [];
-        foreach (array_filter(array_unique($themes)) as $t) {
-            $anc     = get_post_ancestors($t);
-            $roots[] = $anc ? (int) end($anc) : (int) $t;
-        }
-        $roots = array_values(array_unique($roots));
-
-        $args = [
-            'post_type'      => 'numero',
-            'post_status'    => 'publish',
-            'posts_per_page' => $limit,
-            'post__not_in'   => [(int) $numero_id],
-            'orderby'        => 'date',
-            'order'          => 'DESC',
-            'fields'         => 'ids',
-            'no_found_rows'  => true,
-        ];
-
-        if ($roots) {
-            $meta = ['relation' => 'OR'];
-            foreach ($roots as $t) {
-                $meta[] = ['key' => 'thematiques', 'value' => '"' . $t . '"', 'compare' => 'LIKE'];
-            }
-            $found = get_posts($args + ['meta_query' => $meta]);
-            if (!empty($found)) {
-                return array_map('intval', $found);
-            }
-        }
-
-        return array_map('intval', get_posts($args));
+        return array_slice(array_values(array_unique($ids)), 0, $limit);
     }
 }

@@ -127,7 +127,7 @@ acf_add_local_field_group([
             'label' => 'Numeros connectes',
             'name' => 'numeros_lies',
             'type' => 'relationship',
-            'instructions' => 'Revues affichees en bas de la page, sous "Pour aller plus loin". Si vide, la page propose automatiquement les revues des memes thematiques (sinon les plus recentes). Ordre conserve.',
+            'instructions' => 'Choisir les revues affichees sous "Pour aller plus loin" (colonne de droite de la page). Rien n\'est affiche si aucune revue n\'est choisie. Ordre conserve.',
             'required' => 0,
             'post_type' => [0 => 'numero'],
             'taxonomy' => [],

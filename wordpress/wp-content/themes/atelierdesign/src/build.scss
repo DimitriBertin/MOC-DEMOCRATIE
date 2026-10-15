@@ -856,3 +856,12 @@ ul,ol {
     @apply @sm:text-[20px] @md/lg:text-[20px] leading-none;
   }
 }
+
+/* Revue : les zones "hidden" doivent rester masquees malgre les utilitaires flex */
+#numero [hidden] {
+  display: none !important;
+}
+
+.numero-toggle {
+  @apply inline-flex items-center cursor-pointer;
+}
