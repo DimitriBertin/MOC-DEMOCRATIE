@@ -69,7 +69,7 @@ function moc_seed_admin_page() {
       <?php elseif ($notice === 'about'): ?>
         <div class="notice notice-success"><p>Page À propos enrichie.</p></div>
       <?php elseif ($notice === 'about_missing'): ?>
-        <div class="notice notice-error"><p>Page À propos introuvable (slug « a-propos », « qui-sommes-nous »… ou titre contenant « propos »).</p></div>
+        <div class="notice notice-error"><p>Impossible de créer la page À propos.</p></div>
       <?php elseif ($notice === 'about_done'): ?>
         <div class="notice notice-warning"><p>La page À propos a déjà été enrichie.</p></div>
       <?php elseif ($notice === 'exists'): ?>
@@ -98,7 +98,7 @@ function moc_seed_admin_page() {
         <?php if ($total > 0): ?>
           <button class="button" name="moc_seed_op" value="delete" onclick="return confirm('Supprimer tous les contenus de démo ?')">Supprimer</button>
         <?php endif; ?>
-        <button class="button" name="moc_seed_op" value="about" onclick="return confirm('Ajouter le contenu « Qui sommes-nous » à la page À propos ?')">Enrichir la page À propos</button>
+        <button class="button" name="moc_seed_op" value="about" onclick="return confirm('Créer (si besoin) et remplir la page À propos ?')">Enrichir la page À propos</button>
       </form>
     </div>
     <?php
@@ -537,7 +537,7 @@ function moc_seed_dans_ce_numero($title) {
 }
 
 /**
- * Page « À propos » : ajoute le contenu « Qui sommes-nous » (reformulé à partir de
+ * Page « À propos » : la crée si elle n'existe pas, puis ajoute le contenu « Qui sommes-nous » (reformulé à partir de
  * la page revue-democratie.be) en fin de flexible content. Une seule fois.
  *
  * @return string code de notice
@@ -559,8 +559,20 @@ function moc_seed_enrich_about() {
         ]);
         $page = $found ? $found[0] : null;
     }
+    // Page absente : on la crée (publiée, slug « a-propos »)
     if (!$page) {
-        return 'about_missing';
+        $page_id = wp_insert_post([
+            'post_type'   => 'page',
+            'post_title'  => 'Qui sommes-nous ?',
+            'post_name'   => 'a-propos',
+            'post_status' => 'publish',
+            'post_author' => get_current_user_id(),
+        ], true);
+        if (is_wp_error($page_id) || !$page_id) {
+            return 'about_missing';
+        }
+        update_field('field_page_clone_hero', ['title' => 'Qui sommes-nous ?'], $page_id);
+        $page = get_post($page_id);
     }
     if (get_post_meta($page->ID, '_moc_seed_about', true)) {
         return 'about_done';
