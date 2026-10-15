@@ -39,7 +39,7 @@ global $adwp;
     $archive_url  = get_post_type_archive_link('numero');
 
     $has_intro    = $dcn['text'] !== '';
-    $has_sommaire = !empty($article_ids) || !empty($dcn_full) || !empty($pdf['url']) || !empty($liseuse['url']);
+    $has_sommaire = !empty($article_ids) || !empty($dcn_full) || !empty($pdf['url']) || !empty($liseuse['url']) || !empty($related_ids);
     // Sans "Dans ce numero", le sommaire est visible d'emblee (rien a deplier)
     $sommaire_open = !$has_intro;
     ?>
@@ -115,20 +115,16 @@ global $adwp;
                         $own_liseuse = get_field('liseuse_article', $article_id);
                         ?>
                         <li class="numero-au-sommaire__item">
-                          <h3 class="heading-md heading-primary">
+                          <h3 class="numero-au-sommaire__title">
                             <a href="<?php echo esc_url(get_permalink($article_id)); ?>"><?php echo esc_html(get_the_title($article_id)); ?></a>
                           </h3>
                           <?php if ($chapo !== ''): ?>
                             <p class="numero-au-sommaire__chapo paragraph-md paragraph-primary"><?php echo esc_html($chapo); ?></p>
                           <?php endif; ?>
                           <div class="numero-au-sommaire__actions">
-                            <div class="theme-yellow">
-                              <a href="<?php echo esc_url(get_permalink($article_id)); ?>" class="button-flat button-primary">
-                                <span class="button-title">Lire l’article</span>
-                              </a>
-                            </div>
+                            <a href="<?php echo esc_url(get_permalink($article_id)); ?>" class="numero-au-sommaire__read">Lire l’article</a>
                             <?php if (!empty($own_liseuse['url'])): ?>
-                              <a href="<?php echo esc_url($own_liseuse['url']); ?>" class="numero-au-sommaire__liseuse paragraph-primary"
+                              <a href="<?php echo esc_url($own_liseuse['url']); ?>" class="numero-au-sommaire__liseuse"
                                  target="<?php echo esc_attr($own_liseuse['target'] ?: '_blank'); ?>" rel="noopener noreferrer">
                                 <span class="material-symbols-outlined" aria-hidden="true">picture_as_pdf</span>
                                 Liseuse PDF
@@ -158,24 +154,16 @@ global $adwp;
                     <?php endif; ?>
                   </div>
                 <?php endif; ?>
-              </div>
-            <?php endif; ?>
 
-            <!-- Pour aller plus loin : numeros choisis dans le backoffice -->
-            <?php if (!empty($related_ids)): ?>
-              <div class="numero-plus-loin">
-                <h2 class="numero-sommaire__title text-display text-yellow">Pour aller plus loin</h2>
-                <div class="posts-grid grid @sm:grid-cols-1 @md/lg:grid-cols-2 @sm:gap-y-8 @md/lg:gap-y-10 @sm:gap-x-3 @md/lg:gap-x-3">
-                  <?php foreach ($related_ids as $related_id): ?>
-                    <?php get_template_part('src/components/_numero-card/markup', null, ['post_id' => (int) $related_id]); ?>
-                  <?php endforeach; ?>
-                </div>
-                <?php if ($archive_url): ?>
-                  <div class="theme-yellow @sm:mt-6 @md/lg:mt-8">
-                    <a href="<?php echo esc_url($archive_url); ?>" class="numero-liseuse button-flat button-primary">
-                      <span class="material-symbols-outlined" aria-hidden="true">library_books</span>
-                      <span class="button-title">Voir les autres numéros de la revue</span>
-                    </a>
+                <!-- Pour aller plus loin : numeros choisis dans le backoffice (visible apres clic sur "Lire le numero complet") -->
+                <?php if (!empty($related_ids)): ?>
+                  <div class="numero-plus-loin">
+                    <h2 class="numero-sommaire__title text-display text-yellow">Pour aller plus loin</h2>
+                    <div class="posts-grid grid @sm:grid-cols-1 @md/lg:grid-cols-2 @sm:gap-y-8 @md/lg:gap-y-10 @sm:gap-x-3 @md/lg:gap-x-3">
+                      <?php foreach ($related_ids as $related_id): ?>
+                        <?php get_template_part('src/components/_numero-card/markup', null, ['post_id' => (int) $related_id]); ?>
+                      <?php endforeach; ?>
+                    </div>
                   </div>
                 <?php endif; ?>
               </div>
