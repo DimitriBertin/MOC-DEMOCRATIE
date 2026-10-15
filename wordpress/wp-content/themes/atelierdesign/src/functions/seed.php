@@ -5,10 +5,14 @@
  * Outils > Données de démo
  *
  *  - 20 auteur·rices (avec courte présentation)
- *  - 20 thématiques + 10 sous-thématiques
- *  - 6 numéros de revue
- *  - 24 articles (texte, thématiques, auteur·rices, numéro, tags,
- *    formats podcast / débat), dates étalées sur ~18 mois
+ *  - Thématiques : celles déjà créées sont CONSERVÉES (jamais supprimées).
+ *    Les sous-thématiques de l'ancien site (revue-democratie.be) sont ajoutées
+ *    sous leur thématique (créée si absente).
+ *  - 6 numéros de revue (« Dans ce numéro », liseuse, articles ordonnés)
+ *  - 24 articles (cover, chapeau, flexible content, thématiques, auteur·rices,
+ *    numéro, tags, formats podcast / débat), dates étalées sur ~18 mois
+ *  - « Réinitialiser » : supprime TOUS les articles existants avant de générer
+ *  - « Enrichir À propos » : ajoute le contenu « Qui sommes-nous » à la page À propos
  *  - Relations miroirs (Thematique.articles, Auteur.articles, Numero.articles,
  *    Numero.thematiques, Thematique.numeros) remplies
  *
@@ -60,14 +64,23 @@ function moc_seed_admin_page() {
         <div class="notice notice-success"><p>Contenus de démo créés.</p></div>
       <?php elseif ($notice === 'deleted'): ?>
         <div class="notice notice-success"><p>Contenus de démo supprimés.</p></div>
+      <?php elseif ($notice === 'reset'): ?>
+        <div class="notice notice-success"><p>Articles existants supprimés, contenus de démo créés.</p></div>
+      <?php elseif ($notice === 'about'): ?>
+        <div class="notice notice-success"><p>Page À propos enrichie.</p></div>
+      <?php elseif ($notice === 'about_missing'): ?>
+        <div class="notice notice-error"><p>Page À propos introuvable (slug « a-propos », « qui-sommes-nous »… ou titre contenant « propos »).</p></div>
+      <?php elseif ($notice === 'about_done'): ?>
+        <div class="notice notice-warning"><p>La page À propos a déjà été enrichie.</p></div>
       <?php elseif ($notice === 'exists'): ?>
         <div class="notice notice-warning"><p>Des contenus de démo existent déjà : utilisez « Régénérer ».</p></div>
       <?php endif; ?>
 
       <p>
-        Crée 20 auteur·rices, 20 thématiques + 10 sous-thématiques, 6 revues et 24 articles, reliés entre eux.<br>
-        Images utilisées : médias #72 à #76 (<?php echo count($images); ?> trouvée(s)).<br>
-        Le bouton « Supprimer » ne retire que les contenus de démo, jamais le contenu réel.
+        Crée 20 auteur·rices, 6 revues et 24 articles (cover, chapeau, contenu, thématiques), reliés entre eux.<br>
+        Les thématiques existantes sont conservées ; les sous-thématiques manquantes sont ajoutées.<br>
+        Images utilisées pour les covers : <?php echo count($images); ?> image(s) de la médiathèque.<br>
+        <strong>« Réinitialiser et générer » supprime TOUS les articles existants</strong> (démo ou non). « Supprimer » ne retire que les contenus de démo.
       </p>
 
       <table class="widefat striped" style="max-width:420px">
@@ -81,12 +94,11 @@ function moc_seed_admin_page() {
       <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin-top:20px;display:flex;gap:8px">
         <?php wp_nonce_field('moc_seed'); ?>
         <input type="hidden" name="action" value="moc_seed">
-        <?php if ($total === 0): ?>
-          <button class="button button-primary" name="moc_seed_op" value="create">Générer les contenus</button>
-        <?php else: ?>
-          <button class="button button-primary" name="moc_seed_op" value="regenerate" onclick="return confirm('Supprimer puis recréer les contenus de démo ?')">Régénérer</button>
+        <button class="button button-primary" name="moc_seed_op" value="reset" onclick="return confirm('Supprimer TOUS les articles existants (et les revues / auteur·rices de démo), puis générer les contenus de démo ?')">Réinitialiser et générer</button>
+        <?php if ($total > 0): ?>
           <button class="button" name="moc_seed_op" value="delete" onclick="return confirm('Supprimer tous les contenus de démo ?')">Supprimer</button>
         <?php endif; ?>
+        <button class="button" name="moc_seed_op" value="about" onclick="return confirm('Ajouter le contenu « Qui sommes-nous » à la page À propos ?')">Enrichir la page À propos</button>
       </form>
     </div>
     <?php
@@ -102,6 +114,17 @@ add_action('admin_post_moc_seed', function () {
 
     $op   = sanitize_key($_POST['moc_seed_op'] ?? '');
     $done = '';
+
+    if ($op === 'reset') {
+        moc_seed_delete();
+        moc_seed_delete_all_articles();
+        moc_seed_run();
+        $done = 'reset';
+    }
+
+    if ($op === 'about') {
+        $done = moc_seed_enrich_about();
+    }
 
     if ($op === 'delete' || $op === 'regenerate') {
         moc_seed_delete();
@@ -176,8 +199,154 @@ function moc_seed_delete() {
     }
 }
 
+/**
+ * Supprime TOUS les articles (post), quel que soit leur statut (corbeille comprise).
+ * Les thématiques, pages et médias ne sont pas touchés.
+ */
+function moc_seed_delete_all_articles() {
+    $ids = get_posts([
+        'post_type'        => 'post',
+        'post_status'      => 'any',
+        'posts_per_page'   => -1,
+        'fields'           => 'ids',
+        'suppress_filters' => true,
+        'no_found_rows'    => true,
+    ]);
+    $ids = array_merge($ids, get_posts([
+        'post_type'        => 'post',
+        'post_status'      => 'trash',
+        'posts_per_page'   => -1,
+        'fields'           => 'ids',
+        'suppress_filters' => true,
+        'no_found_rows'    => true,
+    ]));
+
+    foreach (array_unique($ids) as $id) {
+        wp_delete_post($id, true);
+    }
+}
+
+/**
+ * Images de cover : médias #72 à #76 s'ils existent, sinon les images
+ * les plus récentes de la médiathèque.
+ */
 function moc_seed_images() {
-    return array_values(array_filter([72, 73, 74, 75, 76], 'wp_attachment_is_image'));
+    $images = array_values(array_filter([72, 73, 74, 75, 76], 'wp_attachment_is_image'));
+
+    if (count($images) >= 3) {
+        return $images;
+    }
+
+    return array_map('intval', get_posts([
+        'post_type'      => 'attachment',
+        'post_status'    => 'inherit',
+        'post_mime_type' => ['image/jpeg', 'image/png', 'image/webp'],
+        'posts_per_page' => 12,
+        'orderby'        => 'date',
+        'order'          => 'DESC',
+        'fields'         => 'ids',
+        'no_found_rows'  => true,
+    ]));
+}
+
+function moc_seed_norm($text) {
+    $text = remove_accents(mb_strtolower((string) $text));
+    return trim(preg_replace('/[^a-z0-9]+/', ' ', $text));
+}
+
+/**
+ * Thématique existante (racine ou sous-thématique) dont le titre correspond :
+ * égalité d'abord, puis inclusion. Retourne l'ID ou 0.
+ */
+function moc_seed_find_thematique($name, $parent = null) {
+    $needle = moc_seed_norm($name);
+    $posts  = get_posts([
+        'post_type'        => 'thematique',
+        'post_status'      => ['publish', 'draft', 'pending', 'private'],
+        'posts_per_page'   => -1,
+        'orderby'          => 'menu_order title',
+        'order'            => 'ASC',
+        'suppress_filters' => true,
+        'no_found_rows'    => true,
+    ]);
+
+    $contains = 0;
+    foreach ($posts as $post) {
+        if ($parent !== null && (int) $post->post_parent !== (int) $parent) {
+            continue;
+        }
+        $title = moc_seed_norm($post->post_title);
+        if ($title === $needle) {
+            return (int) $post->ID;
+        }
+        if (!$contains && $needle !== '' && $title !== '' && (strpos($title, $needle) !== false || strpos($needle, $title) !== false)) {
+            $contains = (int) $post->ID;
+        }
+    }
+
+    return $contains;
+}
+
+/**
+ * Garantit les sous-thématiques de l'ancien site sous leur thématique.
+ * Thématiques existantes conservées ; créées (et marquées seed) seulement si absentes.
+ *
+ * @return int[] IDs de toutes les thématiques (racines + sous) disponibles
+ */
+function moc_seed_ensure_thematiques($images = []) {
+    $order   = 0;
+    $has_any = (bool) get_posts([
+        'post_type' => 'thematique', 'post_status' => 'any', 'posts_per_page' => 1,
+        'fields' => 'ids', 'suppress_filters' => true, 'no_found_rows' => true,
+    ]);
+
+    foreach (moc_seed_data_thematiques() as $name => [$description, $children]) {
+        $parent_id = moc_seed_find_thematique($name, 0);
+
+        // Thématiques déjà recréées à la main : on n'ajoute que les sous-thématiques
+        // des racines qui existent (une racine absente est ignorée).
+        if (!$parent_id && $has_any) {
+            $order++;
+            continue;
+        }
+
+        if (!$parent_id) {
+            $parent_id = moc_seed_insert('thematique', $name, ['menu_order' => 100 + $order]);
+            if ($parent_id) {
+                update_field('field_thematique_clone_hero', ['title' => $description], $parent_id);
+                if ($images) set_post_thumbnail($parent_id, $images[$order % count($images)]);
+            }
+        }
+
+        foreach ($children as $j => $child) {
+            if (!$parent_id || moc_seed_find_thematique($child, $parent_id)) {
+                continue;
+            }
+            $exact = false;
+            foreach (get_children(['post_parent' => $parent_id, 'post_type' => 'thematique', 'post_status' => 'any']) as $c) {
+                if (moc_seed_norm($c->post_title) === moc_seed_norm($child)) { $exact = true; }
+            }
+            if ($exact) continue;
+
+            $child_id = moc_seed_insert('thematique', $child, ['post_parent' => $parent_id, 'menu_order' => $j]);
+            if ($child_id) {
+                update_field('field_thematique_clone_hero', ['title' => $child . ' : analyses et points de vue.'], $child_id);
+                if ($images) set_post_thumbnail($child_id, $images[($order + $j + 1) % count($images)]);
+            }
+        }
+        $order++;
+    }
+
+    return get_posts([
+        'post_type'        => 'thematique',
+        'post_status'      => 'publish',
+        'posts_per_page'   => -1,
+        'fields'           => 'ids',
+        'orderby'          => 'menu_order title',
+        'order'            => 'ASC',
+        'suppress_filters' => true,
+        'no_found_rows'    => true,
+    ]);
 }
 
 function moc_seed_insert($post_type, $title, $args = []) {
@@ -276,30 +445,20 @@ function moc_seed_data_nom_tri() {
 }
 
 /**
+ * Structure de l'ancien site (revue-democratie.be) :
  * thématique => [description, [sous-thématiques]]
  */
 function moc_seed_data_thematiques() {
     return [
-        'Travail et emploi'           => ['Comprendre les transformations du travail et défendre des emplois de qualité.', ['Conditions de travail', 'Chômage et activation']],
-        'Sécurité sociale'            => ['Un pilier de la solidarité à protéger et à renforcer.', ['Pensions', 'Allocations familiales']],
-        'Santé'                       => ['L’accès aux soins pour toutes et tous, un enjeu de justice sociale.', ['Santé mentale']],
-        'Démocratie et participation' => ['Faire vivre la démocratie au-delà du vote.', ['Participation citoyenne', 'Extrême droite']],
-        'Climat et transition juste'  => ['Une transition écologique qui ne laisse personne de côté.', ['Énergie']],
-        'Migrations'                  => ['Accueil, droits et dignité des personnes migrantes.', []],
-        'Logement'                    => ['Le droit à un logement décent et abordable.', []],
-        'Éducation permanente'        => ['Apprendre ensemble pour comprendre et transformer la société.', []],
-        'Enseignement'                => ['Une école qui réduit les inégalités au lieu de les reproduire.', []],
-        'Fiscalité'                   => ['Une fiscalité plus juste pour financer le bien commun.', []],
-        'Pauvreté et précarité'       => ['Lutter contre la pauvreté et le non-recours aux droits.', ['Non-recours aux droits']],
-        'Féminisme et égalité'        => ['L’égalité entre les femmes et les hommes, dans les faits.', []],
-        'Numérique'                   => ['Les enjeux démocratiques et sociaux du numérique.', []],
-        'Europe'                      => ['Construire une Europe sociale et démocratique.', []],
-        'Solidarité internationale'   => ['Des solidarités qui dépassent les frontières.', []],
-        'Économie sociale'            => ['Entreprendre autrement, au service de l’intérêt général.', []],
-        'Mobilité'                    => ['Se déplacer mieux, pour tous les publics.', []],
-        'Alimentation'                => ['Des systèmes alimentaires justes et durables.', []],
-        'Jeunesse'                    => ['Écouter et soutenir l’engagement des jeunes.', []],
-        'Culture'                     => ['La culture comme droit et comme espace d’émancipation.', []],
+        'Social'         => ['Protection sociale, emploi, logement, handicap : les droits sociaux au quotidien.', ['Protection sociale', 'Emploi / Formation', 'Logement', 'Handicap']],
+        'Société'        => ['Asile, enseignement, jeunesse, égalité : les grands débats de société.', ['Asile et immigration', 'Enseignement', 'Jeunesse / Enfance', 'Égalité / Discrimination']],
+        'Économie'       => ['Comprendre l’économie pour la mettre au service de toutes et tous.', []],
+        'Santé'          => ['L’accès aux soins pour toutes et tous, un enjeu de justice sociale.', []],
+        'Politique belge' => ['Décrypter les choix politiques et institutionnels belges.', []],
+        'Environnement'  => ['Une transition écologique qui ne laisse personne de côté.', ['Développement durable', 'Énergie', 'Aménagement du territoire']],
+        'International'  => ['Europe, pays du Sud, mondialisation : regarder au-delà des frontières.', ['Union européenne', 'Pays du Sud', 'Mondialisation']],
+        'Culture'        => ['La culture comme droit et comme espace d’émancipation.', []],
+        'COVID-19'       => ['Les effets sociaux et démocratiques de la crise sanitaire.', []],
     ];
 }
 
@@ -364,6 +523,83 @@ function moc_seed_paragraphs($title, $chapo, $thematique_names) {
     ]);
 }
 
+/**
+ * Texte « Dans ce numéro » (édito du numéro), plus long que 500 signes
+ * pour que la version raccourcie + le lien « lire en entier » soient visibles.
+ */
+function moc_seed_dans_ce_numero($title) {
+    return implode("\n", [
+        '<p>Ce numéro de la revue Démocratie est consacré à « ' . esc_html($title) . ' ». Nous y avons rassemblé des analyses, des témoignages de terrain et des points de vue contradictoires, pour comprendre ce qui se joue aujourd’hui et ce que nous pouvons y faire collectivement.</p>',
+        '<p>Dans un contexte marqué par les crises successives, les politiques publiques peinent à répondre aux attentes sociales. Les autrices et auteurs de ce dossier interrogent les choix qui sont faits, mettent en lumière des alternatives et donnent la parole à celles et ceux qui les construisent au quotidien.</p>',
+        '<p>Au sommaire, vous retrouverez des enquêtes, des décryptages et des entretiens. Chaque article peut se lire séparément, mais c’est leur mise en perspective qui dessine, nous l’espérons, des pistes d’action pour une société plus juste et plus démocratique.</p>',
+        '<p>Bonne lecture, et n’hésitez pas à réagir : la revue est aussi un espace de débat.</p>',
+    ]);
+}
+
+/**
+ * Page « À propos » : ajoute le contenu « Qui sommes-nous » (reformulé à partir de
+ * la page revue-democratie.be) en fin de flexible content. Une seule fois.
+ *
+ * @return string code de notice
+ */
+function moc_seed_enrich_about() {
+    if (!function_exists('update_field') || !function_exists('get_field')) {
+        return 'about_missing';
+    }
+
+    $page = null;
+    foreach (['a-propos', 'a-propos-de-nous', 'qui-sommes-nous', 'about', 'a-propos-de-la-revue'] as $slug) {
+        $page = get_page_by_path($slug, OBJECT, 'page');
+        if ($page) break;
+    }
+    if (!$page) {
+        $found = get_posts([
+            'post_type' => 'page', 'post_status' => ['publish', 'draft', 'private'],
+            's' => 'propos', 'posts_per_page' => 1,
+        ]);
+        $page = $found ? $found[0] : null;
+    }
+    if (!$page) {
+        return 'about_missing';
+    }
+    if (get_post_meta($page->ID, '_moc_seed_about', true)) {
+        return 'about_done';
+    }
+
+    $existing = get_field('flexible-layout', $page->ID, false);
+    $existing = is_array($existing) ? $existing : [];
+
+    $team = '<p><strong>Rédactrice en chef :</strong> Stéphanie Baudot<br><strong>Journaliste :</strong> Manon Legrand<br><strong>Éditrice responsable :</strong> Dominique Decoux, CIEP, BP 50, 1031 Bruxelles</p>'
+          . '<h3 class="heading-xl">Comité de rédaction</h3>'
+          . '<p>Mario Bucci, Benoît Dassy, Dominique Decoux, Ariane Estenne, Patrick Feltesse, Julien Gras, Pierre Ledecq, Antoinette Maia, Thomas Miessen, Véronique Oruba, François Reman, Louis Stalins, Nabil Sheikh Hassan, Svetlana Sholokhova, Christine Steinbach, Sandrine Warsztacki.</p>';
+
+    $sections = [
+        '<h2 class="heading-2xl">Qui sommes-nous ?</h2>'
+        . '<p>La revue <em>Démocratie</em> existe depuis 1996. Elle succède au quotidien <em>La Cité</em>, journal du Mouvement ouvrier chrétien (MOC), dont la parution a cessé pour des raisons financières. Avec le soutien de la CSC et de la Mutualité chrétienne, le MOC a lancé une nouvelle revue qui reprend le nom d’une ancienne publication du mouvement.</p>'
+        . '<p>Aujourd’hui, <em>Démocratie</em> est un mensuel tiré à plus de 3 000 exemplaires. Il propose 16 pages de réflexion politique, économique et sociale afin de susciter le débat. Il est édité par le CIEP, mouvement d’éducation permanente du MOC.</p>',
+
+        '<h3 class="heading-xl">Un site pour consulter et partager</h3>'
+        . '<p>Ce site archive les articles de la revue, consultables gratuitement par les étudiant·es, enseignant·es, formateur·rices et journalistes. Leur reproduction nécessite une autorisation préalable. La version papier comprend en plus des schémas, des recensions et des chroniques.</p>',
+
+        '<h3 class="heading-xl">L’équipe</h3>' . $team,
+
+        '<h3 class="heading-xl">Contact</h3>'
+        . '<p>Revue Démocratie<br>Chaussée de Haecht, 579<br>1030 Bruxelles<br>Téléphone : 02/246.38.43<br>E-mail : <a href="mailto:democratie@moc.be">democratie@moc.be</a></p>',
+    ];
+
+    $rows = [];
+    foreach ($sections as $html) {
+        foreach (moc_seed_body($html) as $row) {
+            $rows[] = $row;
+        }
+    }
+
+    update_field('field-page-flexible-layout', array_merge($existing, $rows), $page->ID);
+    update_post_meta($page->ID, '_moc_seed_about', 1);
+
+    return 'about';
+}
+
 /* ─────────────────────────────────────────────
  * Génération
  * ───────────────────────────────────────────── */
@@ -391,25 +627,24 @@ function moc_seed_run() {
         $auteur_ids[] = $id;
     }
 
-    // 2. Thématiques + sous-thématiques
-    $thematique_ids = []; // nom => id
-    $order = 0;
-    foreach (moc_seed_data_thematiques() as $name => [$description, $children]) {
-        $id = moc_seed_insert('thematique', $name, ['menu_order' => $order]);
-        if (!$id) continue;
-        update_field('field_thematique_clone_hero', ['title' => $description], $id);
-        if ($img = $image($order)) set_post_thumbnail($id, $img);
-        $thematique_ids[$name] = $id;
-
-        foreach ($children as $j => $child) {
-            $child_id = moc_seed_insert('thematique', $child, ['post_parent' => $id, 'menu_order' => $j]);
-            if (!$child_id) continue;
-            update_field('field_thematique_clone_hero', ['title' => $child . ' : analyses et points de vue.'], $child_id);
-            if ($img = $image($order + $j + 1)) set_post_thumbnail($child_id, $img);
-            $thematique_ids[$child] = $child_id;
-        }
-        $order++;
+    // 2. Thématiques existantes conservées + sous-thématiques de l'ancien site
+    $all_thematiques = moc_seed_ensure_thematiques($images);
+    $thematique_pool = [];   // id => titre
+    foreach ($all_thematiques as $t_id) {
+        $thematique_pool[$t_id] = get_the_title($t_id);
     }
+    $pool_ids = array_keys($thematique_pool);
+    $resolve_theme = function ($name, $i) use ($thematique_pool, $pool_ids) {
+        $needle = moc_seed_norm($name);
+        foreach ($thematique_pool as $id => $title) {
+            if (moc_seed_norm($title) === $needle) return $id;
+        }
+        foreach ($thematique_pool as $id => $title) {
+            $t = moc_seed_norm($title);
+            if ($t !== '' && (strpos($t, $needle) !== false || strpos($needle, $t) !== false)) return $id;
+        }
+        return 0;
+    };
 
     // 3. Numéros
     $numero_ids = [];
@@ -422,7 +657,7 @@ function moc_seed_run() {
         if (!$id) continue;
         update_field('field_numero_numero', $number, $id);
         update_field('field_numero_date_parution', date('Ymd', strtotime($date)), $id);
-        update_field('field_numero_introduction', '<p>Ce numéro de la revue Démocratie rassemble analyses, témoignages et points de vue autour du thème « ' . esc_html($title) . ' ».</p>', $id);
+        update_field('field_numero_dans_ce_numero', moc_seed_dans_ce_numero($title), $id);
         if ($img = $image($i)) set_post_thumbnail($id, $img);
         $numero_ids[$i] = ['id' => $id, 'date' => $date];
     }
@@ -455,14 +690,36 @@ function moc_seed_run() {
         // Contenu
         update_field('field_post_hero_image_layout', $i % 2 ? 'content' : 'full-width', $id);
         update_field('field-post-flexible-layout', moc_seed_body(moc_seed_paragraphs($title, $chapo, $themes)), $id);
+        update_field('field_post_chapo', $chapo, $id);
+        // 1 article sur 2 a sa propre liseuse (sinon : liseuse du numéro)
+        if ($i % 2 === 0) {
+            update_field('field_post_liseuse', [
+                'title'  => 'Lire l’article et le télécharger en PDF',
+                'url'    => 'https://www.calameo.com/',
+                'target' => '_blank',
+            ], $id);
+        }
 
         // Thématiques
         $t_ids = [];
         foreach ($themes as $theme_name) {
-            if (!empty($thematique_ids[$theme_name])) {
-                $t_ids[] = $thematique_ids[$theme_name];
+            if ($found = $resolve_theme($theme_name, $i)) {
+                $t_ids[] = $found;
             }
         }
+        // Aucune correspondance : on répartit les articles sur les thématiques existantes
+        // (une racine + parfois une de ses sous-thématiques)
+        if (!$t_ids && $pool_ids) {
+            $roots = array_values(array_filter($pool_ids, function ($t) { return !wp_get_post_parent_id($t); }));
+            $root  = $roots ? $roots[$i % count($roots)] : $pool_ids[$i % count($pool_ids)];
+            $t_ids[] = $root;
+            $kids = get_children(['post_parent' => $root, 'post_type' => 'thematique', 'post_status' => 'publish']);
+            if ($kids && $i % 3 !== 0) {
+                $kids = array_values($kids);
+                $t_ids[] = $kids[$i % count($kids)]->ID;
+            }
+        }
+        $t_ids = array_values(array_unique($t_ids));
         update_field('field_post_rel_thematiques', $t_ids, $id);
         foreach ($t_ids as $t) {
             $rel_thematique[$t][] = $id;
@@ -513,25 +770,8 @@ function moc_seed_run() {
         wp_set_post_terms($id, $term_ids, 'post_tag');
     }
 
-    // 4b. Sommaire + liseuse des revues (a partir de leurs articles)
-    $by_numero = [];
-    foreach (moc_seed_data_articles() as [$a_title, , $a_themes, $a_numero]) {
-        if ($a_numero !== null) {
-            $by_numero[$a_numero][] = $a_title;
-        }
-    }
-    foreach ($numero_ids as $i => $numero) {
-        $page = 4;
-        $html = '<h3>Actualités</h3><p><strong>4</strong>  Édito</p><p><strong>6</strong>  Trois mois d’actualité sociale</p><h3>Dossier</h3>';
-        foreach ($by_numero[$i] ?? [] as $a_title) {
-            $page += 4;
-            $html .= '<p><strong>' . $page . '</strong>  ' . esc_html($a_title) . '</p>';
-        }
-        $html .= '<h3>Grand format</h3><p><strong>' . ($page + 6) . '</strong>  Le grand entretien</p>';
-        update_field('field_numero_sommaire', $html, $numero['id']);
-        if (!empty($rel_numero[$numero['id']])) {
-            update_field('field_numero_articles_lies', array_slice($rel_numero[$numero['id']], 0, 3), $numero['id']);
-        }
+    // 4b. Liseuse des revues
+    foreach ($numero_ids as $numero) {
         update_field('field_numero_liseuse', [
             'title'  => 'Lire la revue en ligne',
             'url'    => 'https://www.calameo.com/',

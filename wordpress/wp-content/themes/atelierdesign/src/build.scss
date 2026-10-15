@@ -809,3 +809,33 @@ ul,ol {
     @apply @sm:text-[20px] @md/lg:text-[20px] leading-none;
   }
 }
+
+
+/* Revue : "Dans ce numero", sommaire (articles), liens "pour aller plus loin" */
+.numero-dans-ce-numero {
+  @apply @sm:p-6 @md/lg:p-8 @sm:rounded-xl @md/lg:rounded-xl bg-dark-green text-white;
+
+  .numero-dans-ce-numero__text { @apply text-white; }
+  .numero-dans-ce-numero__more { @apply inline-flex items-center @sm:gap-1 @md/lg:gap-1 underline underline-offset-4 font-semibold text-yellow; }
+}
+
+.numero-au-sommaire__item {
+  @apply @sm:py-6 @md/lg:py-8 border-b border-black/10 flex flex-col @sm:gap-3 @md/lg:gap-4;
+
+  &:first-child { @apply border-t; }
+
+  .numero-au-sommaire__chapo {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+.numero-more {
+  @apply flex flex-wrap @sm:gap-3 @md/lg:gap-4;
+}
+
+.article-liseuse__box {
+  @apply flex flex-wrap items-center justify-between @sm:gap-4 @md/lg:gap-6 @sm:p-6 @md/lg:p-8 @sm:rounded-xl @md/lg:rounded-xl bg-layout-main;
+}

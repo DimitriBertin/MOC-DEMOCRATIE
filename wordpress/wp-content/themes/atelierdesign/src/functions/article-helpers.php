@@ -511,3 +511,98 @@ if (!function_exists('ad_render_article_formats')) {
         echo '</div>';
     }
 }
+
+
+/* ─────────────────────────────────────────────
+ * Numero : "Dans ce numero", liseuse, PDF
+ * ───────────────────────────────────────────── */
+
+if (!function_exists('ad_numero_dans_ce_numero_short')) {
+    /**
+     * Version raccourcie du "Dans ce numero" (500 signes par defaut).
+     * Champ manuel `dans_ce_numero_court` s'il est renseigne, sinon extrait
+     * du texte complet, coupe a la fin d'un mot.
+     *
+     * @return array{text:string,truncated:bool}
+     */
+    function ad_numero_dans_ce_numero_short($numero_id, $limit = 500) {
+        $manual = trim((string) get_field('dans_ce_numero_court', $numero_id));
+        $full   = trim(wp_strip_all_tags((string) get_field('dans_ce_numero', $numero_id)));
+        $full   = trim(preg_replace('/\s+/u', ' ', $full));
+
+        if ($manual !== '') {
+            return ['text' => $manual, 'truncated' => $full !== '' && $full !== $manual];
+        }
+
+        if (mb_strlen($full) <= $limit) {
+            return ['text' => $full, 'truncated' => false];
+        }
+
+        $cut  = mb_substr($full, 0, $limit);
+        $last = mb_strrpos($cut, ' ');
+        $cut  = $last ? mb_substr($cut, 0, $last) : $cut;
+
+        return ['text' => rtrim($cut, " ,;:.-") . '…', 'truncated' => true];
+    }
+}
+
+if (!function_exists('ad_get_article_liseuse')) {
+    /**
+     * Lien liseuse d'un article : le sien, sinon celui de son numero.
+     *
+     * @return array|null Tableau ACF link (url, title, target) ou null
+     */
+    function ad_get_article_liseuse($post_id) {
+        $own = function_exists('get_field') ? get_field('liseuse_article', $post_id) : null;
+        if (!empty($own['url'])) {
+            return $own;
+        }
+
+        $numero = function_exists('ad_get_article_numero') ? ad_get_article_numero($post_id) : null;
+        if ($numero) {
+            $link = get_field('liseuse', $numero->ID);
+            if (!empty($link['url'])) {
+                return $link;
+            }
+        }
+
+        return null;
+    }
+}
+
+if (!function_exists('ad_get_numero_article_ids')) {
+    /**
+     * Articles publies d'un numero, dans l'ordre saisi dans le champ "Articles du numero".
+     *
+     * @return int[]
+     */
+    function ad_get_numero_article_ids($numero_id) {
+        $articles = function_exists('get_field') ? get_field('articles', $numero_id) : null;
+        $ids      = [];
+
+        foreach ((array) $articles as $article) {
+            $id = $article instanceof WP_Post ? $article->ID : (int) $article;
+            if ($id > 0 && get_post_type($id) === 'post' && get_post_status($id) === 'publish') {
+                $ids[] = $id;
+            }
+        }
+
+        return array_values(array_unique($ids));
+    }
+}
+
+
+if (!function_exists('ad_get_article_chapo')) {
+    /**
+     * Chapeau d'un article : champ `chapo`, sinon extrait WordPress.
+     */
+    function ad_get_article_chapo($post_id) {
+        $chapo = function_exists('get_field') ? trim((string) get_field('chapo', $post_id)) : '';
+
+        if ($chapo === '') {
+            $chapo = trim(wp_strip_all_tags((string) get_post_field('post_excerpt', $post_id)));
+        }
+
+        return $chapo;
+    }
+}

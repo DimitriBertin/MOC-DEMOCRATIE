@@ -8,6 +8,26 @@
     <?php $adwp->render_flexible_layout($fields['flexible-layout']); ?>
 
     <?php
+    // Lire l'article / telecharger en PDF -> liseuse
+    if (is_singular('post') && function_exists('ad_get_article_liseuse')) {
+      $liseuse = ad_get_article_liseuse(get_the_ID());
+      if (!empty($liseuse['url'])) { ?>
+        <section class="article-liseuse py-section theme-white bg-layout-main">
+          <div class="container">
+            <div class="article-liseuse__box theme-yellow">
+              <p class="article-liseuse__text heading-md heading-primary autoscale">Retrouvez cet article dans la revue</p>
+              <a href="<?php echo esc_url($liseuse['url']); ?>" class="numero-liseuse button-flat button-primary" target="<?php echo esc_attr($liseuse['target'] ?: '_blank'); ?>" rel="noopener noreferrer">
+                <span class="material-symbols-outlined" aria-hidden="true">picture_as_pdf</span>
+                <span class="button-title">Lire l’article et le télécharger en PDF</span>
+              </a>
+            </div>
+          </div>
+        </section>
+      <?php }
+    }
+    ?>
+
+    <?php
     // Articles lies (onglet "Articles lies" de l'article)
     if (is_singular('post') && function_exists('ad_get_related_article_ids')) {
       $related_ids = ad_get_related_article_ids(get_the_ID(), 3);

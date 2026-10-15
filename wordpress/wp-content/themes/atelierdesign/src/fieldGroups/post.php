@@ -112,6 +112,30 @@ acf_add_local_field_group([
             'return_format' => 'id',
             'conditional_logic' => [[['field' => 'field_post_related_mode', 'operator' => '==', 'value' => 'custom']]],
         ],
+        // Liseuse / PDF
+        [
+            'key' => 'field_post_liseuse_tab',
+            'label' => 'Chapeau / Liseuse',
+            'type' => 'tab',
+            'no_preference' => 0,
+        ],
+        [
+            'key' => 'field_post_chapo',
+            'label' => 'Chapeau',
+            'name' => 'chapo',
+            'type' => 'textarea',
+            'instructions' => 'Chapeau de l\'article (2 lignes). Affiche dans le sommaire de la revue.',
+            'rows' => 3,
+            'new_lines' => '',
+        ],
+        [
+            'key' => 'field_post_liseuse',
+            'label' => 'Lien liseuse de l\'article',
+            'name' => 'liseuse_article',
+            'type' => 'link',
+            'instructions' => 'Lien "Lire l\'article et le telecharger en PDF" (liseuse). Si vide, le lien de la liseuse du numero est utilise.',
+            'return_format' => 'array',
+        ],
         // CTA Footer Section
         [
             'key' => 'field_post_cta_footer_tab',
