@@ -782,7 +782,15 @@ function moc_seed_run() {
         wp_set_post_terms($id, $term_ids, 'post_tag');
     }
 
-    // 4b. Liseuse des revues
+    // 4b. Liseuse + "Pour aller plus loin" (2 autres numéros)
+    $numero_list = array_values($numero_ids);
+    foreach ($numero_list as $pos => $numero) {
+        $more = [];
+        foreach ([1, 2] as $step) {
+            $more[] = $numero_list[($pos + $step) % count($numero_list)]['id'];
+        }
+        update_field('field_numero_numeros_lies', array_values(array_diff(array_unique($more), [$numero['id']])), $numero['id']);
+    }
     foreach ($numero_ids as $numero) {
         update_field('field_numero_liseuse', [
             'title'  => 'Lire la revue en ligne',

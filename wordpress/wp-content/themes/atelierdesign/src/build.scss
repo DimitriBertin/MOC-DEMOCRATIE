@@ -839,3 +839,20 @@ ul,ol {
 .article-liseuse__box {
   @apply flex flex-wrap items-center justify-between @sm:gap-4 @md/lg:gap-6 @sm:p-6 @md/lg:p-8 @sm:rounded-xl @md/lg:rounded-xl bg-layout-main;
 }
+
+
+.numero-dans-ce-numero__toggle {
+  @apply inline-flex items-center @sm:gap-1 @md/lg:gap-1 underline underline-offset-4 font-semibold text-yellow cursor-pointer bg-transparent border-0 p-0 text-left;
+}
+
+.numero-au-sommaire__actions {
+  @apply flex flex-wrap items-center @sm:gap-3 @md/lg:gap-4;
+}
+
+.numero-au-sommaire__liseuse {
+  @apply inline-flex items-center @sm:gap-1 @md/lg:gap-1 underline underline-offset-4 font-semibold;
+
+  .material-symbols-outlined {
+    @apply @sm:text-[20px] @md/lg:text-[20px] leading-none;
+  }
+}

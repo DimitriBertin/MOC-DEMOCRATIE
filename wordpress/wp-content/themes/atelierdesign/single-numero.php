@@ -6,7 +6,8 @@
  *   1. En-tete : "La revue n°XX - Titre du numero - date de parution" + couverture
  *   2. « Dans ce numero » : version raccourcie (500 signes) + lien « Lire le "Dans ce numero" complet »
  *   3. Au sommaire : pour chaque article -> titre, chapeau (2 lignes), bouton « Lire l'article »
- *   4. Pour aller plus loin : telecharger le numero complet (PDF), liseuse, voir les autres numeros
+ *      puis, sous le sommaire : telecharger le PDF, liseuse
+ *   4. Pour aller plus loin : numeros connectes (champ numeros_lies, sinon auto par thematique)
  *   5. CTA Footer (si renseigne sur la revue)
  *
  * Les articles viennent du champ "Articles du numero" (relation bidirectionnelle, ordre conserve).
@@ -72,33 +73,35 @@ global $adwp;
               <h1 class="heading-2xl heading-primary"><?php echo esc_html($numero_title); ?></h1>
             </div>
 
-            <!-- 2. Dans ce numero -->
+            <!-- 2. Dans ce numero : version courte + lien pour lire le texte complet -->
             <?php if ($dcn['text'] !== ''): ?>
               <div class="numero-dans-ce-numero flex flex-col @sm:gap-4 @md/lg:gap-5" id="dans-ce-numero">
                 <h2 class="numero-sommaire__title text-display text-yellow">Dans ce numéro</h2>
                 <p class="numero-dans-ce-numero__text paragraph-md"><?php echo esc_html($dcn['text']); ?></p>
 
                 <?php if ($dcn['truncated'] && !empty($dcn_full)): ?>
-                  <details class="numero-dans-ce-numero__full">
-                    <summary class="numero-dans-ce-numero__more cursor-pointer">
-                      Lire le « Dans ce numéro » complet
-                      <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
-                    </summary>
-                    <div class="wysiwyg paragraph-md @sm:mt-4 @md/lg:mt-5">
-                      <?php echo wp_kses_post($dcn_full); ?>
-                    </div>
-                  </details>
+                  <div class="numero-dans-ce-numero__full wysiwyg paragraph-md" id="dans-ce-numero-full" hidden>
+                    <?php echo wp_kses_post(balanceTags($dcn_full, true)); ?>
+                  </div>
+                  <button type="button" class="numero-dans-ce-numero__toggle" aria-expanded="false" aria-controls="dans-ce-numero-full"
+                          data-label-open="Lire le « Dans ce numéro » complet" data-label-close="Réduire le « Dans ce numéro »">
+                    <span class="numero-dans-ce-numero__toggle-label">Lire le « Dans ce numéro » complet</span>
+                    <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+                  </button>
                 <?php endif; ?>
               </div>
             <?php endif; ?>
 
-            <!-- 3. Au sommaire -->
+            <!-- 3. Au sommaire : articles du numero -->
             <?php if (!empty($article_ids)): ?>
               <div class="numero-au-sommaire" id="sommaire">
                 <h2 class="numero-sommaire__title text-display text-yellow">Au sommaire</h2>
                 <ul class="numero-au-sommaire__list">
                   <?php foreach ($article_ids as $article_id): ?>
-                    <?php $chapo = function_exists('ad_get_article_chapo') ? ad_get_article_chapo($article_id) : ''; ?>
+                    <?php
+                    $chapo       = function_exists('ad_get_article_chapo') ? ad_get_article_chapo($article_id) : '';
+                    $own_liseuse = get_field('liseuse_article', $article_id);
+                    ?>
                     <li class="numero-au-sommaire__item">
                       <h3 class="heading-md heading-primary">
                         <a href="<?php echo esc_url(get_permalink($article_id)); ?>"><?php echo esc_html(get_the_title($article_id)); ?></a>
@@ -106,42 +109,42 @@ global $adwp;
                       <?php if ($chapo !== ''): ?>
                         <p class="numero-au-sommaire__chapo paragraph-md paragraph-primary"><?php echo esc_html($chapo); ?></p>
                       <?php endif; ?>
-                      <div class="theme-yellow">
-                        <a href="<?php echo esc_url(get_permalink($article_id)); ?>" class="button-flat button-primary">
-                          <span class="button-title">Lire l’article</span>
-                        </a>
+                      <div class="numero-au-sommaire__actions">
+                        <div class="theme-yellow">
+                          <a href="<?php echo esc_url(get_permalink($article_id)); ?>" class="button-flat button-primary">
+                            <span class="button-title">Lire l’article</span>
+                          </a>
+                        </div>
+                        <?php if (!empty($own_liseuse['url'])): ?>
+                          <a href="<?php echo esc_url($own_liseuse['url']); ?>" class="numero-au-sommaire__liseuse paragraph-primary"
+                             target="<?php echo esc_attr($own_liseuse['target'] ?: '_blank'); ?>" rel="noopener noreferrer">
+                            <span class="material-symbols-outlined" aria-hidden="true">picture_as_pdf</span>
+                            Liseuse PDF
+                          </a>
+                        <?php endif; ?>
                       </div>
                     </li>
                   <?php endforeach; ?>
                 </ul>
-              </div>
-            <?php endif; ?>
 
-            <!-- 4. Pour aller plus loin -->
-            <?php if (!empty($pdf['url']) || !empty($liseuse['url']) || $archive_url): ?>
-              <div class="numero-more-wrapper">
-                <h2 class="numero-sommaire__title text-display text-yellow">Pour aller plus loin</h2>
-                <div class="numero-more theme-yellow">
-                  <?php if (!empty($pdf['url'])): ?>
-                    <a href="<?php echo esc_url($pdf['url']); ?>" class="numero-liseuse button-flat button-primary" download>
-                      <span class="material-symbols-outlined" aria-hidden="true">download</span>
-                      <span class="button-title">Télécharger le numéro complet (PDF)</span>
-                    </a>
-                  <?php endif; ?>
-                  <?php if (!empty($liseuse['url'])): ?>
-                    <a href="<?php echo esc_url($liseuse['url']); ?>" class="numero-liseuse button-flat button-primary"
-                       target="<?php echo esc_attr($liseuse['target'] ?: '_blank'); ?>" rel="noopener noreferrer">
-                      <span class="material-symbols-outlined" aria-hidden="true">auto_stories</span>
-                      <span class="button-title"><?php echo esc_html($liseuse['title'] ?: 'Lire la revue en ligne'); ?></span>
-                    </a>
-                  <?php endif; ?>
-                  <?php if ($archive_url): ?>
-                    <a href="<?php echo esc_url($archive_url); ?>" class="numero-liseuse button-flat button-primary">
-                      <span class="material-symbols-outlined" aria-hidden="true">library_books</span>
-                      <span class="button-title">Voir les autres numéros de la revue</span>
-                    </a>
-                  <?php endif; ?>
-                </div>
+                <!-- Sous le sommaire : PDF puis liseuse -->
+                <?php if (!empty($pdf['url']) || !empty($liseuse['url'])): ?>
+                  <div class="numero-more theme-yellow @sm:mt-6 @md/lg:mt-8 flex-col items-start">
+                    <?php if (!empty($pdf['url'])): ?>
+                      <a href="<?php echo esc_url($pdf['url']); ?>" class="numero-liseuse button-flat button-primary" download>
+                        <span class="material-symbols-outlined" aria-hidden="true">download</span>
+                        <span class="button-title">Télécharger le numéro complet (PDF)</span>
+                      </a>
+                    <?php endif; ?>
+                    <?php if (!empty($liseuse['url'])): ?>
+                      <a href="<?php echo esc_url($liseuse['url']); ?>" class="numero-liseuse button-flat button-primary"
+                         target="<?php echo esc_attr($liseuse['target'] ?: '_blank'); ?>" rel="noopener noreferrer">
+                        <span class="material-symbols-outlined" aria-hidden="true">auto_stories</span>
+                        <span class="button-title"><?php echo esc_html($liseuse['title'] ?: 'Lire la revue dans la liseuse PDF'); ?></span>
+                      </a>
+                    <?php endif; ?>
+                  </div>
+                <?php endif; ?>
               </div>
             <?php endif; ?>
 
@@ -149,6 +152,44 @@ global $adwp;
         </div>
       </div>
     </section>
+
+    <!-- 4. Pour aller plus loin : numeros connectes -->
+    <?php $related_ids = function_exists('ad_get_numero_related_ids') ? ad_get_numero_related_ids($numero_id, 3) : []; ?>
+    <?php if (!empty($related_ids)): ?>
+      <section class="numero-articles py-section theme-white bg-layout-main pt-0">
+        <div class="container">
+          <h2 class="heading-lg heading-primary autoscale @sm:mb-8 @md/lg:mb-12">Pour aller plus loin</h2>
+          <div class="posts-grid grid @sm:grid-cols-1 @md/lg:grid-cols-2 @lg:grid-cols-3 @sm:gap-y-8 @md/lg:gap-y-12 @sm:gap-x-3 @md/lg:gap-x-3">
+            <?php foreach ($related_ids as $related_id): ?>
+              <?php get_template_part('src/components/_numero-card/markup', null, ['post_id' => (int) $related_id]); ?>
+            <?php endforeach; ?>
+          </div>
+          <?php if ($archive_url): ?>
+            <div class="theme-yellow @sm:mt-8 @md/lg:mt-12">
+              <a href="<?php echo esc_url($archive_url); ?>" class="numero-liseuse button-flat button-primary">
+                <span class="material-symbols-outlined" aria-hidden="true">library_books</span>
+                <span class="button-title">Voir les autres numéros de la revue</span>
+              </a>
+            </div>
+          <?php endif; ?>
+        </div>
+      </section>
+    <?php endif; ?>
+
+    <script>
+      (function () {
+        var btn = document.querySelector('.numero-dans-ce-numero__toggle');
+        if (!btn) return;
+        var full = document.getElementById(btn.getAttribute('aria-controls'));
+        var label = btn.querySelector('.numero-dans-ce-numero__toggle-label');
+        btn.addEventListener('click', function () {
+          var open = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+          if (open) { full.setAttribute('hidden', ''); } else { full.removeAttribute('hidden'); }
+          label.textContent = open ? btn.dataset.labelOpen : btn.dataset.labelClose;
+        });
+      })();
+    </script>
 
     <?php
     /* 5. CTA Footer */
