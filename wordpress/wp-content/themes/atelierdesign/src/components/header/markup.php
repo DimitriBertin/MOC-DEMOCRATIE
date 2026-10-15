@@ -216,7 +216,7 @@ $header_alt = 'header-alt';
   <div class="desktop-header hidden md:flex relative border-b border-b-light-green w-full group-[&.header-alt]:border-dark-green group-[&.scrolling]:border-dark-green">
     <!-- Logo -->
     <?php if ($logo): ?>
-      <a href="<?php echo home_url('/'); ?>" class="logo-link flex items-center @md/lg:p-5 z-20">
+      <a href="<?php echo home_url('/'); ?>" class="logo-link flex items-center @md/lg:p-8 z-20">
         <img 
           src="<?php echo esc_url($logo['url']); ?>" 
           alt="<?php echo esc_attr($logo['alt'] ?: get_bloginfo('name')); ?>"
