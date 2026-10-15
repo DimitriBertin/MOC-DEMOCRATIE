@@ -3,7 +3,8 @@
  * Single Auteur·rice
  *
  * Structure de la page :
- *   1. Nom de l'auteur·rice (titre du post) + courte presentation (champ `presentation`)
+ *   1. Nom de l'auteur·rice (titre du post) + fonction / titre (champ `fonction`)
+ *      + courte presentation (champ `presentation`)
  *      + lien de retour vers la liste des auteur·rices (/auteurs/). Pas de photo.
  *   2. Flexible content (champ `flexible-layout`, voir src/fieldGroups/auteur.php)
  *   3. Tous les articles lies a l'auteur·rice, en grille 3 colonnes (comme
@@ -38,6 +39,11 @@ global $adwp;
         <h1 class="archive-title text-yellow text-display autoscale">
           <?php echo esc_html(get_the_title($auteur_id)); ?>
         </h1>
+
+        <?php $fonction = trim((string) get_field('fonction', $auteur_id)); ?>
+        <?php if ($fonction !== ''): ?>
+          <p class="auteur-fonction label label-primary autoscale @sm:mt-3 @md/lg:mt-4"><?php echo esc_html($fonction); ?></p>
+        <?php endif; ?>
 
         <?php $presentation = get_field('presentation', $auteur_id); ?>
         <?php if (!empty($presentation)): ?>

@@ -26,6 +26,15 @@ acf_add_local_field_group([
             'no_preference' => 0,
         ],
         [
+            'key' => 'field_auteur_fonction',
+            'label' => 'Fonction / titre',
+            'name' => 'fonction',
+            'type' => 'text',
+            'instructions' => 'Ex. : "Sociologue", "Chargee d\'etudes a la CSC". Affiche sous le nom, sur la fiche de l\'auteur·rice.',
+            'required' => 0,
+            'placeholder' => 'Sociologue du travail',
+        ],
+        [
             'key' => 'field_auteur_presentation',
             'label' => 'Courte presentation',
             'name' => 'presentation',

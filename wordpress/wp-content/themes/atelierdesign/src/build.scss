@@ -847,14 +847,6 @@ ul,ol {
   @apply flex flex-wrap items-center @sm:gap-3 @md/lg:gap-4;
 }
 
-.numero-au-sommaire__liseuse {
-  @apply inline-flex items-center @sm:gap-1 @md/lg:gap-1 underline underline-offset-4 font-semibold;
-
-  .material-symbols-outlined {
-    @apply @sm:text-[20px] @md/lg:text-[20px] leading-none;
-  }
-}
-
 /* Revue : les zones "hidden" doivent rester masquees malgre les utilitaires flex */
 #numero [hidden] {
   display: none !important;
@@ -865,27 +857,65 @@ ul,ol {
 }
 
 
-/* Au sommaire : titres, "Lire l'article" surligne, bouton liseuse PDF */
-.numero-au-sommaire__title {
-  @apply font-safiro font-semibold text-dark-green @sm:text-[24px]/[28px] @md/lg:text-[34px]/[38px] @sm:tracking-[-0.5px] @md/lg:tracking-[-0.5px];
-
-  a { @apply transition-colors duration-200; }
-  a:hover { @apply text-green-semi-light; }
+/* Au sommaire : titres, "Lire l'article" surligne, bouton liseuse PDF
+ * CSS volontairement "a plat" (sans @apply) pour ne pas dependre des utilitaires
+ * responsive du theme ; scope #numero pour passer devant les styles globaux. */
+#numero .numero-au-sommaire__title {
+  font-family: inherit;
+  font-weight: 600;
+  color: #012e31;
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
 }
+@media (min-width: 768px) {
+  #numero .numero-au-sommaire__title { font-size: 34px; }
+}
+#numero .numero-au-sommaire__title a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+#numero .numero-au-sommaire__title a:hover { color: #286169; }
 
-.numero-au-sommaire__read {
-  @apply inline-block font-safiro font-semibold text-dark-green @sm:px-1 @md/lg:px-1 transition-all duration-200;
+#numero .numero-au-sommaire__read {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  padding: 0 4px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #012e31;
+  text-decoration: none;
   background: linear-gradient(transparent 55%, #D7DB31 55%);
-
-  &:hover {
-    background: #D7DB31;
-  }
+  transition: background 0.2s;
 }
+#numero .numero-au-sommaire__read:hover { background: #D7DB31; }
 
-.numero-au-sommaire__liseuse {
-  @apply inline-flex items-center @sm:gap-2 @md/lg:gap-2 rounded-full bg-dark-green text-white font-safiro font-semibold no-underline @sm:px-4 @md/lg:px-4 @sm:py-2 @md/lg:py-2 transition-colors duration-200;
-
-  &:hover { @apply bg-green-semi-light; }
-
-  .material-symbols-outlined { @apply text-yellow; }
+#numero .numero-au-sommaire__liseuse {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  height: auto;
+  min-width: 0;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  background: #012e31;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+#numero .numero-au-sommaire__liseuse:hover { background: #286169; }
+#numero .numero-au-sommaire__liseuse .material-symbols-outlined {
+  width: auto;
+  height: auto;
+  font-size: 20px;
+  line-height: 1;
+  color: #D7DB31;
 }

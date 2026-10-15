@@ -434,6 +434,34 @@ function moc_seed_data_auteurs() {
 }
 
 /**
+ * Fonction / titre des auteur·rices de démo.
+ */
+function moc_seed_data_fonctions() {
+    return [
+        'Claire Vandenberghe'  => 'Sociologue du travail',
+        'Mehdi Benali'         => 'Animateur en éducation permanente',
+        'Sophie Lambert'       => 'Juriste en droit social',
+        'Thomas Dewitte'       => 'Économiste',
+        'Aïcha Diallo'         => 'Militante associative',
+        'Julien Marchal'       => 'Historien du mouvement ouvrier',
+        'Nathalie Collignon'   => 'Chargée d’études',
+        'Karim El Amrani'      => 'Formateur',
+        'Élise de Smet'        => 'Politologue',
+        'Pierre Lhoest'        => 'Ancien délégué syndical',
+        'Fatou Ndiaye'         => 'Chercheuse en sciences de l’éducation',
+        'Antoine Gilson'       => 'Ingénieur',
+        'Marie Dubois'         => 'Journaliste indépendante',
+        'Lucas Van den Broeck' => 'Géographe',
+        'Inès Moreau'          => 'Animatrice jeunesse',
+        'Olivier Renard'       => 'Spécialiste de l’économie sociale',
+        'Camille Hennaut'      => 'Chargée de plaidoyer',
+        'Yasmina Haddad'       => 'Assistante sociale',
+        'Benoît Lejeune'       => 'Philosophe',
+        'Sarah Wouters'        => 'Agronome',
+    ];
+}
+
+/**
  * Noms à particule / composés : nom utilisé pour le classement alphabétique.
  */
 function moc_seed_data_nom_tri() {
@@ -633,6 +661,10 @@ function moc_seed_run() {
         $id = moc_seed_insert('auteur', $name);
         if (!$id) continue;
         update_field('field_auteur_presentation', $presentation, $id);
+        $fonctions = moc_seed_data_fonctions();
+        if (isset($fonctions[$name])) {
+            update_field('field_auteur_fonction', $fonctions[$name], $id);
+        }
         if (isset($nom_tri[$name])) {
             update_field('field_auteur_nom_tri', $nom_tri[$name], $id);
         }
