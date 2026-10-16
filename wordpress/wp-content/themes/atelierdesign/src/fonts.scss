@@ -70,3 +70,12 @@
   font-style: italic;
   font-display: swap;
 }
+
+/* BBB Poppins TN (Bye Bye Binary, SIL OFL) : utilise uniquement pour les quotes */
+@font-face {
+  font-family: 'BBB Poppins TN';
+  src: url('./assets/fonts/BBBPoppinsTN-TextRegular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

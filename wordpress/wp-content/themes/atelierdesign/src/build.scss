@@ -919,3 +919,11 @@ ul,ol {
   line-height: 1;
   color: #D7DB31;
 }
+
+
+/* Quotes : paragraphe en BBB Poppins TN Regular (voir fonts.scss) */
+.quote-wrapper .quote .quote-content,
+.quote-wrapper .quote .quote-content p {
+  font-family: 'BBB Poppins TN', 'Safiro', sans-serif;
+  font-weight: 400;
+}
