@@ -225,7 +225,7 @@ $header_alt = 'header-alt';
         <img 
           src="<?php echo esc_url($logo_contrasted['url']); ?>" 
           alt="<?php echo esc_attr($logo_contrasted['alt'] ?: get_bloginfo('name')); ?>"
-          class="@md/lg:h-12 w-auto absolute @md/lg:top-5 @md/lg:left-5 opacity-0 group-[&.scrolling]:opacity-100 group-[&.header-alt]:opacity-100 transition-opacity"
+          class="@md/lg:h-12 w-auto absolute @md/lg:top-8 @md/lg:left-8 opacity-0 group-[&.scrolling]:opacity-100 group-[&.header-alt]:opacity-100 transition-opacity"
         />
       </a>
     <?php endif; ?>
