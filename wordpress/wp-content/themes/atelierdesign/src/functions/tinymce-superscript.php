@@ -33,3 +33,41 @@ add_filter('acf/fields/wysiwyg/toolbars', function ($toolbars) {
     }
     return $toolbars;
 }, 20);
+
+/**
+ * Bloc "Text" (_wysiwyg) : sa barre d'outils est definie ligne par ligne
+ * (ACF Extended, ad-ui/acf/components/_wysiwyg/fields.php). On y insere
+ * le bouton "Exposant" juste apres l'italique, sans modifier ad-ui.
+ */
+function ad_wysiwyg_add_superscript_row($field) {
+    $rows = $field['acfe_wysiwyg_toolbar_buttons']['acfe_wysiwyg_toolbar_1'] ?? null;
+
+    if (!is_array($rows)) {
+        return $field;
+    }
+
+    foreach ($rows as $row) {
+        if (($row['acfe_wysiwyg_toolbar_row'] ?? '') === 'superscript') {
+            return $field; // deja present
+        }
+    }
+
+    $out = [];
+    $added = false;
+    foreach ($rows as $row) {
+        $out[] = $row;
+        if (!$added && ($row['acfe_wysiwyg_toolbar_row'] ?? '') === 'italic') {
+            $out[] = ['acfe_wysiwyg_toolbar_row' => 'superscript'];
+            $added = true;
+        }
+    }
+    if (!$added) {
+        $out[] = ['acfe_wysiwyg_toolbar_row' => 'superscript'];
+    }
+
+    $field['acfe_wysiwyg_toolbar_buttons']['acfe_wysiwyg_toolbar_1'] = $out;
+
+    return $field;
+}
+add_filter('acf/load_field/key=field-wysiwyg-content', 'ad_wysiwyg_add_superscript_row');
+add_filter('acf/load_field/name=_wysiwyg_content', 'ad_wysiwyg_add_superscript_row');

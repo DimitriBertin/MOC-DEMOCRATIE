@@ -48,7 +48,7 @@ global $adwp;
         <div class="grid grid-cols-1 md:grid-cols-12 @sm:gap-8 @md/lg:gap-x-16 items-start">
 
           <!-- Gauche : couverture -->
-          <div class="numero-cover md:col-span-5 md:sticky md:top-[200px]">
+          <div class="numero-cover md:col-span-5 md:sticky" style="top:200px;">
             <div class="numero-cover__frame @sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green ">
               <?php $cover_img = ad_numero_image($numero_id, 'list', ['class' => 'numero-cover__img w-full h-auto block', 'alt' => esc_attr($numero_title)]); ?>
               <?php if ($cover_img): ?>
