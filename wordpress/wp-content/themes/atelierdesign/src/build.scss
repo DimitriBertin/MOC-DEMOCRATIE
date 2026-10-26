@@ -933,9 +933,21 @@ ul,ol {
   font-family: var(--font-paragraph-sm-font-family, inherit);
   font-weight: var(--font-paragraph-sm-font-weight, inherit);
   font-style: var(--font-paragraph-sm-font-style, normal);
-  font-size: 0.7em;
+  /* Taille fixe = typo "paragraph small" (identique dans un paragraphe ou un titre) */
+  font-size: calc(
+    var(--typography-paragraph-sm-font-size) / var(--tw-screen-sm) *
+      var(--tw-screen-max) * var(--tw-scale)
+  );
   line-height: 0;
   vertical-align: super;
+}
+@media (min-width: 768px) {
+  .wysiwyg sup {
+    font-size: calc(
+      var(--typography-paragraph-sm-font-size) / var(--tw-screen-lg) *
+        var(--tw-screen-max) * var(--tw-scale)
+    );
+  }
 }
 
 /* Sommaire des revues : chapo limite a 4 lignes */
