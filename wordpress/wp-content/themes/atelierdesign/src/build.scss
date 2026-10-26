@@ -933,10 +933,10 @@ ul,ol {
   font-family: var(--font-paragraph-sm-font-family, inherit);
   font-weight: var(--font-paragraph-sm-font-weight, inherit);
   font-style: var(--font-paragraph-sm-font-style, normal);
-  /* Taille fixe = typo "paragraph small" (identique dans un paragraphe ou un titre) */
+  /* Taille fixe = typo "paragraph small" x 0.7 (identique dans un paragraphe ou un titre) */
   font-size: calc(
     var(--typography-paragraph-sm-font-size) / var(--tw-screen-sm) *
-      var(--tw-screen-max) * var(--tw-scale)
+      var(--tw-screen-max) * var(--tw-scale) * 0.7
   );
   line-height: 0;
   vertical-align: super;
@@ -945,7 +945,7 @@ ul,ol {
   .wysiwyg sup {
     font-size: calc(
       var(--typography-paragraph-sm-font-size) / var(--tw-screen-lg) *
-        var(--tw-screen-max) * var(--tw-scale)
+        var(--tw-screen-max) * var(--tw-scale) * 0.7
     );
   }
 }
