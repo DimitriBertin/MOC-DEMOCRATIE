@@ -824,7 +824,7 @@ ul,ol {
 
   .numero-au-sommaire__chapo {
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
@@ -938,11 +938,11 @@ ul,ol {
   vertical-align: super;
 }
 
-/* Sommaire des revues : chapo limite a 2 lignes */
+/* Sommaire des revues : chapo limite a 4 lignes */
 #numero .numero-au-sommaire__chapo {
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -960,3 +960,20 @@ ul,ol {
   transition: background 0.2s;
 }
 .numero-card--archive .numero-card__discover:hover { background: #D7DB31; }
+
+
+/* Page revue : la couverture (collee en haut au scroll) reste entierement visible
+ * sur desktop (hauteur max = fenetre moins l'espace du header) ; pleine largeur en mobile */
+@media (min-width: 768px) {
+  #numero .numero-cover__frame {
+    display: inline-block;
+    max-width: 100%;
+  }
+  #numero .numero-cover__img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: calc(100vh - 192px);
+    max-height: calc(100dvh - 192px);
+  }
+}

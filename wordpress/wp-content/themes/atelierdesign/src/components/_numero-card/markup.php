@@ -25,7 +25,7 @@ if (($card['variant'] ?? '') === 'archive') {
     $recevoir_target = is_array($recevoir) && !empty($recevoir['target']) ? $recevoir['target'] : '_self';
     ?>
     <article class="post-card numero-card numero-card--archive flex flex-col @sm:gap-4 @md/lg:gap-5">
-      <div class="numero-card__image @sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green">
+      <a href="<?php echo esc_url(get_permalink($post_id)); ?>" class="numero-card__image block @sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green">
         <?php $archive_img = ad_numero_image($post_id, 'list', ['class' => 'w-full h-auto block', 'loading' => 'lazy', 'alt' => esc_attr($archive_title)]); ?>
         <?php if ($archive_img): ?>
           <?php echo $archive_img; ?>
@@ -34,7 +34,7 @@ if (($card['variant'] ?? '') === 'archive') {
             <?php ad_render_card_placeholder($post_id, $archive_title, 'publication'); ?>
           </div>
         <?php endif; ?>
-      </div>
+      </a>
       <div class="numero-card__actions flex flex-wrap items-center @sm:gap-3 @md/lg:gap-4">
         <a href="<?php echo esc_url($post_permalink = get_permalink($post_id)); ?>" class="numero-card__discover" aria-label="<?php echo esc_attr('Découvrir : ' . $archive_title); ?>">Découvrir</a>
         <?php if ($recevoir_url): ?>

@@ -31,16 +31,15 @@ global $adwp;
     $numero_title = get_field('title', $numero_id) ?: get_the_title($numero_id);
     $parution     = function_exists('ad_numero_parution_label') ? ad_numero_parution_label($numero_id) : '';
     $dcn_full     = get_field('dans_ce_numero', $numero_id);
-    $dcn          = function_exists('ad_numero_dans_ce_numero_short') ? ad_numero_dans_ce_numero_short($numero_id) : ['text' => '', 'truncated' => false];
     $liseuse      = get_field('liseuse', $numero_id);
     $pdf          = get_field('pdf', $numero_id);
     $article_ids  = function_exists('ad_get_numero_article_ids') ? ad_get_numero_article_ids($numero_id) : [];
     $related_ids  = function_exists('ad_get_numero_related_ids') ? ad_get_numero_related_ids($numero_id) : [];
     $archive_url  = get_post_type_archive_link('numero');
 
-    $has_intro    = $dcn['text'] !== '';
-    $has_sommaire = !empty($article_ids) || !empty($dcn_full) || !empty($pdf['url']) || !empty($liseuse['url']) || !empty($related_ids);
-    // Sans "Dans ce numero", le sommaire est visible d'emblee (rien a deplier)
+    $has_intro    = !empty(trim(wp_strip_all_tags((string) $dcn_full)));
+    $has_sommaire = !empty($article_ids) || !empty($pdf['url']) || !empty($liseuse['url']) || !empty($related_ids);
+    // Sans texte "Dans ce numero", le sommaire est visible d'emblee (rien a deplier)
     $sommaire_open = !$has_intro;
     ?>
 
@@ -50,8 +49,8 @@ global $adwp;
 
           <!-- Gauche : couverture -->
           <div class="numero-cover md:col-span-5 md:sticky md:top-[160px]">
-            <div class="@sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green ">
-              <?php $cover_img = ad_numero_image($numero_id, 'list', ['class' => 'w-full h-auto block', 'alt' => esc_attr($numero_title)]); ?>
+            <div class="numero-cover__frame @sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green ">
+              <?php $cover_img = ad_numero_image($numero_id, 'list', ['class' => 'numero-cover__img w-full h-auto block', 'alt' => esc_attr($numero_title)]); ?>
               <?php if ($cover_img): ?>
                 <?php echo $cover_img; ?>
               <?php else: ?>
@@ -78,14 +77,16 @@ global $adwp;
               <?php endif; ?>
             </p>
 
-            <!-- Dans ce numero : apercu du sommaire + "Lire la suite" (disparait au clic) -->
+            <!-- Dans ce numero : champ "Sommaire" en entier, toujours visible. "Lire la suite" revele les articles -->
             <?php if ($has_intro): ?>
               <div class="numero-dans-ce-numero flex flex-col @sm:gap-4 @md/lg:gap-5" id="dans-ce-numero">
                 <h2 class="numero-sommaire__title text-display text-yellow">Dans ce numéro</h2>
-                <p class="numero-dans-ce-numero__text paragraph-md"><?php echo esc_html($dcn['text']); ?></p>
+                <div class="numero-dans-ce-numero__text wysiwyg paragraph-md">
+                  <?php echo wp_kses_post(balanceTags($dcn_full, true)); ?>
+                </div>
 
-                <?php if ($has_sommaire): ?>
-                  <div class="theme-yellow">
+                <?php if ($has_sommaire && !$sommaire_open): ?>
+                  <div class="theme-yellow" data-numero-open-wrapper>
                     <button type="button" class="numero-toggle button-flat button-primary" data-numero-open aria-expanded="false" aria-controls="numero-au-sommaire">
                       <span class="button-title">Lire la suite</span>
                     </button>
@@ -97,12 +98,6 @@ global $adwp;
             <!-- Au sommaire (cache tant qu'on n'a pas clique) -->
             <?php if ($has_sommaire): ?>
               <div class="numero-au-sommaire flex flex-col @sm:gap-6 @md/lg:gap-8" id="numero-au-sommaire" <?php echo $sommaire_open ? '' : 'hidden'; ?>>
-
-                <?php if (!empty($dcn_full)): ?>
-                  <div class="numero-au-sommaire__intro wysiwyg paragraph-md paragraph-primary">
-                    <?php echo wp_kses_post(balanceTags($dcn_full, true)); ?>
-                  </div>
-                <?php endif; ?>
 
                 <?php if (!empty($article_ids)): ?>
                   <div>
@@ -187,9 +182,10 @@ global $adwp;
         var btn = document.querySelector('[data-numero-open]');
         if (!btn) return;
         btn.addEventListener('click', function () {
-          var intro = document.getElementById('dans-ce-numero');
+          var wrapper = btn.closest('[data-numero-open-wrapper]') || btn;
           var sommaire = document.getElementById(btn.getAttribute('aria-controls'));
-          if (intro) intro.setAttribute('hidden', '');
+          wrapper.setAttribute('hidden', ''); // le texte "Dans ce numero" reste affiche
+          btn.setAttribute('aria-expanded', 'true');
           if (sommaire) {
             sommaire.removeAttribute('hidden');
             sommaire.scrollIntoView({ behavior: 'smooth', block: 'start' });
