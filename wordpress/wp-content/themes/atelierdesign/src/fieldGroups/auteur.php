@@ -60,14 +60,6 @@ acf_add_local_field_group([
             'instructions' => 'Usage interne uniquement (contact, import depuis l\'ancien site). Non affiche sur le site public.',
             'required' => 0,
         ],
-        [
-            'key' => 'field_auteur_joomla_id',
-            'label' => 'ID Joomla (ancien site)',
-            'name' => 'joomla_id',
-            'type' => 'number',
-            'instructions' => 'Identifiant de l\'utilisateur dans l\'ancien site Joomla. Sert a l\'import et aux redirections.',
-            'required' => 0,
-        ],
         // Hero Section
         // [
         //     'key' => 'field_auteur_hero_tab',
