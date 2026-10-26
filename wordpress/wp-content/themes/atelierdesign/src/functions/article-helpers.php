@@ -627,3 +627,32 @@ if (!function_exists('ad_get_numero_related_ids')) {
         return array_slice(array_values(array_unique($ids)), 0, $limit);
     }
 }
+
+
+if (!function_exists('ad_numero_image')) {
+    /**
+     * Image d'une revue.
+     *  - 'home' : image mise en avant (cards de la home uniquement)
+     *  - autre  : image longue (pages liste, page de la revue), puis image mise en avant en repli
+     *
+     * @return string HTML <img> ou chaine vide
+     */
+    function ad_numero_image($numero_id, $context = 'list', $attrs = [], $size = 'large') {
+        $thumb_id = 0;
+
+        if ($context !== 'home') {
+            $long = function_exists('get_field') ? get_field('image_longue', $numero_id) : null;
+            if (is_array($long) && !empty($long['ID'])) {
+                $thumb_id = (int) $long['ID'];
+            } elseif (is_numeric($long)) {
+                $thumb_id = (int) $long;
+            }
+        }
+
+        if (!$thumb_id) {
+            $thumb_id = (int) get_post_thumbnail_id($numero_id);
+        }
+
+        return $thumb_id ? wp_get_attachment_image($thumb_id, $size, false, $attrs) : '';
+    }
+}

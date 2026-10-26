@@ -50,12 +50,10 @@ global $adwp;
 
           <!-- Gauche : couverture -->
           <div class="numero-cover md:col-span-5 md:sticky md:top-[160px]">
-            <div class="@sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green shadow-[19px_19px_43px_rgba(0,0,0,0.09)]">
-              <?php if (has_post_thumbnail($numero_id)): ?>
-                <?php echo get_the_post_thumbnail($numero_id, 'large', [
-                  'class' => 'w-full h-auto block',
-                  'alt'   => esc_attr($numero_title),
-                ]); ?>
+            <div class="@sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green ">
+              <?php $cover_img = ad_numero_image($numero_id, 'list', ['class' => 'w-full h-auto block', 'alt' => esc_attr($numero_title)]); ?>
+              <?php if ($cover_img): ?>
+                <?php echo $cover_img; ?>
               <?php else: ?>
                 <div class="relative aspect-[3/4]">
                   <?php ad_render_card_placeholder($numero_id, $numero_title, 'publication'); ?>

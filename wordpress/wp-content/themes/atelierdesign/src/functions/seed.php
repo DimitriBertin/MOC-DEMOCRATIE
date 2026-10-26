@@ -703,6 +703,7 @@ function moc_seed_run() {
         update_field('field_numero_date_parution', date('Ymd', strtotime($date)), $id);
         update_field('field_numero_dans_ce_numero', moc_seed_dans_ce_numero($title), $id);
         if ($img = $image($i)) set_post_thumbnail($id, $img);
+        if ($img = $image($i + 1)) update_field('field_numero_image_longue', $img, $id);
         $numero_ids[$i] = ['id' => $id, 'date' => $date];
     }
 

@@ -64,7 +64,7 @@ acf_add_local_field_group([
           'label' => 'Image longue (bandeau)',
           'name' => 'image_longue',
           'type' => 'image',
-          'instructions' => 'Image au format panoramique (ex. 1920 x 700 px), en complement de l\'image mise en avant (couverture) de la revue.',
+          'instructions' => 'Image principale de la revue : utilisee sur la page /revues/, la page de la revue et les autres listes. L\'image mise en avant (couverture) ne sert que pour la carte de la home.',
           'required' => 0,
           'return_format' => 'array',
           'preview_size' => 'medium',

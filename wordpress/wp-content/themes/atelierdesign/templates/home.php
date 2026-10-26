@@ -31,7 +31,7 @@
             ]);
             
             $latest_numero = $latest[0] ?? null;
-            get_template_part('src/components/_numero-card/markup', null, [ 'post_id'  => $latest_numero->ID ]);
+            get_template_part('src/components/_numero-card/markup', null, [ 'post_id'  => $latest_numero->ID, 'variant' => 'home' ]);
           ?>
         </div>
       </div>

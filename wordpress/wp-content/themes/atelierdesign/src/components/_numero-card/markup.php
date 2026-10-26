@@ -26,12 +26,9 @@ if (($card['variant'] ?? '') === 'archive') {
     ?>
     <article class="post-card numero-card numero-card--archive flex flex-col @sm:gap-4 @md/lg:gap-5">
       <div class="numero-card__image @sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green">
-        <?php if (has_post_thumbnail($post_id)): ?>
-          <?php echo get_the_post_thumbnail($post_id, 'large', [
-            'class'   => 'w-full h-auto block',
-            'loading' => 'lazy',
-            'alt'     => esc_attr($archive_title),
-          ]); ?>
+        <?php $archive_img = ad_numero_image($post_id, 'list', ['class' => 'w-full h-auto block', 'loading' => 'lazy', 'alt' => esc_attr($archive_title)]); ?>
+        <?php if ($archive_img): ?>
+          <?php echo $archive_img; ?>
         <?php else: ?>
           <div class="relative aspect-[3/4]">
             <?php ad_render_card_placeholder($post_id, $archive_title, 'publication'); ?>
@@ -64,12 +61,13 @@ $post_date      = get_the_date('d.m.Y', $post_id);
   <a href="<?php echo esc_url($post_permalink); ?>" class="flex flex-col group">
     <!-- Featured image -->
     <div class="post-image relative overflow-hidden bg-dark-green @sm:h-[160px] @md/lg:h-[308px] @sm:rounded-xl @md/lg:rounded-xl ">
-      <?php if (has_post_thumbnail($post_id)): ?>
-        <?php echo get_the_post_thumbnail($post_id, 'large', [
-          'class' => 'w-full h-full object-cover group-hover:scale-105 duration-300 group-hover:duration-1000 transition-transform',
-          'loading' => 'lazy',
-          'alt' => esc_attr($post_title),
-        ]); ?>
+      <?php $card_img = ad_numero_image($post_id, ($card['variant'] ?? '') === 'home' ? 'home' : 'list', [
+        'class' => 'w-full h-full object-cover group-hover:scale-105 duration-300 group-hover:duration-1000 transition-transform',
+        'loading' => 'lazy',
+        'alt' => esc_attr($post_title),
+      ]); ?>
+      <?php if ($card_img): ?>
+        <?php echo $card_img; ?>
       <?php else: ?>
         <?php ad_render_card_placeholder($post_id, $post_title, 'publication'); ?>
       <?php endif; ?>
