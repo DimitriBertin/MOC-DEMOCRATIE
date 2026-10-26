@@ -536,6 +536,20 @@ function moc_seed_data_articles() {
     ];
 }
 
+/**
+ * Rallonge un chapeau de démo avec une seconde phrase (rotation sur quelques variantes).
+ */
+function moc_seed_chapo_long($chapo, $i) {
+    $extras = [
+        'Entre constats de terrain, analyses chiffrées et pistes d’action, cet article remet les enjeux en perspective.',
+        'Témoignages et regards croisés permettent de mesurer ce qui est en jeu pour celles et ceux qui le vivent au quotidien.',
+        'Une lecture qui interroge les choix politiques d’aujourd’hui et propose des alternatives concrètes pour demain.',
+        'L’article revient sur les origines du problème, les réponses apportées jusqu’ici et leurs limites.',
+    ];
+
+    return rtrim($chapo) . ' ' . $extras[$i % count($extras)];
+}
+
 function moc_seed_paragraphs($title, $chapo, $thematique_names) {
     $theme = mb_strtolower(implode(' et ', array_slice($thematique_names, 0, 2)));
 
@@ -714,6 +728,8 @@ function moc_seed_run() {
     $numero_themes  = []; // numero_id => [thematique_ids racines]
 
     foreach (moc_seed_data_articles() as $i => [$title, $chapo, $themes, $numero_index, $formats, $tags]) {
+        // Chapeau plus long (environ le double) pour le sommaire des revues
+        $chapo = moc_seed_chapo_long($chapo, $i);
         // Date : dans le mois du numéro, sinon récente
         $base = ($numero_index !== null && isset($numero_ids[$numero_index]))
             ? strtotime($numero_ids[$numero_index]['date'])
