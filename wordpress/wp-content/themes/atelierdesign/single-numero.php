@@ -67,19 +67,20 @@ global $adwp;
           <!-- Droite : infos -->
           <div class="numero-content md:col-span-7 autoscale flex flex-col @sm:gap-10 @md/lg:gap-14">
 
-            <div class="flex flex-col @sm:gap-3 @md/lg:gap-4">
-              <p class="numero-meta label label-primary">
+            <!-- En-tete : La revue n°XX  /  date (justify between) -->
+            <h1 class="sr-only"><?php echo esc_html($numero_title); ?></h1>
+            <p class="numero-meta label label-primary flex flex-wrap items-center justify-between @sm:gap-2 @md/lg:gap-4">
+              <span>
                 <?php if ($numero_num !== '' && $numero_num !== null): ?>
                   La revue n°<?php echo esc_html($numero_num); ?>
                 <?php endif; ?>
-                <?php if ($parution): ?>
-                  <span class="numero-meta__sep">/</span> <?php echo esc_html($parution); ?>
-                <?php endif; ?>
-              </p>
-              <h1 class="heading-2xl heading-primary"><?php echo esc_html($numero_title); ?></h1>
-            </div>
+              </span>
+              <?php if ($parution): ?>
+                <span><?php echo esc_html($parution); ?></span>
+              <?php endif; ?>
+            </p>
 
-            <!-- Dans ce numero (disparait au clic sur "Lire le numero complet") -->
+            <!-- Dans ce numero : apercu du sommaire + "Lire la suite" (disparait au clic) -->
             <?php if ($has_intro): ?>
               <div class="numero-dans-ce-numero flex flex-col @sm:gap-4 @md/lg:gap-5" id="dans-ce-numero">
                 <h2 class="numero-sommaire__title text-display text-yellow">Dans ce numéro</h2>
@@ -88,7 +89,7 @@ global $adwp;
                 <?php if ($has_sommaire): ?>
                   <div class="theme-yellow">
                     <button type="button" class="numero-toggle button-flat button-primary" data-numero-open aria-expanded="false" aria-controls="numero-au-sommaire">
-                      <span class="button-title">Lire le numéro complet</span>
+                      <span class="button-title">Lire la suite</span>
                     </button>
                   </div>
                 <?php endif; ?>
@@ -127,7 +128,7 @@ global $adwp;
                               <a href="<?php echo esc_url($own_liseuse['url']); ?>" class="numero-au-sommaire__liseuse"
                                  target="<?php echo esc_attr($own_liseuse['target'] ?: '_blank'); ?>" rel="noopener noreferrer">
                                 <span class="material-symbols-outlined" aria-hidden="true">picture_as_pdf</span>
-                                Liseuse PDF
+                                PDF
                               </a>
                             <?php endif; ?>
                           </div>

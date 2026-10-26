@@ -526,7 +526,7 @@ if (!function_exists('ad_numero_dans_ce_numero_short')) {
      * @return array{text:string,truncated:bool}
      */
     function ad_numero_dans_ce_numero_short($numero_id, $limit = 500) {
-        $manual = trim((string) get_field('dans_ce_numero_court', $numero_id));
+        $manual = '';
         $full   = trim(wp_strip_all_tags((string) get_field('dans_ce_numero', $numero_id)));
         $full   = trim(preg_replace('/\s+/u', ' ', $full));
 
