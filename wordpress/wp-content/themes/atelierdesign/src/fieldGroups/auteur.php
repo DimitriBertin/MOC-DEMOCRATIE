@@ -52,6 +52,22 @@ acf_add_local_field_group([
             'instructions' => 'Optionnel. Par defaut, le classement se fait sur le dernier mot du nom (ex. "Jeanne Dupont" -> D). A renseigner pour les noms composes ou a particule (ex. "de La Fontaine" -> "La Fontaine").',
             'required' => 0,
         ],
+        [
+            'key' => 'field_auteur_email',
+            'label' => 'E-mail',
+            'name' => 'email',
+            'type' => 'email',
+            'instructions' => 'Usage interne uniquement (contact, import depuis l\'ancien site). Non affiche sur le site public.',
+            'required' => 0,
+        ],
+        [
+            'key' => 'field_auteur_joomla_id',
+            'label' => 'ID Joomla (ancien site)',
+            'name' => 'joomla_id',
+            'type' => 'number',
+            'instructions' => 'Identifiant de l\'utilisateur dans l\'ancien site Joomla. Sert a l\'import et aux redirections.',
+            'required' => 0,
+        ],
         // Hero Section
         // [
         //     'key' => 'field_auteur_hero_tab',
