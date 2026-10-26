@@ -15,6 +15,44 @@
 $card    = is_array($args) ? $args : [];
 $post_id = $card['post_id'] ?? get_the_ID();
 
+// Variante "archive" (page /revues/) : image pleine taille (hauteur auto, sans recadrage),
+// puis lien "Decouvrir" + bouton "Recevoir" (page definie dans les options du site).
+if (($card['variant'] ?? '') === 'archive') {
+    $archive_title   = get_field('title', $post_id) ?: get_the_title($post_id);
+    $recevoir        = get_field('recevoir_link', 'acf-options-global-fields');
+    $recevoir_url    = is_array($recevoir) ? ($recevoir['url'] ?? '') : '';
+    $recevoir_label  = is_array($recevoir) && !empty($recevoir['title']) ? $recevoir['title'] : 'Recevoir';
+    $recevoir_target = is_array($recevoir) && !empty($recevoir['target']) ? $recevoir['target'] : '_self';
+    ?>
+    <article class="post-card numero-card numero-card--archive flex flex-col @sm:gap-4 @md/lg:gap-5">
+      <div class="numero-card__image @sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green">
+        <?php if (has_post_thumbnail($post_id)): ?>
+          <?php echo get_the_post_thumbnail($post_id, 'large', [
+            'class'   => 'w-full h-auto block',
+            'loading' => 'lazy',
+            'alt'     => esc_attr($archive_title),
+          ]); ?>
+        <?php else: ?>
+          <div class="relative aspect-[3/4]">
+            <?php ad_render_card_placeholder($post_id, $archive_title, 'publication'); ?>
+          </div>
+        <?php endif; ?>
+      </div>
+      <div class="numero-card__actions flex flex-wrap items-center @sm:gap-3 @md/lg:gap-4">
+        <a href="<?php echo esc_url($post_permalink = get_permalink($post_id)); ?>" class="numero-card__discover" aria-label="<?php echo esc_attr('Découvrir : ' . $archive_title); ?>">Découvrir</a>
+        <?php if ($recevoir_url): ?>
+          <div class="theme-yellow">
+            <a href="<?php echo esc_url($recevoir_url); ?>" class="button-flat button-primary" target="<?php echo esc_attr($recevoir_target); ?>"<?php echo $recevoir_target === '_blank' ? ' rel="noopener noreferrer"' : ''; ?>>
+              <span class="button-title"><?php echo esc_html($recevoir_label); ?></span>
+            </a>
+          </div>
+        <?php endif; ?>
+      </div>
+    </article>
+    <?php
+    return;
+}
+
 $label     = get_field('label', $post_id);
 $post_title     = get_field('title', $post_id) ?: get_the_title($post_id);
 $post_num     = get_field('numero_numero', $post_id);

@@ -31,9 +31,16 @@ $empty_text = $context['type'] === 'numero'
 
   <?php if ($query->have_posts()): ?>
 
-    <div class="posts-grid grid @sm:grid-cols-1 @md/lg:grid-cols-2 @lg:grid-cols-3 @sm:gap-y-8 @md/lg:gap-y-12 @sm:gap-x-3 @md/lg:gap-x-3">
+    <?php
+    // Revues : 4 par ligne (images en pleine taille) ; articles : 3 par ligne
+    $grid_cols = $context['type'] === 'numero'
+        ? '@sm:grid-cols-2 @md/lg:grid-cols-3 @lg:grid-cols-4'
+        : '@sm:grid-cols-1 @md/lg:grid-cols-2 @lg:grid-cols-3';
+    $card_variant = $context['type'] === 'numero' ? 'archive' : 'default';
+    ?>
+    <div class="posts-grid grid <?php echo esc_attr($grid_cols); ?> @sm:gap-y-8 @md/lg:gap-y-12 @sm:gap-x-3 @md/lg:gap-x-3">
       <?php while ($query->have_posts()): $query->the_post(); ?>
-        <?php get_template_part($card_part, null, ['post_id' => get_the_ID()]); ?>
+        <?php get_template_part($card_part, null, ['post_id' => get_the_ID(), 'variant' => $card_variant]); ?>
       <?php endwhile; ?>
     </div>
 

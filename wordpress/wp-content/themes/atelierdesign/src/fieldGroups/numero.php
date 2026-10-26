@@ -60,6 +60,17 @@ acf_add_local_field_group([
         'delay' => 0,
     ],
       [
+          'key' => 'field_numero_image_longue',
+          'label' => 'Image longue (bandeau)',
+          'name' => 'image_longue',
+          'type' => 'image',
+          'instructions' => 'Image au format panoramique (ex. 1920 x 700 px), en complement de l\'image mise en avant (couverture) de la revue.',
+          'required' => 0,
+          'return_format' => 'array',
+          'preview_size' => 'medium',
+          'library' => 'all',
+      ],
+      [
           'key' => 'field_numero_pdf',
           'label' => 'PDF du numero complet',
           'name' => 'pdf',

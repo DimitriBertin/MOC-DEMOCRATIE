@@ -42,6 +42,14 @@ acf_add_local_field_group([
       'max_size' => '',
       'mime_types' => '',
     ],
+    [
+      'key' => 'field-recevoir-link',
+      'label' => 'Page « Recevoir »',
+      'name' => 'recevoir_link',
+      'type' => 'link',
+      'instructions' => 'Lien du bouton « Recevoir » affiche sur chaque revue de la page /revues/ (un seul reglage pour toutes les revues). Le texte du lien devient le libelle du bouton (defaut : « Recevoir »).',
+      'return_format' => 'array',
+    ],
     // Tab: Header
     [
       'key' => 'field-header-tab',
