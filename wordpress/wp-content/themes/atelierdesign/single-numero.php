@@ -48,7 +48,7 @@ global $adwp;
         <div class="grid grid-cols-1 md:grid-cols-12 @sm:gap-8 @md/lg:gap-x-16 items-start">
 
           <!-- Gauche : couverture -->
-          <div class="numero-cover md:col-span-5 md:sticky md:top-[160px]">
+          <div class="numero-cover md:col-span-5 md:sticky md:top-[200px]">
             <div class="numero-cover__frame @sm:rounded-xl @md/lg:rounded-xl overflow-hidden bg-dark-green ">
               <?php $cover_img = ad_numero_image($numero_id, 'list', ['class' => 'numero-cover__img w-full h-auto block', 'alt' => esc_attr($numero_title)]); ?>
               <?php if ($cover_img): ?>
@@ -79,9 +79,9 @@ global $adwp;
 
             <!-- Dans ce numero : champ "Sommaire" en entier, toujours visible. "Lire la suite" revele les articles -->
             <?php if ($has_intro): ?>
-              <div class="numero-dans-ce-numero flex flex-col @sm:gap-4 @md/lg:gap-5" id="dans-ce-numero">
+              <div class="numero-dans-ce-numero theme-dark-green flex flex-col @sm:gap-4 @md/lg:gap-5" id="dans-ce-numero">
                 <h2 class="numero-sommaire__title text-display text-yellow">Dans ce numéro</h2>
-                <div class="numero-dans-ce-numero__text wysiwyg paragraph-md">
+                <div class="numero-dans-ce-numero__text wysiwyg paragraph-md paragraph-primary">
                   <?php echo wp_kses_post(balanceTags($dcn_full, true)); ?>
                 </div>
 

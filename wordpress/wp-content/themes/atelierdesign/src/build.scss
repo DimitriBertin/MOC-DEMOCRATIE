@@ -973,7 +973,17 @@ ul,ol {
     width: auto;
     max-width: 100%;
     height: auto;
-    max-height: calc(100vh - 192px);
-    max-height: calc(100dvh - 192px);
+    max-height: calc(100vh - 232px);
+    max-height: calc(100dvh - 232px);
   }
+}
+
+
+/* Bloc "Dans ce numero" : theme vert fonce -> tout le texte du wysiwyg en clair */
+#numero .numero-dans-ce-numero__text,
+#numero .numero-dans-ce-numero__text * {
+  color: #fff;
+}
+#numero .numero-dans-ce-numero__text a {
+  color: #D7DB31;
 }
