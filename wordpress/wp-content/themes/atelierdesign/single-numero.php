@@ -30,17 +30,33 @@ global $adwp;
     $numero_num   = get_field('numero_numero', $numero_id);
     $numero_title = get_field('title', $numero_id) ?: get_the_title($numero_id);
     $parution     = function_exists('ad_numero_parution_label') ? ad_numero_parution_label($numero_id) : '';
-    $dcn_full     = get_field('dans_ce_numero', $numero_id);
+    $dcn_rows     = get_field('sommaire_flexible', $numero_id);
     $liseuse      = get_field('liseuse', $numero_id);
     $pdf          = get_field('pdf', $numero_id);
     $article_ids  = function_exists('ad_get_numero_article_ids') ? ad_get_numero_article_ids($numero_id) : [];
     $related_ids  = function_exists('ad_get_numero_related_ids') ? ad_get_numero_related_ids($numero_id) : [];
     $archive_url  = get_post_type_archive_link('numero');
 
-    $has_intro    = !empty(trim(wp_strip_all_tags((string) $dcn_full)));
+    $has_intro    = !empty($dcn_rows) && is_array($dcn_rows);
     $has_sommaire = !empty($article_ids) || !empty($pdf['url']) || !empty($liseuse['url']) || !empty($related_ids);
-    // Sans texte "Dans ce numero", le sommaire est visible d'emblee (rien a deplier)
-    $sommaire_open = !$has_intro;
+
+    // Extrait 500 signes du flexible (textes des wysiwyg + citations)
+    $dcn_text = '';
+    if ($has_intro) {
+      foreach ($dcn_rows as $r) {
+        $html = $r['_wysiwyg_content'] ?? ($r['_quote_content'] ?? '');
+        $html = preg_replace('/<\/(p|h[1-6]|li|div|blockquote)>/i', '$0 ', (string) $html);
+        $dcn_text .= ' ' . wp_strip_all_tags($html);
+      }
+      $dcn_text = trim(preg_replace('/\s+/u', ' ', html_entity_decode($dcn_text, ENT_QUOTES, 'UTF-8')));
+    }
+    $dcn_has_more = mb_strlen($dcn_text) > 500;
+    $dcn_excerpt  = $dcn_text;
+    if ($dcn_has_more) {
+      $cut = mb_substr($dcn_text, 0, 500);
+      $sp  = mb_strrpos($cut, ' ');
+      $dcn_excerpt = rtrim(($sp !== false && $sp > 400) ? mb_substr($cut, 0, $sp) : $cut, " ,;:.-") . '...';
+    }
     ?>
 
     <section class="numero-sommaire @sm:mt-[70px] @md/lg:mt-[130px] py-section theme-white bg-layout-main">
@@ -81,23 +97,42 @@ global $adwp;
             <?php if ($has_intro): ?>
               <div class="numero-dans-ce-numero theme-dark-green flex flex-col @sm:gap-4 @md/lg:gap-5" id="dans-ce-numero">
                 <h2 class="numero-sommaire__title text-display text-yellow">Dans ce numéro</h2>
-                <div class="numero-dans-ce-numero__text wysiwyg paragraph-md paragraph-primary">
-                  <?php echo wp_kses_post(balanceTags($dcn_full, true)); ?>
+                <?php if ($dcn_has_more): ?>
+                  <div class="numero-dans-ce-numero__text numero-dans-ce-numero__excerpt" id="dcn-excerpt">
+                    <p class="paragraph-md paragraph-primary"><?php echo esc_html($dcn_excerpt); ?></p>
+                  </div>
+                <?php endif; ?>
+                <div class="numero-dans-ce-numero__text flex flex-col @sm:gap-4 @md/lg:gap-5" id="dcn-full" <?php echo $dcn_has_more ? 'hidden' : ''; ?>>
+                  <?php
+                  // Reglages par defaut si absents (lignes creees par le seed ou jamais ouvertes en admin)
+                  $dcn_defaults = [
+                    '_quote'     => ['alignment' => 'left', 'hasBorder' => false, 'hasIcon' => false],
+                    '_separator' => ['color' => 'default', 'marginY' => 'sm'],
+                  ];
+                  foreach ($dcn_rows as $dcn_row) {
+                    $layout = $dcn_row['acf_fc_layout'] ?? '';
+                    $key    = $layout . '_layout_settings';
+                    if (isset($dcn_defaults[$layout]) && empty($dcn_row[$key])) {
+                      $dcn_row[$key] = $dcn_defaults[$layout];
+                    }
+                    $adwp->render_flexible_layout([$dcn_row], ['isNested' => true]);
+                  }
+                  ?>
                 </div>
 
-                <?php if ($has_sommaire && !$sommaire_open): ?>
+                <?php if ($dcn_has_more): ?>
                   <div class="theme-yellow" data-numero-open-wrapper>
-                    <button type="button" class="numero-toggle button-flat button-primary" data-numero-open aria-expanded="false" aria-controls="numero-au-sommaire">
-                      <span class="button-title">Lire la suite</span>
+                    <button type="button" class="numero-toggle button-flat button-primary" data-numero-open aria-expanded="false" aria-controls="dcn-full">
+                      <span class="button-title">Lire plus</span>
                     </button>
                   </div>
                 <?php endif; ?>
               </div>
             <?php endif; ?>
 
-            <!-- Au sommaire (cache tant qu'on n'a pas clique) -->
+            <!-- Au sommaire : toujours visible -->
             <?php if ($has_sommaire): ?>
-              <div class="numero-au-sommaire flex flex-col @sm:gap-6 @md/lg:gap-8" id="numero-au-sommaire" <?php echo $sommaire_open ? '' : 'hidden'; ?>>
+              <div class="numero-au-sommaire flex flex-col @sm:gap-6 @md/lg:gap-8" id="numero-au-sommaire">
 
                 <?php if (!empty($article_ids)): ?>
                   <div>
@@ -183,13 +218,12 @@ global $adwp;
         if (!btn) return;
         btn.addEventListener('click', function () {
           var wrapper = btn.closest('[data-numero-open-wrapper]') || btn;
-          var sommaire = document.getElementById(btn.getAttribute('aria-controls'));
-          wrapper.setAttribute('hidden', ''); // le texte "Dans ce numero" reste affiche
+          var full = document.getElementById('dcn-full');
+          var excerpt = document.getElementById('dcn-excerpt');
+          wrapper.setAttribute('hidden', '');
           btn.setAttribute('aria-expanded', 'true');
-          if (sommaire) {
-            sommaire.removeAttribute('hidden');
-            sommaire.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
+          if (excerpt) excerpt.setAttribute('hidden', '');
+          if (full) full.removeAttribute('hidden');
         });
       })();
     </script>

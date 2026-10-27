@@ -579,6 +579,19 @@ function moc_seed_dans_ce_numero($title) {
 }
 
 /**
+ * Lignes du flexible « Sommaire » : wysiwyg + citation + séparateur + wysiwyg.
+ */
+function moc_seed_sommaire_rows($title) {
+    $p = array_values(array_filter(explode("\n", moc_seed_dans_ce_numero($title))));
+    return [
+        ['acf_fc_layout' => '_wysiwyg', '_wysiwyg_content' => implode("\n", array_slice($p, 0, 2))],
+        ['acf_fc_layout' => '_quote', '_quote_content' => 'La revue est aussi un espace de débat.'],
+        ['acf_fc_layout' => '_separator'],
+        ['acf_fc_layout' => '_wysiwyg', '_wysiwyg_content' => implode("\n", array_slice($p, 2))],
+    ];
+}
+
+/**
  * Page « À propos » : la crée si elle n'existe pas, puis ajoute le contenu « Qui sommes-nous » (reformulé à partir de
  * la page revue-democratie.be) en fin de flexible content. Une seule fois.
  *
@@ -715,7 +728,7 @@ function moc_seed_run() {
         if (!$id) continue;
         update_field('field_numero_numero', $number, $id);
         update_field('field_numero_date_parution', date('Ymd', strtotime($date)), $id);
-        update_field('field_numero_dans_ce_numero', moc_seed_dans_ce_numero($title), $id);
+        update_field('field_numero_sommaire_flexible', moc_seed_sommaire_rows($title), $id);
         if ($img = $image($i)) set_post_thumbnail($id, $img);
         if ($img = $image($i + 1)) update_field('field_numero_image_longue', $img, $id);
         $numero_ids[$i] = ['id' => $id, 'date' => $date];

@@ -48,18 +48,6 @@ acf_add_local_field_group([
           'first_day' => 1,
       ],
       [
-        'key' => 'field_numero_dans_ce_numero',
-        'label' => 'Sommaire',
-        'name' => 'dans_ce_numero',
-        'type' => 'wysiwyg',
-        'instructions' => 'Texte "Dans ce numero" / sommaire de la revue. Sur la page, un apercu (500 signes) est affiche avec un bouton "Lire la suite" qui deplie le texte complet et la liste des articles.',
-        'required' => 0,
-        'tabs' => 'all',
-        'toolbar' => 'full',
-        'media_upload' => 0,
-        'delay' => 0,
-    ],
-      [
           'key' => 'field_numero_image_longue',
           'label' => 'Image longue (bandeau)',
           'name' => 'image_longue',
@@ -90,6 +78,33 @@ acf_add_local_field_group([
           'required' => 0,
           'return_format' => 'array',
       ],
+
+        // Onglet Sommaire : texte "Dans ce numero" compose en flexible (Wysiwyg / Quote / Separateur)
+        [
+            'key' => 'field_numero_sommaire_tab',
+            'label' => 'Dans ce numéro',
+            'type' => 'tab',
+            'no_preference' => 0,
+        ],
+        [
+            'key' => 'field_numero_sommaire_flexible',
+            'label' => 'Dans ce numéro',
+            'name' => 'sommaire_flexible',
+            'type' => 'flexible_content',
+            'instructions' => 'Texte, citation ou séparateur. Sur la page, un extrait de 500 signes est affiché avec un bouton "Lire plus" qui déplie le contenu complet.',
+            'acfe_flexible_async' => [0 => 'layout'],
+            'acfe_flexible_add_actions' => [0 => 'toggle', 1 => 'copy'],
+            'acfe_flexible_layouts_settings' => 1,
+            'min' => 0,
+            'max' => '',
+            'layouts' => array_values(array_filter(
+                $adwp->get_nested_layouts(),
+                function ($layout) {
+                    return in_array($layout['name'] ?? '', ['_wysiwyg', '_quote', '_separator'], true);
+                }
+            )),
+            'button_label' => 'Ajouter un element',
+        ],
 
         // Flexible Content Section
         // [
