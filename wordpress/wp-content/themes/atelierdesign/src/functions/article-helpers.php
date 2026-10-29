@@ -608,6 +608,26 @@ if (!function_exists('ad_get_article_chapo')) {
 }
 
 
+if (!function_exists('ad_half_text')) {
+    /**
+     * Raccourcit un texte de moitie (coupe sur un mot entier, ajoute « … »).
+     * Les textes tres courts (< 80 caracteres) sont laisses tels quels.
+     */
+    function ad_half_text($text) {
+        $text = trim((string) $text);
+        $len  = mb_strlen($text);
+        if ($len < 80) {
+            return $text;
+        }
+        $cut = mb_substr($text, 0, (int) ceil($len / 2));
+        // Termine sur un mot entier : on retire le mot coupe en fin de texte
+        if (!preg_match('/\s/u', mb_substr($text, mb_strlen($cut), 1))) {
+            $cut = preg_replace('/\s+\S*$/u', '', $cut);
+        }
+        return rtrim($cut, " \t\n\r,;:.-–—") . '…';
+    }
+}
+
 if (!function_exists('ad_get_numero_related_ids')) {
     /**
      * Numeros "Pour aller plus loin" : uniquement ceux choisis dans le champ

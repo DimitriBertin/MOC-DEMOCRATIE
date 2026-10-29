@@ -148,7 +148,7 @@ global $adwp;
                             <a href="<?php echo esc_url(get_permalink($article_id)); ?>"><?php echo esc_html(get_the_title($article_id)); ?></a>
                           </h3>
                           <?php if ($chapo !== ''): ?>
-                            <p class="numero-au-sommaire__chapo paragraph-md paragraph-primary"><?php echo esc_html($chapo); ?></p>
+                            <p class="numero-au-sommaire__chapo paragraph-md paragraph-primary"><?php echo esc_html(function_exists('ad_half_text') ? ad_half_text($chapo) : $chapo); ?></p>
                           <?php endif; ?>
                           <div class="numero-au-sommaire__actions">
                             <a href="<?php echo esc_url(get_permalink($article_id)); ?>" class="numero-au-sommaire__read">Lire l’article</a>
