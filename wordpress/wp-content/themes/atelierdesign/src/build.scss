@@ -999,3 +999,11 @@ ul,ol {
 #numero .numero-dans-ce-numero__text a {
   color: #D7DB31;
 }
+
+/* Page numero, mobile : on masque la cover pour arriver directement sur
+ * « Dans ce numéro » (la cover reste affichee a gauche des 768px). */
+@media (max-width: 767px) {
+  #numero .numero-cover {
+    display: none;
+  }
+}
