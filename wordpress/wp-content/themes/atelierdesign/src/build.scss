@@ -460,18 +460,93 @@ ul,ol {
       }
     }
 
+    /* Champs HTML (texte libre) : meme style que .paragraph-md */
+    .frm_html_container {
+      @apply text-paragraph-md text-typography-paragraph-primary;
+
+      p,
+      ul,
+      center {
+        @apply m-0;
+      }
+
+      p + ul,
+      ul + p,
+      ul + center,
+      p + center {
+        @apply mt-3;
+      }
+
+      ul {
+        list-style: disc;
+        padding-left: 1.25em;
+      }
+
+      b,
+      strong {
+        font-weight: 700;
+      }
+
+      a {
+        text-decoration: underline;
+      }
+    }
+
     .frm_submit {
       .button,
       .frm_button_submit {
         @apply mm-sm:w-full;
       }
 
-      /* Bouton d'envoi : classes button-flat button-primary ajoutees par src/functions/formidable.php */
-      .frm_button_submit {
-        @apply text-button-title justify-center;
+      /* Bouton d'envoi : meme rendu que .button-flat.button-primary + .button-title.
+       * Classes ajoutees par src/functions/formidable.php ; les proprietes sont reecrites ici
+       * avec une specificite superieure a celle des styles de Formidable. */
+      .frm_button_submit.button-flat {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: auto;
+        margin: 0;
+        cursor: pointer;
         appearance: none;
-        font-family: inherit;
+        border-style: solid;
+        font-family: var(--font-button-font-family);
+        font-weight: var(--font-button-font-weight);
+        text-transform: uppercase;
+        text-decoration: none;
+        --tw-shadow-color: var(--color-button-primary-flat-normal-shadow);
+        color: var(--color-button-primary-flat-normal-text);
+        border-color: var(--color-button-primary-flat-normal-border);
+        background-color: var(--color-button-primary-flat-normal-background);
         transition: color 0.3s, background-color 0.3s, border-color 0.3s;
+        border-radius: calc((var(--button-flat-border-radius)/var(--tw-screen-sm))*var(--tw-screen-max)*var(--tw-scale));
+        border-width: calc((var(--button-flat-border-width)/var(--tw-screen-sm))*var(--tw-screen-max)*var(--tw-scale));
+        padding-block: calc((var(--button-flat-padding-y)/var(--tw-screen-sm))*var(--tw-screen-max)*var(--tw-scale));
+        padding-inline: calc((var(--button-flat-padding-x)/var(--tw-screen-sm))*var(--tw-screen-max)*var(--tw-scale));
+        gap: calc((var(--button-flat-gap)/var(--tw-screen-sm))*var(--tw-screen-max)*var(--tw-scale));
+        box-shadow: calc((var(--button-flat-shadow-x)/var(--tw-screen-sm))*var(--tw-screen-max)*var(--tw-scale)) calc((var(--button-flat-shadow-y)/var(--tw-screen-sm))*var(--tw-screen-max)*var(--tw-scale)) calc((var(--button-flat-shadow-blur)/var(--tw-screen-sm))*var(--tw-screen-max)*var(--tw-scale)) calc((var(--button-flat-shadow-spread)/var(--tw-screen-sm))*var(--tw-screen-max)*var(--tw-scale)) var(--tw-shadow-color, rgba(0, 0, 0, 0.25));
+        font-size: calc((var(--typography-button-title-font-size)/var(--tw-screen-sm))*var(--tw-screen-max)*var(--tw-scale));
+        letter-spacing: calc((var(--typography-button-title-letter-spacing)/var(--tw-screen-sm))*var(--tw-screen-max)*var(--tw-scale));
+        line-height: calc((var(--typography-button-title-line-height)/var(--tw-screen-sm))*var(--tw-screen-max)*var(--tw-scale));
+
+        @screen md {
+          border-radius: calc((var(--button-flat-border-radius)/var(--tw-screen-lg))*var(--tw-screen-max)*var(--tw-scale));
+          border-width: calc((var(--button-flat-border-width)/var(--tw-screen-lg))*var(--tw-screen-max)*var(--tw-scale));
+          padding-block: calc((var(--button-flat-padding-y)/var(--tw-screen-lg))*var(--tw-screen-max)*var(--tw-scale));
+          padding-inline: calc((var(--button-flat-padding-x)/var(--tw-screen-lg))*var(--tw-screen-max)*var(--tw-scale));
+          gap: calc((var(--button-flat-gap)/var(--tw-screen-lg))*var(--tw-screen-max)*var(--tw-scale));
+          box-shadow: calc((var(--button-flat-shadow-x)/var(--tw-screen-lg))*var(--tw-screen-max)*var(--tw-scale)) calc((var(--button-flat-shadow-y)/var(--tw-screen-lg))*var(--tw-screen-max)*var(--tw-scale)) calc((var(--button-flat-shadow-blur)/var(--tw-screen-lg))*var(--tw-screen-max)*var(--tw-scale)) calc((var(--button-flat-shadow-spread)/var(--tw-screen-lg))*var(--tw-screen-max)*var(--tw-scale)) var(--tw-shadow-color, rgba(0, 0, 0, 0.25));
+          font-size: calc((var(--typography-button-title-font-size)/var(--tw-screen-lg))*var(--tw-screen-max)*var(--tw-scale));
+          letter-spacing: calc((var(--typography-button-title-letter-spacing)/var(--tw-screen-lg))*var(--tw-screen-max)*var(--tw-scale));
+          line-height: calc((var(--typography-button-title-line-height)/var(--tw-screen-lg))*var(--tw-screen-max)*var(--tw-scale));
+        }
+
+        &:hover,
+        &:focus-visible {
+          color: var(--color-button-primary-flat-hover-text);
+          border-color: var(--color-button-primary-flat-hover-border);
+          background-color: var(--color-button-primary-flat-hover-background);
+        }
       }
     }
   }
