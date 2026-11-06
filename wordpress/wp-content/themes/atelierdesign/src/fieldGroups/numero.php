@@ -52,7 +52,7 @@ acf_add_local_field_group([
           'label' => 'Image longue (bandeau)',
           'name' => 'image_longue',
           'type' => 'image',
-          'instructions' => 'Image principale de la revue : utilisee sur la page /revues/, la page de la revue et les autres listes. L\'image mise en avant (couverture) ne sert que pour la carte de la home.',
+          'instructions' => 'Image principale de la revue : utilisee sur la home (card « revue a la une », en contain avec rotation), la page /revues/, la page de la revue et les autres listes. L\'image mise en avant sert de repli.',
           'required' => 0,
           'return_format' => 'array',
           'preview_size' => 'medium',

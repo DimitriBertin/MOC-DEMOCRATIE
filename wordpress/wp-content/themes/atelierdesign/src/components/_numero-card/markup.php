@@ -61,8 +61,12 @@ $post_date      = get_the_date('d.m.Y', $post_id);
   <a href="<?php echo esc_url($post_permalink); ?>" class="flex flex-col group">
     <!-- Featured image -->
     <div class="post-image relative overflow-hidden bg-dark-green @sm:h-[160px] @md/lg:h-[308px] @sm:rounded-xl @md/lg:rounded-xl ">
-      <?php $card_img = ad_numero_image($post_id, ($card['variant'] ?? '') === 'home' ? 'home' : 'list', [
-        'class' => 'w-full h-full object-cover group-hover:scale-105 duration-300 group-hover:duration-1000 transition-transform',
+      <?php // Home : image longue (repli sur l'image mise en avant), en "contain" + legere rotation (voir build.scss)
+      $is_home  = ($card['variant'] ?? '') === 'home';
+      $card_img = ad_numero_image($post_id, 'list', [
+        'class' => $is_home
+          ? 'numero-card__home-img w-full h-full object-contain'
+          : 'w-full h-full object-cover group-hover:scale-105 duration-300 group-hover:duration-1000 transition-transform',
         'loading' => 'lazy',
         'alt' => esc_attr($post_title),
       ]); ?>

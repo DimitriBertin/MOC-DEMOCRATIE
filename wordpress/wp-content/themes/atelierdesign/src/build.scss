@@ -528,6 +528,16 @@ ul,ol {
     @apply md:flex-auto md:h-full md:justify-center bg-white @@:px-[30px] @@:py-[20px];
   }
 
+  /* Image longue en "contain" avec rotation ; scale < 1 pour que les coins ne soient pas rognes */
+  .numero-card .numero-card__home-img {
+    transform: rotate(10deg) scale(0.88);
+    transition: transform 0.3s;
+  }
+  .numero-card:hover .numero-card__home-img {
+    transform: rotate(10deg) scale(0.93);
+    transition-duration: 1s;
+  }
+
 }
 
 

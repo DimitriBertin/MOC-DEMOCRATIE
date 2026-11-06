@@ -652,8 +652,8 @@ if (!function_exists('ad_get_numero_related_ids')) {
 if (!function_exists('ad_numero_image')) {
     /**
      * Image d'une revue.
-     *  - 'home' : image mise en avant (cards de la home uniquement)
-     *  - autre  : image longue (pages liste, page de la revue), puis image mise en avant en repli
+     * Image longue (home, pages liste, page de la revue), puis image mise en avant en repli.
+     * Le parametre $context est conserve pour compatibilite ('home' : image mise en avant uniquement).
      *
      * @return string HTML <img> ou chaine vide
      */
