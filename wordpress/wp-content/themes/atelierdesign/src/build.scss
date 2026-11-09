@@ -613,14 +613,14 @@ ul,ol {
     @apply md:flex-auto md:h-full md:justify-center bg-white @@:px-[30px] @@:py-[20px];
   }
 
-  /* Image longue en "contain" avec rotation et zoom (rognee par le overflow-hidden de la card) */
+  /* Image longue en "contain" avec rotation, sortie du flux (absolute) : sa largeur
+   * naturelle ne doit pas elargir la colonne de la grille. */
   .numero-card .numero-card__home-img {
-    transform: rotate(-15deg) scale(1.05);
-    transition: transform 0.3s;
-  }
-  .numero-card:hover .numero-card__home-img {
-    transform: rotate(-15deg) scale(1.1);
-    transition-duration: 1s;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-15deg);
   }
 
 }

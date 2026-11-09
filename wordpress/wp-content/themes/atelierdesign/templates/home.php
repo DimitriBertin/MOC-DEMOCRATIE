@@ -19,7 +19,7 @@
 
     <section class="py-section @sm:pt-[92px] @md/lg:pt-[182px] @xl:pt-[182px] grid md:grid-cols-2 @sm:gap-[18px] @md/lg:gap-[18px] theme-light-green-70 bg-layout-main px-container">
       <!-- FEATURED NUMERO  -->
-      <div class="col-span-1 flex flex-col ">
+      <div class="col-span-1 min-w-0 flex flex-col ">
         <div class="flex-grid flex-grid-cols-1 md:h-full home-featured-numero">
           <?php
             $latest = get_posts([
@@ -37,7 +37,7 @@
       </div>
 
       <!-- FEATURED THEMATIQUE -->
-      <div class="col-span-1 overflow-hidden">
+      <div class="col-span-1 min-w-0 overflow-hidden">
         <!-- THEMATIQUE CARDS -->
         <div class="grid md:grid-cols-2 @sm:gap-[18px] @md/lg:gap-[18px]">
           <?php foreach($featured_themes as $theme):
