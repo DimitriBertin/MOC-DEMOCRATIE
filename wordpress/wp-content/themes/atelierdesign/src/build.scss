@@ -615,11 +615,11 @@ ul,ol {
 
   /* Image longue en "contain" avec rotation et zoom (rognee par le overflow-hidden de la card) */
   .numero-card .numero-card__home-img {
-    transform: rotate(-15deg) scale(1.25);
+    transform: rotate(-15deg) scale(1.05);
     transition: transform 0.3s;
   }
   .numero-card:hover .numero-card__home-img {
-    transform: rotate(-15deg) scale(1.3);
+    transform: rotate(-15deg) scale(1.1);
     transition-duration: 1s;
   }
 
